@@ -1,7 +1,19 @@
 # Sportalytic — one-page site
 
-Static, no build step. `index.html` plus `assets/`. Drag the whole folder onto
-[Netlify Drop](https://app.netlify.com/drop) or run `vercel` in it.
+Static, no build step. `index.html` plus `assets/`, served from the repo root.
+
+## Deploying
+
+Connected to Netlify: pushing to `main` redeploys the site automatically.
+`netlify.toml` tells Netlify there's nothing to build and sets cache headers.
+
+To edit: change `index.html`, commit, push. That's the whole workflow.
+
+```
+git add -A
+git commit -m "what changed"
+git push
+```
 
 ## Before publishing, change these
 
