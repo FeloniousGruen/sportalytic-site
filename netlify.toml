@@ -1,0 +1,16 @@
+# Static site: no build step, everything is served from the repo root.
+[build]
+  publish = "."
+  command = ""
+
+# Reels, posters and the font never change without a new filename,
+# so they can be cached hard. The HTML must not be.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
