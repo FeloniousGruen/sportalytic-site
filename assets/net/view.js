@@ -31,6 +31,7 @@ const VIEW = (() => {
   const faceR = new Map();          // node -> radius its portrait took this frame
   let showLabels = true;            // off while the quiz owns a phone screen
   let litMask = null;               // Expedition: 0 dark, 1 lit, 2 unlocked
+  let interactive = true;           // off while a game owns the chart
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -47,6 +48,11 @@ const VIEW = (() => {
       }).observe(cv);
     }
     cv.addEventListener('pointermove', e => {
+      if (!interactive) {
+        if (hover !== -1) { hover = prevHover = -1; dirty = true; }
+        cv.style.cursor = 'default';
+        return;
+      }
       const r = cv.getBoundingClientRect();
       hover = pick(e.clientX - r.left, e.clientY - r.top);
       if (hover !== prevHover) { prevHover = hover; dirty = true; }
@@ -54,6 +60,7 @@ const VIEW = (() => {
     });
     cv.addEventListener('pointerleave', () => { hover = -1; dirty = true; });
     cv.addEventListener('click', e => {
+      if (!interactive) return;
       const r = cv.getBoundingClientRect();
       const i = pick(e.clientX - r.left, e.clientY - r.top);
       if (i >= 0) onPick(i);
@@ -465,9 +472,13 @@ const VIEW = (() => {
         ctx.fillText(d.label, d.r.x + 4, d.r.y + BOX / 2);
       }
     }
-    // the white ring is the "you are about to pick this" cue, so it is not
+    /* The centre wears a white ring whatever it is showing -- around the
+       portrait when there is one, around the dot when there is not -- so the
+       player the whole chart is hung on is never ambiguous. */
+    if (!moving) ring(centre, '#fff');
+    // the white ring is also the "you are about to pick this" cue, so it is not
     // wanted on a dot that already carries the gold one
-    if (hover >= 0 && hover !== selected) ring(hover, '#fff');
+    if (hover >= 0 && hover !== selected && hover !== centre) ring(hover, '#fff');
     if (selected >= 0) ring(selected, NET.PATH);
     perf.draw = performance.now() - t0;
     perf.frames++;
@@ -616,6 +627,10 @@ const VIEW = (() => {
     hasPortrait(i){ return !!(hasFace && hasFace[i]); },
     set labels(v){ showLabels = !!v; dirty = true; }, get labels(){ return showLabels; },
     set lit(m){ litMask = m; dirty = true; }, get lit(){ return litMask; },
+    /* A game in progress owns the chart: clicking through it would hand over
+       the very links you are being asked to name. */
+    set interactive(v){ interactive = !!v; if (!v) { hover = prevHover = -1; dirty = true; } },
+    get interactive(){ return interactive; },
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,

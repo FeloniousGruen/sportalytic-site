@@ -660,7 +660,14 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
 
   CENTRE=(t.notable&&t.notable['Travis Kelce'])||0;
   const r=NET.recentre(CENTRE);
-  VIEW.init($('#cv'), i=>renderPanel(i));
+  VIEW.init($('#cv'), i=>{
+    /* The Play card sits where the player card does. Opening the menu and then
+       clicking a dot used to stack one on top of the other; now the menu gets
+       out of the way, which is what clicking a dot meant anyway. A game already
+       running keeps the chart to itself -- see VIEW.interactive. */
+    if(!$('#game').hidden) closeGame();
+    renderPanel(i);
+  });
   FACES[CENTRE]='assets/net/face-kelce.png';   // the only portrait we have so far
   VIEW.centre=CENTRE; VIEW.fit(); VIEW.buildGrid(); VIEW.tick();
   applyCentreImage();
@@ -930,6 +937,8 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   function closeGame(){
     GAME.stop();
     gameEl.hidden=true;
+    gameEl.className='';
+    VIEW.interactive=true;
     VIEW.labels=true; VIEW.path=[]; VIEW.selected=-1; VIEW.lit=null;
     if(NET.dist[CENTRE]!==0){ recentreQuiet(CENTRE); }
     VIEW.invalidate();
@@ -949,6 +958,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   function gameMenu(){
     GAME.stop();
     gameEl.className='';
+    VIEW.interactive=true;
     VIEW.labels=!onPhone();
     gameEl.innerHTML=
       `<button class="xclose" id="gmclose" title="Back to the chart">&times;</button>
@@ -966,9 +976,11 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
        <button class="gmenu" id="gm4"><b>Archive</b>
          <span>Any daily since the start, and how your scores have gone.</span></button>`;
     $('#gmclose').onclick=closeGame;
-    $('#gm1').onclick=()=>{ VIEW.labels=!onPhone(); GAME.startRound(); };
-    $('#gm2').onclick=()=>{ VIEW.labels=!onPhone(); GAME.startDaily(); };
-    $('#gm3').onclick=()=>{ VIEW.labels=false; GAME.startExpedition(CENTRE); };
+    // starting a mode locks the chart; the menu itself does not
+    const play=fn=>()=>{ VIEW.interactive=false; fn(); };
+    $('#gm1').onclick=play(()=>{ VIEW.labels=!onPhone(); GAME.startRound(); });
+    $('#gm2').onclick=play(()=>{ VIEW.labels=!onPhone(); GAME.startDaily(); });
+    $('#gm3').onclick=play(()=>{ VIEW.labels=false; GAME.startExpedition(CENTRE); });
     $('#gm4').onclick=()=>{ VIEW.labels=!onPhone(); GAME.renderArchive(); };
   }
 
