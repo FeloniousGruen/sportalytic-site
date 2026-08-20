@@ -30,6 +30,33 @@ git push
    title, sport, description and source line for each tile. I wrote these from
    watching the videos; correct anything I got wrong.
 
+## The interactive network page
+
+`network.html` is a second, standalone page: every NFL player since 1920 as a
+graph, click anyone to see their path to the centre or make them the centre.
+It is separate from `index.html` so its code and data land in the immutable
+`/assets` cache rather than the no-cache HTML.
+
+It re-roots the graph on any player, which needs a breadth-first pass over the
+real teammate relation. All 2.2M teammate edges are implied by 128k membership
+rows, so the bipartite player <-> (team, season) index ships instead: 0.4 MB
+rather than 7.9 MB, traversed in ~2 ms. Nothing is computed server-side.
+
+Rebuilding the data (only needed when the source CSVs change):
+
+```
+python3 tools/fetch_season.py --season 2027 --out memberships.csv   # add a season
+python3 tools/build_network_data.py --rosters memberships.csv       # -> assets/net/
+python3 tools/fetch_faces.py --rosters memberships.csv              # -> assets/net/faces/
+```
+
+`build_network_data.py` must be rerun before `fetch_faces.py` if the player list
+changed: portraits are named by node index.
+
+Two judgement calls to be aware of before this goes live. The club marks in
+`assets/net/logos/` are trademarks. And the 2026 rows are opening rosters, not
+games played -- those players have not appeared in a regular-season game.
+
 ## Assets
 
 The site is one file with two views: the landing page, and `#/reels` for the work.

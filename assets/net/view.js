@@ -25,6 +25,9 @@ const VIEW = (() => {
   const LOGOS = {};             // club code -> Image, loaded on demand
   let logoCodes = null;
   let logoColours = {};   // club -> primary, for the wedge wash
+  const FACES = {};       // node index -> portrait, loaded on demand
+  let hasFace = null;     // one flag per player, so we never chase a 404
+  let growFrom = 0, growWho = -1;   // a picked dot swelling into its picture
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -109,8 +112,9 @@ const VIEW = (() => {
     const wx = (mx - W / 2) / cam.scale + cam.x, wy = (my - H / 2) / cam.scale + cam.y;
     // a player wearing a portrait should be grabbable by the portrait, not by
     // the small dot hiding behind it
-    const portrait = centreImg ? Math.max(34, Math.min(96, cam.scale * 1.15)) / 2 : 0;
-    const rad = Math.max(9, portrait) / cam.scale;
+    const centreR = Math.max(34, Math.min(96, cam.scale * 1.15)) / 2;
+    const pickedR = Math.max(30, Math.min(72, cam.scale * 0.85)) / 2;
+    const rad = Math.max(9, centreR) / cam.scale;
     const c0 = ((wx - rad - gridMinX) / gridCell) | 0, c1 = ((wx + rad - gridMinX) / gridCell) | 0;
     const r0 = ((wy - rad - gridMinY) / gridCell) | 0, r1 = ((wy + rad - gridMinY) / gridCell) | 0;
     let best = -1, bestD = Infinity;
@@ -120,7 +124,11 @@ const VIEW = (() => {
         for (const i of b) {
           if (ringSegs && NET.dist[i] > 1) continue;     // first-ring view: ring 1 only
           const dx = NET.px[i] - wx, dy = NET.py[i] - wy, d = dx * dx + dy * dy;
-          const lim = (i === centre && portrait) ? (portrait / cam.scale) ** 2 : (9 / cam.scale) ** 2;
+          // whatever is actually drawn for this player is what you can hit
+          let r = 9;
+          if (i === centre && (centreImg || (hasFace && hasFace[i]))) r = centreR;
+          else if (i === selected && hasFace && hasFace[i]) r = pickedR;
+          const lim = (r / cam.scale) ** 2;
           if (d < bestD && d < lim) { bestD = d; best = i; }
         }
       }
@@ -280,12 +288,31 @@ const VIEW = (() => {
       ctx.restore();
     }
 
-    // ---- portrait on the centre, when one exists for that player ----
-    if (centreImg && centreImg.complete && !moving) {
-      const [cxw, cyw] = frameXY(centre);
-      if (cxw === cxw) {
-        const d = Math.max(34, Math.min(96, cam.scale * 1.15));
-        ctx.drawImage(centreImg, sx(cxw) - d / 2, sy(cyw) - d / 2, d, d);
+    // ---- portraits: the centre always, and a picked player growing in ----
+    if (!moving) {
+      const cIm = ready(centreImg) ? centreImg : faceFor(centre);
+      if (ready(cIm)) {
+        const [cxw, cyw] = frameXY(centre);
+        if (cxw === cxw) {
+          const d = Math.max(34, Math.min(96, cam.scale * 1.15));
+          ctx.drawImage(cIm, sx(cxw) - d / 2, sy(cyw) - d / 2, d, d);
+        }
+      }
+      if (selected >= 0 && selected !== centre) {
+        const sIm = faceFor(selected);
+        if (ready(sIm)) {
+          const [x, y] = frameXY(selected);
+          if (x === x) {
+            // swell out of the dot rather than appearing at full size
+            const e = growWho === selected
+              ? Math.min(1, (performance.now() - growFrom) / 320) : 1;
+            const k = 0.5 - 0.5 * Math.cos(Math.PI * e);
+            const full = Math.max(30, Math.min(72, cam.scale * 0.85));
+            const d = Math.max(6, (6 + (full - 6) * k));
+            ctx.drawImage(sIm, sx(x) - d / 2, sy(y) - d / 2, d, d);
+            if (e < 1) dirty = true;
+          }
+        }
       }
     }
 
@@ -377,6 +404,31 @@ const VIEW = (() => {
 
   function invalidate() { dirty = true; }
 
+  async function loadFaceFlags(base = 'assets/net') {
+    try {
+      const res = await fetch(`${base}/faces.bin.gz`);
+      const buf = await new Response(
+        res.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+      hasFace = new Uint8Array(buf);
+    } catch (e) { hasFace = null; }
+  }
+
+  /* A player's portrait, fetched the first time it is needed. Files are named
+   * by node index, and the flag array says who has one, so nothing is requested
+   * speculatively. */
+  function faceFor(i) {
+    if (!hasFace || !hasFace[i]) return null;
+    if (i in FACES) return FACES[i];
+    const im = new Image();
+    im.onload = () => { dirty = true; };
+    im.onerror = () => { FACES[i] = null; };
+    im.src = `assets/net/faces/${i}.webp`;
+    FACES[i] = im;
+    return im;
+  }
+
+  const ready = im => im && im.complete && im.naturalWidth > 0;
+
   function setCentreImage(src) {
     if (!src) { centreImg = null; dirty = true; return; }
     const im = new Image();
@@ -456,11 +508,16 @@ const VIEW = (() => {
   return {
     init, draw, tick, fit, fitScale, buildGrid, captureFrom, beginMorph, perf, cam,
     setCentreImage, setRingSegments, setThrough, zoomBy, loadLogoIndex,
+    loadFaceFlags, faceFor,
+    get faceFlagCount(){ return hasFace ? hasFace.reduce((a,b)=>a+b,0) : -1; },
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,
     set path(p) { path = p; dirty = true; }, get path() { return path; },
-    set selected(i) { selected = i; dirty = true; }, get selected() { return selected; },
+    set selected(i) {
+      if (i !== selected) { growWho = i; growFrom = performance.now(); }
+      selected = i; dirty = true;
+    }, get selected() { return selected; },
     set centre(i) { centre = i; }, get centre() { return centre; },
     get morphing() { return morph < 1; },
   };

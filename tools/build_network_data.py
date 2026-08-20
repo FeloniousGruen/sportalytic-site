@@ -222,6 +222,25 @@ json.dump({'positions': positions, 'teams': teams, 'teamMeta': team_meta,
            'notable': notable},
           open(os.path.join(a.out, 'tables.json'), 'w'), indent=1)
 
+# Which players have a portrait. Files are named by node index, so the page
+# needs only a yes/no per player rather than a filename table; this also stops
+# it firing 404s at the 25,000 players who have no photo.
+faces_dir = os.path.join(a.out, 'faces')
+face_flags = np.zeros(P, dtype=np.uint8)
+if os.path.isdir(faces_dir):
+    for fn in os.listdir(faces_dir):
+        if fn.endswith('.webp'):
+            try:
+                i = int(fn[:-5])
+            except ValueError:
+                continue
+            if 0 <= i < P:
+                face_flags[i] = 1
+with gzip.open(os.path.join(a.out, 'faces.bin.gz'), 'wb', compresslevel=9) as f:
+    f.write(face_flags.tobytes())
+print(f'portraits: {int(face_flags.sum())} of {P} players '
+      f'({os.path.getsize(os.path.join(a.out, "faces.bin.gz"))/1024:.1f} KB flag file)')
+
 raw = len(buf)
 print(f'players {P}  team-seasons {T}  memberships {p_ip[P]}')
 print(f'graph.bin  {raw/1e6:.2f} MB raw -> {os.path.getsize(graph_path)/1e6:.2f} MB gzipped')

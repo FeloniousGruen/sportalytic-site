@@ -180,6 +180,7 @@ function renderPanel(i){
   if(VIEW.hasThrough){            // leaving a share view: put the layout back
     VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
   }
+  if(DEBUG) document.body.dataset.dbg=JSON.stringify({sel:i,face:!!VIEW.faceFor(i),flags:VIEW.faceFlagCount});
   VIEW.setThrough(null);
   // swing the chart so this player's chain runs down the screen, where
   // horizontal labels have the most room not to collide
@@ -242,6 +243,7 @@ function stats(r){
 (async()=>{
   const meta=await NET.load('assets/net');
   await VIEW.loadLogoIndex('assets/net');
+  await VIEW.loadFaceFlags('assets/net');
   $('#loading').remove();
   const t=NET.tables;
   const club=$('#club'), season=$('#season');
