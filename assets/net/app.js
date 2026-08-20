@@ -149,55 +149,60 @@ const NET = (() => {
 
   let centreId = 0;
 
-  /* Group the highlighted players together WITHOUT rebuilding the chart.
+  /* Turn the highlight into a pie: everyone routing through the player takes a
+   * single wedge sized to their exact share, everyone else takes the rest.
    *
-   * An earlier version reassigned every node's angle, which flattened the
-   * radial spokes into bare arcs -- the graph stopped looking like itself. The
-   * tree already places each top-level branch in its own contiguous wedge, so
-   * it is enough to permute those wedges: branches carrying the most
-   * through-traffic slide together, every subtree keeps its internal shape, and
-   * each player keeps its ring. Only whole branches move. */
+   * Radius is untouched, so every player stays on the ring they were already
+   * on and the chart keeps its shape -- only the angle changes, exactly as the
+   * reel does it. Within each wedge, players are ordered by which top-level
+   * branch they belong to, so subtrees stay contiguous and the spokes survive
+   * instead of collapsing into bare arcs. */
   function shareLayout(p, mask) {
-    const root = order[0];
-    const kids = [];
-    for (let i = 0; i < P; i++) if (parent[i] === root && dist[i] === 1) kids.push(i);
-    if (!kids.length) return { moved: 0 };
+    let inSet = 0;
+    for (let i = 0; i < P; i++) if (mask[i]) inSet++;
+    if (!inSet) return { moved: 0, frac: 0 };      // nothing to gather
 
-    // which top-level branch each player belongs to
+    const root = order[0];
     const branch = new Int32Array(P).fill(-1);
-    for (const c of kids) branch[c] = c;
     for (let k = 1; k < P; k++) {
       const u = order[k];
-      if (u === root || dist[u] < 0) continue;
-      if (branch[u] < 0) branch[u] = branch[parent[u]] >= 0 ? branch[parent[u]] : -1;
+      if (dist[u] < 0) continue;
+      branch[u] = parent[u] === root ? u : branch[parent[u]];
     }
-    const hot = new Float64Array(P), size = new Float64Array(P);
+    // the pie is anchored on the player, so his own wedge sits under him
+    const pa = Math.atan2(py[p], px[p]) || 0;
+    const frac = inSet / Math.max(1, P - 1);
+    const spanA = 2 * Math.PI * frac;
+    const secA = [pa - spanA / 2, pa + spanA / 2];
+    const secB = [pa + spanA / 2, pa - spanA / 2 + 2 * Math.PI];
+
+    const maxd = maxDist();
+    const rings = [];
+    for (let d = 0; d <= maxd; d++) rings.push([[], []]);
     for (let i = 0; i < P; i++) {
-      const b = branch[i];
-      if (b < 0) continue;
-      size[b]++;
-      if (mask[i]) hot[b]++;
+      const d = dist[i];
+      if (d < 1 || d > maxd) continue;
+      rings[d][mask[i] ? 0 : 1].push(i);
     }
-    // most through-traffic first, so the highlighted mass ends up contiguous
-    const ordered = kids.slice().sort((x, y) => (hot[y] - hot[x]) || (size[y] - size[x]));
-    let acc = 0;
-    const delta = new Float64Array(P);
-    for (const c of ordered) {
-      delta[c] = acc - wA0[c];
-      acc += wSpan[c];
-    }
-    let moved = 0;
-    for (let i = 0; i < P; i++) {
-      const b = branch[i];
-      if (b < 0 || dist[i] < 0) continue;
-      if (delta[b]) {
-        angle[i] += delta[b];
-        px[i] = radius[i] * Math.cos(angle[i]);
-        py[i] = radius[i] * Math.sin(angle[i]);
-        moved++;
+    const key = u => (branch[u] < 0 ? -1 : angle[branch[u]]);
+    for (let d = 1; d <= maxd; d++) {
+      for (const g of [0, 1]) {
+        const mem = rings[d][g];
+        if (!mem.length) continue;
+        // group by branch first so a subtree stays in one piece
+        mem.sort((x, y) => (key(x) - key(y)) || (angle[x] - angle[y]));
+        const [s0, s1] = g === 0 ? secA : secB;
+        for (let k = 0; k < mem.length; k++) {
+          const u = mem[k];
+          const a = s0 + (s1 - s0) * ((k + 0.5) / mem.length);
+          angle[u] = a;
+          px[u] = radius[u] * Math.cos(a);
+          py[u] = radius[u] * Math.sin(a);
+        }
       }
     }
-    return { moved, branches: kids.length };
+    px[root] = 0; py[root] = 0;
+    return { moved: P, frac, angle: pa, span: spanA };
   }
 
   /* Swing the whole layout so a given player sits at `target` (default: straight

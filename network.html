@@ -144,12 +144,22 @@ function renderPanel(i){
   $('#rec').onclick=()=>recentre(i);
   $('#share').onclick=()=>{
     const r=NET.shareThrough(i);
-    VIEW.setThrough(r.mask);
-    // gather them into a sector behind the player, so the share reads as an area
-    VIEW.captureFrom();
-    NET.shareLayout(i, r.mask);
-    VIEW.beginMorph(850);
+    VIEW.setThrough(r.count?r.mask:null);
+    // nobody routes through a player with nothing behind them: leave the chart
+    // exactly as it is rather than spinning it for a 0% answer
+    if(r.count){
+      VIEW.captureFrom();
+      NET.shareLayout(i, r.mask);
+      VIEW.beginMorph(850);
+    }
     const other=r.count-r.exclusive;
+    if(!r.count){
+      $('#shareOut').innerHTML=
+        `<div class="shareBox"><b>0%</b> of the network reaches
+          ${NET.names[CENTRE]} through ${d.name}. Every route to him is at least
+          as short without ${d.name} — nobody sits behind him.</div>`;
+      return;
+    }
     $('#shareOut').innerHTML=
       `<div class="shareBox"><b>${r.pct.toFixed(1)}%</b> of the network
         (${r.count.toLocaleString()} of ${r.total.toLocaleString()}) reaches
