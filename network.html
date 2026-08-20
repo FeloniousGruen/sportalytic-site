@@ -103,6 +103,15 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
   background:var(--grey);border:2px solid var(--panel)}
 .qstep.fix .dot{background:var(--amber)}
 .qstep .via{color:var(--grey);font-size:11px}
+/* the box you type into lives in the chain, in the gap it is there to close */
+.qstep.gap{padding:6px 0 6px 0}
+.qstep.gap input{width:100%;background:#0B1117;color:var(--ink);border:1px solid var(--amber);
+  border-radius:7px;padding:8px 9px;font:inherit;font-size:13px}
+.qstep.gap::before{content:'';position:absolute;left:-11px;top:0;bottom:0;width:2px;
+  background:repeating-linear-gradient(180deg,var(--amber) 0 3px,transparent 3px 7px)}
+.qclue{margin-top:6px;padding:7px 9px;background:#1d2833;border-left:3px solid var(--blue);
+  border-radius:6px;color:#9CC2DC;font-size:11.5px;line-height:1.45}
+.qclue b{color:var(--ink)}
 .qerr{color:#F38A1C;font-size:12px;line-height:1.45;margin:8px 0 0}
 .qdone{margin:10px 0 0;padding:9px 10px;background:#1d2833;border-left:3px solid var(--amber);
   border-radius:6px;font-size:12px;line-height:1.5}
@@ -247,6 +256,14 @@ const FACES={};   // player id -> portrait; only Kelce for now
 function applyCentreImage(){ VIEW.setCentreImage(FACES[CENTRE]||null); }
 
 function recentre(i){
+  recentreQuiet(i);
+  renderPanel(i);
+}
+
+/* Recentre without opening the player panel. The quiz hangs its round off
+   player A and wants the chart to move, but not a card about him on top of the
+   round. */
+function recentreQuiet(i){
   VIEW.captureFrom();
   const r=NET.recentre(i);
   CENTRE=i; VIEW.centre=i; VIEW.path=[]; VIEW.selected=i;
@@ -254,7 +271,6 @@ function recentre(i){
   VIEW.beginMorph(950);
   applyCentreImage();
   stats(r);
-  renderPanel(i);
 }
 
 /* First-ring view: the centre's direct teammates, grouped into a wedge per
@@ -388,7 +404,8 @@ function stats(r){
    * The answer is worked out up front with NET.route, which does not disturb
    * the chart: recentring on one of the two would give the other's degree away
    * just by which ring it landed in. */
-  const QUIZ={on:false,a:-1,b:-1,chain:[],best:null,done:false,revealed:false};
+  const QUIZ={on:false,a:-1,b:-1,chain:[],best:null,done:false,revealed:false,
+            clue:null,clueLevel:0};
 
   // Random players are drawn from those with a portrait. That set is the
   // modern and the famous, which is the difference between a game and an
@@ -466,6 +483,9 @@ function stats(r){
     const r=NET.route(a,b);
     if(r.degrees<0) return say(`${NET.names[a]} and ${NET.names[b]} are not connected at all.`);
     QUIZ.best=r; QUIZ.chain=[a]; QUIZ.done=false; QUIZ.revealed=false;
+    QUIZ.clue=null; QUIZ.clueLevel=0;
+    // hang the round off player A, so the chain grows outward from him
+    if(CENTRE!==a) recentreQuiet(a);
     quizRound();
   }
 
@@ -476,41 +496,42 @@ function stats(r){
     if(QUIZ.chain.indexOf(i)>=0) return 'That player is already in your chain.';
     const sh=NET.sharedTeamSeasons(last,i);
     if(!sh.length) return `${NET.names[last]} and ${NET.names[i]} were never teammates.`;
-    QUIZ.chain.push(i);
+    QUIZ.chain.push(i); QUIZ.clue=null; QUIZ.clueLevel=0;
     if(i===QUIZ.b) QUIZ.done=true;
     return null;
   }
 
   function quizRound(err){
     const steps=QUIZ.chain.length-1;
-    const rows=QUIZ.chain.map((n,k)=>{
-      let row=`<li class="qstep ${k===0||n===QUIZ.b?'fix':''}"><span class="dot"></span>${NET.names[n]}</li>`;
-      if(k<QUIZ.chain.length-1){
-        const sh=NET.sharedTeamSeasons(n,QUIZ.chain[k+1]);
-        if(sh.length){
-          const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
-          row+=`<li class="qstep via"><span class="chip">${f.team}</span> ${f.season}${more}</li>`;
-        }
-      }
-      return row;
-    }).join('');
-    const target=`<div class="qstep fix" style="padding-left:16px"><span class="dot" style="left:1px"></span>${NET.names[QUIZ.b]}</div>`;
+    const link=(u,v)=>{
+      const sh=NET.sharedTeamSeasons(u,v);
+      if(!sh.length) return '';
+      const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
+      return `<li class="qstep via"><span class="chip">${f.team}</span> ${f.season}${more}</li>`;
+    };
+    const rows=QUIZ.chain.map((n,k)=>
+      `<li class="qstep ${k===0?'fix':''}"><span class="dot"></span>${NET.names[n]}</li>`
+      +(k<QUIZ.chain.length-1?link(n,QUIZ.chain[k+1]):'')).join('');
+    // The box to type in sits between the chain and the target, so what you
+    // are being asked to bridge is the gap you can see.
+    const gap=QUIZ.done?'':
+      `<li class="qstep gap"><input id="qnext" placeholder="Next teammate…" autocomplete="off">
+         <div id="quizRes" hidden></div>
+         ${QUIZ.clue?`<div class="qclue">${QUIZ.clue}</div>`:''}</li>`;
+    const target=QUIZ.done?'':
+      `<li class="qstep fix"><span class="dot"></span>${NET.names[QUIZ.b]}</li>`;
     $('#quiz').innerHTML=
       `<h2>Test your knowledge</h2>
        <div class="lead">Get from <b>${NET.names[QUIZ.a]}</b> to
          <b>${NET.names[QUIZ.b]}</b>. Name whoever links them, one at a time.</div>
-       <ul class="qchain">${rows}</ul>
-       ${QUIZ.done?'':target}
-       ${QUIZ.done?'':
-         `<div class="slot" style="margin-top:10px">
-            <input id="qnext" placeholder="Next teammate…" autocomplete="off">
-          </div>
-          <div id="quizRes" hidden></div>`}
+       <ul class="qchain">${rows}${gap}${target}</ul>
        ${err?`<div class="qerr">${err}</div>`:''}
        ${QUIZ.done?quizVerdict():''}
        <div style="color:var(--grey);font-size:11px;margin-top:9px">
          ${steps} step${steps===1?'':'s'} so far</div>
-       ${QUIZ.done?'':`<button class="btn ghost" id="qgive">Show the shortest route</button>`}
+       ${QUIZ.done?'':
+         `<button class="btn ghost" id="qclue">${QUIZ.clueLevel?'Another clue':'Clue'}</button>
+          <button class="btn ghost" id="qgive">Show the shortest route</button>`}
        <button class="btn ghost" id="qagain">${QUIZ.done?'Another pair':'Give up and restart'}</button>`;
     if(!QUIZ.done){
       const inp=$('#qnext');
@@ -520,11 +541,31 @@ function stats(r){
         const bad=quizAdd(+d.dataset.i);
         quizRound(bad);
       };
+      $('#qclue').onclick=quizClue;
       $('#qgive').onclick=quizReveal;
     }
     const show=$('#qshow'); if(show) show.onclick=quizReveal;
     $('#qagain').onclick=()=>{ QUIZ.a=-1; QUIZ.b=-1; quizSetup(); };
     quizDraw();
+  }
+
+  /* A clue about the next player on a shortest route from wherever you have
+   * got to -- recomputed each time, so it stays useful after you have wandered
+   * off the route the chart happened to draw. Club first, then the season. */
+  function quizClue(){
+    const last=QUIZ.chain[QUIZ.chain.length-1];
+    const r=NET.route(last,QUIZ.b);
+    const next=r.path[r.path.length-2];        // path runs b -> ... -> last
+    if(next==null){ QUIZ.clue='No route left from here.'; return quizRound(); }
+    const sh=NET.sharedTeamSeasons(last,next);
+    if(!sh.length){ QUIZ.clue='No clue available.'; return quizRound(); }
+    QUIZ.clueLevel=Math.min(2,(QUIZ.clueLevel||0)+1);
+    const f=sh[0];
+    const nm=(NET.tables.teamMeta[f.team]||{}).name||f.team;
+    QUIZ.clue=QUIZ.clueLevel===1
+      ? `Someone who played for <b>${nm}</b> with ${NET.names[last]}.`
+      : `Someone who played for <b>${nm}</b> with ${NET.names[last]}, in <b>${f.season}</b>.`;
+    quizRound();
   }
 
   function quizSuggest(){
@@ -558,7 +599,7 @@ function stats(r){
 
   // draw the chain the user has built, so the graph follows along
   function quizDraw(){
-    VIEW.selected=QUIZ.chain[QUIZ.chain.length-1];
+    VIEW.selected=-1;          // nothing is "picked" here, so no gold ring
     VIEW.path=QUIZ.chain.length>1?QUIZ.chain.slice():[];
   }
 

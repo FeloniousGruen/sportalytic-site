@@ -52,6 +52,17 @@ in. Random opponents are drawn from players who have a portrait and at least
 four seasons, which is the difference between a game and an exercise in naming
 practice-squad receivers.
 
+Any equally short route counts, not only the one the chart drew. Each link you
+add is checked on its own -- did these two share a squad that season -- and the
+verdict compares your length with the shortest that exists, so a chain nobody
+would have guessed scores the same as the tree's. Bo Jackson to Travis Kelce
+via Bill Pickel, Aaron Glenn and Dunta Robinson is four steps, and so is the
+drawn route through Bill Lewis, Drew Bledsoe and Anthony Fasano.
+
+The clue button names the club the next player shares with you, then the
+season. It recomputes from wherever you have got to, so it stays useful once
+you have wandered off the drawn route.
+
 Rebuilding the data (only needed when the source CSVs change):
 
 ```
