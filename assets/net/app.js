@@ -26,6 +26,7 @@ const NET = (() => {
   let dist, parent, order, leaves, radius, angle, px, py, tstamp;
   let wA0, wSpan, wAcc;
   let dist2, order2, tstamp2, through;   // second traversal, for share-of-connections
+  let dist3, order3, tstamp3;            // third: the same graph with the pick removed
   let stampCounter = 0;
 
   async function loadGz(url) {
@@ -82,6 +83,9 @@ const NET = (() => {
     order2 = new Int32Array(P);
     tstamp2 = new Int32Array(T).fill(-1);
     through = new Uint8Array(P);
+    dist3 = new Int16Array(P);
+    order3 = new Int32Array(P);
+    tstamp3 = new Int32Array(T).fill(-1);
     return { ms: performance.now() - t0, players: P, teamSeasons: T };
   }
 
@@ -143,7 +147,87 @@ const NET = (() => {
     }
   }
 
+  let centreId = 0;
+
+  /* Group the highlighted players together WITHOUT rebuilding the chart.
+   *
+   * An earlier version reassigned every node's angle, which flattened the
+   * radial spokes into bare arcs -- the graph stopped looking like itself. The
+   * tree already places each top-level branch in its own contiguous wedge, so
+   * it is enough to permute those wedges: branches carrying the most
+   * through-traffic slide together, every subtree keeps its internal shape, and
+   * each player keeps its ring. Only whole branches move. */
+  function shareLayout(p, mask) {
+    const root = order[0];
+    const kids = [];
+    for (let i = 0; i < P; i++) if (parent[i] === root && dist[i] === 1) kids.push(i);
+    if (!kids.length) return { moved: 0 };
+
+    // which top-level branch each player belongs to
+    const branch = new Int32Array(P).fill(-1);
+    for (const c of kids) branch[c] = c;
+    for (let k = 1; k < P; k++) {
+      const u = order[k];
+      if (u === root || dist[u] < 0) continue;
+      if (branch[u] < 0) branch[u] = branch[parent[u]] >= 0 ? branch[parent[u]] : -1;
+    }
+    const hot = new Float64Array(P), size = new Float64Array(P);
+    for (let i = 0; i < P; i++) {
+      const b = branch[i];
+      if (b < 0) continue;
+      size[b]++;
+      if (mask[i]) hot[b]++;
+    }
+    // most through-traffic first, so the highlighted mass ends up contiguous
+    const ordered = kids.slice().sort((x, y) => (hot[y] - hot[x]) || (size[y] - size[x]));
+    let acc = 0;
+    const delta = new Float64Array(P);
+    for (const c of ordered) {
+      delta[c] = acc - wA0[c];
+      acc += wSpan[c];
+    }
+    let moved = 0;
+    for (let i = 0; i < P; i++) {
+      const b = branch[i];
+      if (b < 0 || dist[i] < 0) continue;
+      if (delta[b]) {
+        angle[i] += delta[b];
+        px[i] = radius[i] * Math.cos(angle[i]);
+        py[i] = radius[i] * Math.sin(angle[i]);
+        moved++;
+      }
+    }
+    return { moved, branches: kids.length };
+  }
+
+  /* Swing the whole layout so a given player sits at `target` (default: straight
+   * down). Names are drawn horizontally, so a path running vertically gets the
+   * most separation between consecutive labels -- far more effective than
+   * nudging each label out of the way after the fact. */
+  function rotateSo(i, targets = [Math.PI / 2, -Math.PI / 2]) {
+    const cur = Math.atan2(py[i], px[i]);
+    if (!isFinite(cur)) return 0;
+    // straight down or straight up, whichever is the shorter swing -- both give
+    // labels the same room, so there is no reason to spin the chart further
+    // than necessary
+    const list = Array.isArray(targets) ? targets : [targets];
+    let delta = Infinity;
+    for (const t of list) {
+      const d = Math.atan2(Math.sin(t - cur), Math.cos(t - cur));
+      if (Math.abs(d) < Math.abs(delta)) delta = d;
+    }
+    if (!isFinite(delta)) return 0;
+    for (let k = 0; k < P; k++) {
+      if (dist[k] < 0) continue;
+      angle[k] += delta;
+      px[k] = radius[k] * Math.cos(angle[k]);
+      py[k] = radius[k] * Math.sin(angle[k]);
+    }
+    return delta;
+  }
+
   function recentre(src) {
+    centreId = src;
     const t0 = performance.now();
     const reached = bfs(src);
     const t1 = performance.now();
@@ -246,14 +330,43 @@ const NET = (() => {
     }
     const base = dist[p];
     through.fill(0);
-    let count = 0, downstream = 0;
+    let count = 0;
     for (let v = 0; v < P; v++) {
       if (v === p || dist[v] < 0 || dist2[v] < 0) continue;
-      if (dist[v] > base) downstream++;          // further out than p
       if (dist[v] === base + dist2[v]) { through[v] = 1; count++; }
     }
-    return { count, downstream, total: P - 1,
+
+    /* "Routes through p" is not the same as "depends on p". Most of these
+     * players have several equally short routes and p is only one of them, so
+     * the shares of different players overlap heavily and sum to far more than
+     * 100%. To separate the two, walk the graph again with p removed: whoever
+     * ends up further away (or unreachable) genuinely needed him. */
+    const st3 = ++stampCounter;
+    dist3.fill(-1); dist3[centreId] = 0; order3[0] = centreId;
+    let h3 = 0, t3 = 1;
+    while (h3 < t3) {
+      const u = order3[h3++], d = dist3[u] + 1;
+      if (u === p) continue;                       // p is removed from the graph
+      for (let i = p_ip[u], ie = p_ip[u + 1]; i < ie; i++) {
+        const ts = p_ix[i];
+        if (tstamp3[ts] === st3) continue;
+        tstamp3[ts] = st3;
+        for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) {
+          const v = t_ix[j];
+          if (v !== p && dist3[v] < 0) { dist3[v] = d; order3[t3++] = v; }
+        }
+      }
+    }
+    let exclusive = 0, stranded = 0;
+    for (let v = 0; v < P; v++) {
+      if (v === p || dist[v] < 0) continue;
+      if (dist3[v] < 0) { exclusive++; stranded++; }
+      else if (dist3[v] > dist[v]) exclusive++;
+    }
+
+    return { count, exclusive, stranded, total: P - 1,
              pct: 100 * count / (P - 1),
+             exclusivePct: 100 * exclusive / (P - 1),
              ms: performance.now() - t0, mask: through };
   }
 
@@ -266,7 +379,7 @@ const NET = (() => {
 
   return {
     load, bfs, layout, recentre, pathToCentre, info, maxDist,
-    sharedTeamSeasons, teamLabel, ringLayout, shareThrough,
+    sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
     get P() { return P; }, get names() { return names; },
     get tables() { return tables; },
     get dist() { return dist; }, get parent() { return parent; },

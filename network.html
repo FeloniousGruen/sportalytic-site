@@ -19,10 +19,16 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font
 a{color:inherit}
 header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(11,17,23,.8);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
 .bar{max-width:var(--maxw);margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:20px;height:60px}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
 .brand img{width:26px;height:26px}
 .brand span{font-family:var(--display);font-size:15px;text-transform:uppercase}
-nav a{text-decoration:none;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--grey)}
+nav{display:flex;gap:18px;margin-right:auto}
+nav a{text-decoration:none;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--grey);padding:4px 0;border-bottom:2px solid transparent}
+nav a:hover{color:var(--ink);border-bottom-color:var(--amber)}
+.cta{background:var(--amber);color:#0B1117;text-decoration:none;font-weight:bold;font-size:12px;
+  letter-spacing:.09em;text-transform:uppercase;padding:9px 15px;border-radius:8px;white-space:nowrap}
+.cta:hover{filter:brightness(1.08)}
 #stage{position:fixed;inset:60px 0 0 0}
 canvas{width:100%;height:100%;display:block;touch-action:none}
 .hud{position:absolute;top:12px;left:12px;display:flex;gap:8px;flex-wrap:wrap;max-width:min(560px,calc(100% - 24px))}
@@ -41,13 +47,20 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 .shareBox{margin:9px 0 2px;padding:9px 10px;background:#1d2833;border-left:3px solid #F38A1C;
   border-radius:6px;font-size:12px;line-height:1.5}
 .shareBox b{color:#F38A1C;font-size:17px}
-.muted2{color:var(--grey);display:block;margin-top:3px;font-size:10px}
+.note{margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.09);
+  color:#9CC2DC;font-size:11px;line-height:1.5}
+.note b{color:#F38A1C;font-size:12px}
+.muted2{color:var(--grey);display:block;margin-top:5px;font-size:10px}
 .btn{display:inline-block;margin-top:12px;background:var(--amber);color:#0B1117;border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:bold;font-size:13px;cursor:pointer;width:100%}
-#tools{position:absolute;right:12px;bottom:12px;display:flex;gap:6px}
-.tbtn{background:var(--panel);color:var(--ink);border:1px solid var(--greyd);border-radius:8px;
-  padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;min-width:40px}
-.tbtn:hover{border-color:var(--amber);color:var(--amber)}
-.tbtn.on{background:var(--amber);color:#0B1117;border-color:var(--amber);font-weight:bold}
+#tools{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:stretch;
+  background:rgba(11,17,23,.72);backdrop-filter:blur(10px);padding:8px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.10)}
+.tbtn{background:var(--panel);color:var(--ink);border:1px solid #4a5866;border-radius:9px;
+  padding:11px 15px;font:inherit;font-size:14px;font-weight:bold;cursor:pointer;min-width:48px;
+  box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.tbtn:hover{border-color:var(--amber);color:var(--amber);background:#1d2833}
+.tbtn.on{background:var(--amber);color:#0B1117;border-color:var(--amber)}
+.tbtn.zoom{font-size:19px;line-height:1;padding:9px 15px}
 .chain{position:relative;padding-left:18px}
 .chain::before{content:'';position:absolute;left:5px;top:9px;bottom:9px;width:2px;background:var(--greyd)}
 .node{position:relative;padding:2px 0;font-size:13px}
@@ -71,7 +84,11 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 <body>
 <header><div class="bar">
   <a class="brand" href="index.html"><img src="assets/logo.png" alt=""><span>Sportalytic</span></a>
-  <nav><a href="index.html">Home</a> &nbsp; <a href="index.html#/reels">Our work</a></nav>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#/reels">Our work</a>
+  </nav>
+  <a class="cta" href="index.html#contact">Get in touch</a>
 </div></header>
 
 <div id="stage">
@@ -85,8 +102,8 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
   <div id="results" hidden></div>
   <div id="tools">
     <button class="tbtn" id="ring" title="Show the centre's direct team-mates grouped by club">First ring</button>
-    <button class="tbtn" id="zin" title="Zoom in">+</button>
-    <button class="tbtn" id="zout" title="Zoom out">&minus;</button>
+    <button class="tbtn zoom" id="zin" title="Zoom in">+</button>
+    <button class="tbtn zoom" id="zout" title="Zoom out">&minus;</button>
     <button class="tbtn" id="zfit" title="Fit to screen">Fit</button>
   </div>
   <div id="panel" hidden></div>
@@ -128,13 +145,34 @@ function renderPanel(i){
   $('#share').onclick=()=>{
     const r=NET.shareThrough(i);
     VIEW.setThrough(r.mask);
+    // gather them into a sector behind the player, so the share reads as an area
+    VIEW.captureFrom();
+    NET.shareLayout(i, r.mask);
+    VIEW.beginMorph(850);
+    const other=r.count-r.exclusive;
     $('#shareOut').innerHTML=
       `<div class="shareBox"><b>${r.pct.toFixed(1)}%</b> of the network
         (${r.count.toLocaleString()} of ${r.total.toLocaleString()}) reaches
         ${NET.names[CENTRE]} by a shortest route through ${d.name}.
-        <span class="muted2">computed in ${r.ms.toFixed(0)} ms</span></div>`;
+        <div class="note">But a shortest route is rarely the only one.
+        ${other.toLocaleString()} of them have an equally short route that avoids
+        ${d.name} entirely — only <b>${r.exclusive.toLocaleString()}</b>
+        (${r.exclusivePct.toFixed(1)}%) actually get further away without him.
+        That is why these dots also belong to other players, and why they move
+        when you ask a different one.</div>
+        <span class="muted2">two extra passes, ${r.ms.toFixed(0)} ms</span></div>`;
   };
+  if(VIEW.hasThrough){            // leaving a share view: put the layout back
+    VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
+  }
   VIEW.setThrough(null);
+  // swing the chart so this player's chain runs down the screen, where
+  // horizontal labels have the most room not to collide
+  if(i!==CENTRE && !VIEW.ringMode){
+    VIEW.captureFrom();
+    NET.rotateSo(i);   // nearest of down / up
+    VIEW.beginMorph(650);
+  }
   VIEW.selected=i; VIEW.path=i===CENTRE?[]:p;
 }
 
@@ -157,6 +195,9 @@ function recentre(i){
 function setRing(on){
   const btn=document.getElementById('ring');
   if(on){
+    // a path highlight makes no sense once only the first ring is shown
+    VIEW.path=[]; VIEW.selected=-1; VIEW.setThrough(null);
+    $('#panel').hidden=true; $('#results').hidden=true;
     VIEW.captureFrom();
     const segs=NET.ringLayout(CENTRE);
     VIEW.setRingSegments(segs);
@@ -183,6 +224,7 @@ function stats(r){
 
 (async()=>{
   const meta=await NET.load('assets/net');
+  await VIEW.loadLogoIndex('assets/net');
   $('#loading').remove();
   const t=NET.tables;
   const club=$('#club'), season=$('#season');

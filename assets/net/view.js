@@ -22,6 +22,8 @@ const VIEW = (() => {
   let centreImg = null;         // portrait drawn on the centre, when we have one
   let ringSegs = null;          // first-ring mode: wedge per club, or null
   let throughMask = null;       // share-of-connections highlight
+  const LOGOS = {};             // club code -> Image, loaded on demand
+  let logoCodes = null;
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -104,16 +106,21 @@ const VIEW = (() => {
   function pick(mx, my) {
     if (!grid) return -1;
     const wx = (mx - W / 2) / cam.scale + cam.x, wy = (my - H / 2) / cam.scale + cam.y;
-    const rad = 9 / cam.scale;                       // ~9px grab radius
+    // a player wearing a portrait should be grabbable by the portrait, not by
+    // the small dot hiding behind it
+    const portrait = centreImg ? Math.max(34, Math.min(96, cam.scale * 1.15)) / 2 : 0;
+    const rad = Math.max(9, portrait) / cam.scale;
     const c0 = ((wx - rad - gridMinX) / gridCell) | 0, c1 = ((wx + rad - gridMinX) / gridCell) | 0;
     const r0 = ((wy - rad - gridMinY) / gridCell) | 0, r1 = ((wy + rad - gridMinY) / gridCell) | 0;
-    let best = -1, bestD = rad * rad;
+    let best = -1, bestD = Infinity;
     for (let r = r0; r <= r1; r++) {
       for (let c = c0; c <= c1; c++) {
         const b = grid.get(r * gridW + c); if (!b) continue;
         for (const i of b) {
+          if (ringSegs && NET.dist[i] > 1) continue;     // first-ring view: ring 1 only
           const dx = NET.px[i] - wx, dy = NET.py[i] - wy, d = dx * dx + dy * dy;
-          if (d < bestD) { bestD = d; best = i; }
+          const lim = (i === centre && portrait) ? (portrait / cam.scale) ** 2 : (9 / cam.scale) ** 2;
+          if (d < bestD && d < lim) { bestD = d; best = i; }
         }
       }
     }
@@ -194,7 +201,7 @@ const VIEW = (() => {
     perf.nodes = performance.now() - tn;
 
     // ---- highlighted path back to the centre ----
-    if (path.length > 1 && !moving) {
+    if (path.length > 1 && !moving && !ringSegs) {
       ctx.strokeStyle = NET.PATH; ctx.lineWidth = 2.5; ctx.beginPath();
       for (let k = 0; k < path.length; k++) {
         const [x, y] = frameXY(path[k]);
@@ -215,6 +222,25 @@ const VIEW = (() => {
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (const sg of ringSegs) {
         const mid = (sg.a0 + sg.a1) / 2;
+        // shaded band behind the club's team-mates, with its mark on top
+        const rIn = sg.rIn * 0.80, rOut = sg.rOut * 1.18;
+        ctx.beginPath();
+        ctx.arc(sx(0), sy(0), rOut * cam.scale, sg.a0, sg.a1);
+        ctx.arc(sx(0), sy(0), rIn * cam.scale, sg.a1, sg.a0, true);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255,255,255,0.035)';
+        ctx.fill();
+        const lg = logoFor(sg.team);
+        if (lg && lg.complete && lg.naturalWidth) {
+          const band = (rOut - rIn) * cam.scale;
+          const arc = (sg.a1 - sg.a0) * ((rIn + rOut) / 2) * cam.scale;
+          const d = Math.max(18, Math.min(band * 0.86, arc * 0.8, 150));
+          const lr = (rIn + rOut) / 2;
+          ctx.save();
+          ctx.globalAlpha = 0.30;
+          ctx.drawImage(lg, sx(lr * Math.cos(mid)) - d / 2, sy(lr * Math.sin(mid)) - d / 2, d, d);
+          ctx.restore();
+        }
         ctx.strokeStyle = 'rgba(251,194,71,0.16)'; ctx.lineWidth = 1;
         for (const edge of [sg.a0, sg.a1]) {
           ctx.beginPath();
@@ -224,9 +250,14 @@ const VIEW = (() => {
         }
         if (sg.a1 - sg.a0 < 0.10) continue;      // too thin to letter
         const lr = sg.rOut * 1.24;
-        const X = sx(lr * Math.cos(mid)), Y = sy(lr * Math.sin(mid));
         ctx.font = 'bold 12px Arial';
         const w = ctx.measureText(sg.team).width + 12;
+        // pull the label back inside the viewport rather than letting it drift
+        // off with the wedge when zoomed in
+        let X = sx(lr * Math.cos(mid)), Y = sy(lr * Math.sin(mid));
+        const mx = w / 2 + 8, my = 30;
+        X = Math.max(mx, Math.min(W - mx, X));
+        Y = Math.max(my, Math.min(H - my, Y));
         ctx.fillStyle = 'rgba(20,28,37,0.92)';
         ctx.fillRect(X - w / 2, Y - 11, w, 22);
         ctx.strokeStyle = 'rgba(251,194,71,0.5)'; ctx.lineWidth = 1;
@@ -259,7 +290,7 @@ const VIEW = (() => {
      * -- tested against the boxes already placed. Ends of the chain are placed
      * first so they win the good positions, and a label that had to move gets a
      * leader line back to its dot. */
-    if (path.length > 1 && !moving) {
+    if (path.length > 1 && !moving && !ringSegs) {
       ctx.font = 'bold 11px Arial';
       ctx.textBaseline = 'middle';
       ctx.textAlign = 'left';
@@ -346,7 +377,31 @@ const VIEW = (() => {
     centreImg = im;
   }
 
-  function setRingSegments(segs) { ringSegs = segs; dirty = true; }
+  function setRingSegments(segs) {
+    ringSegs = segs;
+    if (segs) segs.forEach(sg => logoFor(sg.team));   // warm the ones we need
+    dirty = true;
+  }
+
+  /* Club marks, loaded lazily and only for the wedges actually on screen.
+   * Only the modern franchises have one; a 1920s club just gets its tinted
+   * wedge and lettering. */
+  function logoFor(code) {
+    if (code in LOGOS) return LOGOS[code];
+    if (!logoCodes) return null;
+    if (!logoCodes.includes(code)) { LOGOS[code] = null; return null; }
+    const im = new Image();
+    im.onload = () => { dirty = true; };
+    im.onerror = () => { LOGOS[code] = null; };
+    im.src = `assets/net/logos/${code}.png`;
+    LOGOS[code] = im;
+    return im;
+  }
+
+  async function loadLogoIndex(base = 'assets/net') {
+    try { logoCodes = await fetch(`${base}/logos/index.json`).then(r => r.json()); }
+    catch (e) { logoCodes = []; }
+  }
 
   function setThrough(mask) { throughMask = mask; dirty = true; }
 
@@ -383,7 +438,7 @@ const VIEW = (() => {
 
   return {
     init, draw, tick, fit, fitScale, buildGrid, captureFrom, beginMorph, perf, cam,
-    setCentreImage, setRingSegments, setThrough, zoomBy,
+    setCentreImage, setRingSegments, setThrough, zoomBy, loadLogoIndex,
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,
