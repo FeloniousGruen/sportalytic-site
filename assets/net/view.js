@@ -35,6 +35,14 @@ const VIEW = (() => {
     onPick = pickHandler || onPick;
     resize();
     addEventListener('resize', () => { resize(); fit(); });
+    // ...and refit once it does get one, for the same reason.
+    if (typeof ResizeObserver === 'function') {
+      let had = W > 0 && H > 0;
+      new ResizeObserver(() => {
+        resize();
+        if (!had && W > 0 && H > 0) { had = true; fit(); }
+      }).observe(cv);
+    }
     cv.addEventListener('pointermove', e => {
       const r = cv.getBoundingClientRect();
       hover = pick(e.clientX - r.left, e.clientY - r.top);
@@ -217,14 +225,14 @@ const VIEW = (() => {
 
     // ---- highlighted path back to the centre ----
     if (path.length > 1 && !moving && !ringSegs) {
-      ctx.strokeStyle = NET.PATH; ctx.lineWidth = 2.5; ctx.beginPath();
+      ctx.strokeStyle = NET.LINK; ctx.lineWidth = 2.5; ctx.beginPath();
       for (let k = 0; k < path.length; k++) {
         const [x, y] = frameXY(path[k]);
         const X = sx(x), Y = sy(y);
         k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y);
       }
       ctx.stroke();
-      ctx.fillStyle = NET.PATH;
+      ctx.fillStyle = NET.LINK;
       for (const i of path) {
         const [x, y] = frameXY(i);
         ctx.beginPath(); ctx.arc(sx(x), sy(y), 3.5, 0, 6.2832); ctx.fill();
@@ -237,7 +245,7 @@ const VIEW = (() => {
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       for (const sg of ringSegs) {
         const mid = (sg.a0 + sg.a1) / 2;
-        // shaded band behind the club's team-mates, with its mark on top
+        // shaded band behind the club's teammates, with its mark on top
         const rIn = sg.rIn * 0.80, rOut = sg.rOut * 1.18;
         ctx.beginPath();
         ctx.arc(sx(0), sy(0), rOut * cam.scale, sg.a0, sg.a1);
@@ -283,7 +291,7 @@ const VIEW = (() => {
         ctx.fillText(sg.team, X, Y);
         if (sg.a1 - sg.a0 > 0.30) {
           ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = '11px Arial';
-          ctx.fillText(`${sg.count} team-mates`, X, Y + 18);
+          ctx.fillText(`${sg.count} teammates`, X, Y + 18);
         }
       }
       ctx.restore();
@@ -352,8 +360,10 @@ const VIEW = (() => {
         if (X < -40 || Y < -20 || X > W + 40 || Y > H + 20) continue;
         const label = NET.names[i];
         const tw = ctx.measureText(label).width + 8;
-        const pad = (i === centre && centreImg)
-          ? Math.max(34, Math.min(96, cam.scale * 1.15)) / 2 + 6 : 10;
+        // clear whatever this player is actually wearing, so a portrait
+        // never sits under its own name
+        const fr = faceR.get(i);
+        const pad = fr ? fr + 9 : 10;
         let best = null;
         for (const dy of [0, -15, 15, -30, 30, -45, 45, -62, 62, -80, 80]) {
           for (const side of [1, -1]) {
@@ -380,11 +390,13 @@ const VIEW = (() => {
         }
         ctx.fillStyle = 'rgba(11,17,23,0.85)';
         ctx.fillRect(d.r.x, d.r.y, d.r.w, BOX);
-        ctx.fillStyle = (d.k === path.length - 1) ? '#fff' : NET.PATH;
+        ctx.fillStyle = NET.LINK;      // labels match the chain they belong to
         ctx.fillText(d.label, d.r.x + 4, d.r.y + BOX / 2);
       }
     }
-    if (hover >= 0) ring(hover, '#fff');
+    // the white ring is the "you are about to pick this" cue, so it is not
+    // wanted on a dot that already carries the gold one
+    if (hover >= 0 && hover !== selected) ring(hover, '#fff');
     if (selected >= 0) ring(selected, NET.PATH);
     perf.draw = performance.now() - t0;
     perf.frames++;
@@ -509,6 +521,10 @@ const VIEW = (() => {
    * Kelce has 41 at eleven degrees, other centres have thousands -- so fitting
    * to the extreme leaves one layout tiny and lets the next overflow. */
   function fitScale() {
+    // A canvas that has not been laid out yet reports zero size, and a zero
+    // scale collapses all 29,000 dots onto one pixel -- the chart looks empty
+    // until you press Fit. Keep whatever scale we have until there is a box.
+    if (!W || !H) return cam.scale || 60;
     const n = NET.P, rs = [];
     for (let i = 0; i < n; i++) { const x = NET.px[i]; if (x === x) rs.push(Math.hypot(x, NET.py[i])); }
     rs.sort((a, b) => a - b);
@@ -523,6 +539,7 @@ const VIEW = (() => {
     setCentreImage, setRingSegments, setThrough, zoomBy, loadLogoIndex,
     loadFaceFlags, faceFor,
     get faceFlagCount(){ return hasFace ? hasFace.reduce((a,b)=>a+b,0) : -1; },
+    hasPortrait(i){ return !!(hasFace && hasFace[i]); },
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,

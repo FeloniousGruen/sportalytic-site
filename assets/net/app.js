@@ -15,7 +15,8 @@ const NET = (() => {
                       '#ff4fa3', '#7cc943', '#2ec4b6', '#c77dff', '#ff9f1c',
                       '#00a8ff', '#7a7a7a'];
   const EDGE = 'rgba(150,168,194,0.20)';
-  const PATH = '#FBC247';
+  const PATH = '#FBC247';   // rings and labels
+  const LINK = '#FFFFFF';   // the chain itself, which reads better plain
 
   let P = 0, T = 0;
   let p_ip, p_ix, t_ip, t_ix;         // bipartite index
@@ -119,6 +120,8 @@ const NET = (() => {
   /* Radial tree layout: each subtree gets a wedge proportional to its leaf
    * count, radius by depth. Same rule that generated the original stills, so a
    * recentred chart looks like the ones in the reels. */
+  const RING_GAP = 0.75;    // extra room between the centre and ring 1
+
   function layout(reached) {
     // leaf counts: reverse BFS order visits every child before its parent
     leaves.fill(0);
@@ -133,6 +136,10 @@ const NET = (() => {
     const root = order[0];
     wA0[root] = 0; wSpan[root] = Math.PI * 2; wAcc[root] = 0;
     angle[root] = 0; radius[root] = 0;
+    // The centre and the first ring both wear a portrait, and at one unit
+    // apart those two circles touch. Everything outside the centre moves out
+    // by a constant, which opens that gap without changing the spacing
+    // between any other pair of rings.
     for (let k = 1; k < reached; k++) {
       const u = order[k], p = parent[u];
       const w = wSpan[p] * (leaves[u] / leaves[p]);
@@ -140,7 +147,7 @@ const NET = (() => {
       wAcc[p] += w;
       wA0[u] = start; wSpan[u] = w; wAcc[u] = 0;
       angle[u] = start + w / 2;
-      radius[u] = dist[u];
+      radius[u] = dist[u] + RING_GAP;
     }
     for (let i = 0; i < P; i++) {
       if (dist[i] < 0) { px[i] = NaN; py[i] = NaN; continue; }
@@ -266,6 +273,22 @@ const NET = (() => {
     return out;
   }
 
+  /* Shortest route between any two players, without moving the chart.
+   *
+   * The quiz needs to know the answer while the user is still guessing, and
+   * recentring to find it would both spoil it -- the target's ring is its
+   * degree -- and throw away the layout on screen. So this runs the search,
+   * reads the route off it, and puts the centre back before returning. Two
+   * traversals, about 4 ms. */
+  function route(a, b) {
+    bfs(a);
+    const d = dist[b];
+    const out = [];
+    if (d >= 0) for (let u = b; u >= 0; u = parent[u]) { out.push(u); if (parent[u] < 0) break; }
+    recentre(centreId);
+    return { degrees: d, path: out };          // path runs b -> ... -> a
+  }
+
   /* Which team-season(s) actually connect two players. The bipartite index
    * already holds this, so a link can say "KAN 2013" rather than just existing.
    * Both lists are short (a career is a handful of team-seasons), so the nested
@@ -288,7 +311,7 @@ const NET = (() => {
     return m.name ? `${m.name} (${code})` : `${code} · ${m.from}\u2013${m.to}`;
   }
 
-  /* First-ring view: the centre's direct team-mates only, grouped into a wedge
+  /* First-ring view: the centre's direct teammates only, grouped into a wedge
    * per club they actually shared a season with, biggest club first. Same idea
    * as the fan in the reels. Returns the segments so the view can label them. */
   function ringLayout(centre) {
@@ -400,7 +423,7 @@ const NET = (() => {
   }
 
   return {
-    load, bfs, layout, recentre, pathToCentre, info, maxDist,
+    load, bfs, layout, recentre, pathToCentre, route, info, maxDist,
     sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
     throughParent,
     get P() { return P; }, get names() { return names; },
@@ -412,6 +435,6 @@ const NET = (() => {
     get p_ip() { return p_ip; }, get p_ix() { return p_ix; },
     get t_ip() { return t_ip; }, get t_ix() { return t_ix; },
     get tsTeam() { return tsTeam; }, get tsSeason() { return tsSeason; },
-    DEG_COLOUR, EDGE, PATH,
+    DEG_COLOUR, EDGE, PATH, LINK,
   };
 })();

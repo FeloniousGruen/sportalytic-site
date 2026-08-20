@@ -79,6 +79,34 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 .chip{display:inline-block;background:#1d2833;border:1px solid var(--greyd);border-radius:4px;
   padding:1px 5px;font-size:10px;letter-spacing:.04em;color:#9CC2DC;font-weight:bold}
 #stats{position:absolute;left:12px;bottom:12px;color:var(--grey);font-size:12px;line-height:1.5;font-variant-numeric:tabular-nums}
+/* Test your knowledge. Sits where the player panel does, and takes over from
+   it while a round is running. */
+#quiz{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
+  border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px;z-index:6}
+#quiz h2{font-family:var(--display);font-size:17px;margin:0 0 10px;text-transform:uppercase}
+#quiz .lead{color:var(--grey);font-size:12px;line-height:1.5;margin-bottom:12px}
+.slot{display:flex;gap:6px;align-items:center;margin-bottom:7px}
+.slot input{flex:1;min-width:0;background:#0B1117;color:var(--ink);border:1px solid var(--greyd);
+  border-radius:7px;padding:8px 9px;font:inherit;font-size:13px}
+.slot button{background:#1d2833;color:var(--amber);border:1px solid var(--greyd);border-radius:7px;
+  padding:8px 9px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.slot button:hover{border-color:var(--amber)}
+.slot .tag{font-size:10px;color:var(--grey);width:16px;text-align:center;font-weight:bold}
+#quizRes{background:#0B1117;border:1px solid var(--greyd);border-radius:9px;
+  max-height:190px;overflow:auto;margin-top:6px}
+#quizRes div{padding:7px 10px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+#quizRes div:hover{background:#1d2833}
+.qchain{list-style:none;margin:10px 0;padding-left:16px;position:relative;max-height:30vh;overflow:auto}
+.qchain::before{content:'';position:absolute;left:4px;top:8px;bottom:8px;width:2px;background:var(--greyd)}
+.qstep{position:relative;padding:3px 0;font-size:13px}
+.qstep .dot{position:absolute;left:-15px;top:8px;width:8px;height:8px;border-radius:50%;
+  background:var(--grey);border:2px solid var(--panel)}
+.qstep.fix .dot{background:var(--amber)}
+.qstep .via{color:var(--grey);font-size:11px}
+.qerr{color:#F38A1C;font-size:12px;line-height:1.45;margin:8px 0 0}
+.qdone{margin:10px 0 0;padding:9px 10px;background:#1d2833;border-left:3px solid var(--amber);
+  border-radius:6px;font-size:12px;line-height:1.5}
+.qdone b{color:var(--amber);font-size:16px}
 #loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:15px}
 @media(max-width:820px){
   #panel{right:8px;left:8px;top:auto;bottom:8px;width:auto}
@@ -109,12 +137,14 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
   </div>
   <div id="results" hidden></div>
   <div id="tools">
-    <button class="tbtn" id="ring" title="Show only the players who shared a squad with the centre, grouped by club">Direct team-mates</button>
+    <button class="tbtn" id="quizBtn" title="Link two players yourself, in as few steps as possible">Test your knowledge</button>
+    <button class="tbtn" id="ring" title="Show only the players who shared a squad with the centre, grouped by club">Direct teammates</button>
     <button class="tbtn zoom" id="zin" title="Zoom in">+</button>
     <button class="tbtn zoom" id="zout" title="Zoom out">&minus;</button>
     <button class="tbtn" id="zfit" title="Fit to screen">Fit</button>
   </div>
   <div id="panel" hidden></div>
+  <div id="quiz" hidden></div>
   <div id="stats"></div>
 </div>
 
@@ -227,7 +257,7 @@ function recentre(i){
   renderPanel(i);
 }
 
-/* First-ring view: the centre's direct team-mates, grouped into a wedge per
+/* First-ring view: the centre's direct teammates, grouped into a wedge per
  * club. Toggling back off just recomputes the full layout. */
 function setRing(on){
   const btn=document.getElementById('ring');
@@ -349,6 +379,190 @@ function stats(r){
       `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${NET.firstSeason[i]}–${NET.lastSeason[i]}</span></div>`
     ).join(''):'<div style="color:var(--grey)">No players match</div>';
   }
+  /* ---------------------------------------------------------- the quiz ----
+   * Two players; join them yourself in as few steps as you can. Every step you
+   * add is checked against the real record -- two players are only linked if
+   * they were on the same squad in the same season -- so the chain you build
+   * is a claim the data either supports or does not.
+   *
+   * The answer is worked out up front with NET.route, which does not disturb
+   * the chart: recentring on one of the two would give the other's degree away
+   * just by which ring it landed in. */
+  const QUIZ={on:false,a:-1,b:-1,chain:[],best:null,done:false,revealed:false};
+
+  // Random players are drawn from those with a portrait. That set is the
+  // modern and the famous, which is the difference between a game and an
+  // exercise in naming punters from 1961.
+  let pickable=null;
+  function pickablePool(){
+    if(!pickable){
+      pickable=[];
+      // A portrait means modern or famous; four seasons means someone you have
+      // plausibly heard of rather than a name off a 2025 practice squad.
+      for(let i=0;i<NET.P;i++)
+        if(VIEW.hasPortrait(i) && NET.lastSeason[i]-NET.firstSeason[i]>=3) pickable.push(i);
+      if(pickable.length<50) pickable=Array.from({length:NET.P},(_,i)=>i);
+    }
+    return pickable;
+  }
+  function randomPlayer(){
+    const p=pickablePool();
+    return p[Math.floor(Math.random()*p.length)];
+  }
+  function findByName(s){
+    // the boxes show "Name (1996-2008)", so drop a trailing span before looking
+    s=s.replace(/\s*\((?:\d{4})\s*[–-]\s*(?:\d{4})\)\s*$/,'').trim().toLowerCase();
+    if(!s) return -1;
+    let exact=-1, part=-1;
+    for(let i=0;i<NET.P;i++){
+      if(lower[i]===s){ exact=i; break; }
+      if(part<0 && lower[i].indexOf(s)>=0) part=i;
+    }
+    return exact>=0?exact:part;
+  }
+
+  function quizOpen(){
+    QUIZ.on=true; QUIZ.done=false; QUIZ.chain=[]; QUIZ.best=null;
+    $('#panel').hidden=true; $('#results').hidden=true;
+    $('#quiz').hidden=false;
+    quizSetup();
+  }
+  function quizClose(){
+    QUIZ.on=false; $('#quiz').hidden=true;
+    VIEW.path=[]; VIEW.selected=-1;
+    renderPanel(CENTRE);
+  }
+
+  function quizSetup(){
+    const nm=i=>i>=0?`${NET.names[i]} (${NET.firstSeason[i]}–${NET.lastSeason[i]})`:'';
+    $('#quiz').innerHTML=
+      `<h2>Test your knowledge</h2>
+       <div class="lead">Two players. Join them with as short a chain of
+         teammates as you can — every pair you name has to have shared a squad
+         in the same season.</div>
+       <div class="slot"><span class="tag">A</span>
+         <input id="qa" placeholder="Anyone…" value="${QUIZ.a>=0?nm(QUIZ.a):''}">
+         <button id="qad">Random</button></div>
+       <div class="slot"><span class="tag">B</span>
+         <input id="qb" placeholder="Anyone…" value="${QUIZ.b>=0?nm(QUIZ.b):''}">
+         <button id="qbd">Random</button></div>
+       <div id="qmsg" class="qerr" hidden></div>
+       <button class="btn" id="qgo">Start</button>
+       <button class="btn ghost" id="qx">Close</button>`;
+    $('#qad').onclick=()=>{ QUIZ.a=randomPlayer(); quizSetup(); };
+    $('#qbd').onclick=()=>{ QUIZ.b=randomPlayer(); quizSetup(); };
+    $('#qgo').onclick=quizStart;
+    $('#qx').onclick=quizClose;
+  }
+
+  function quizStart(){
+    const a=$('#qa').value.trim()?findByName($('#qa').value):randomPlayer();
+    const b=$('#qb').value.trim()?findByName($('#qb').value):randomPlayer();
+    const say=t=>{ $('#qmsg').hidden=false; $('#qmsg').textContent=t; };
+    if(a<0) return say('No player matches the first name.');
+    if(b<0) return say('No player matches the second name.');
+    if(a===b) return say('Pick two different players.');
+    QUIZ.a=a; QUIZ.b=b;
+    const r=NET.route(a,b);
+    if(r.degrees<0) return say(`${NET.names[a]} and ${NET.names[b]} are not connected at all.`);
+    QUIZ.best=r; QUIZ.chain=[a]; QUIZ.done=false; QUIZ.revealed=false;
+    quizRound();
+  }
+
+  // A step is legal only if it shared a team-season with the last one added.
+  function quizAdd(i){
+    const last=QUIZ.chain[QUIZ.chain.length-1];
+    if(i===last) return 'That is the player you are already on.';
+    if(QUIZ.chain.indexOf(i)>=0) return 'That player is already in your chain.';
+    const sh=NET.sharedTeamSeasons(last,i);
+    if(!sh.length) return `${NET.names[last]} and ${NET.names[i]} were never teammates.`;
+    QUIZ.chain.push(i);
+    if(i===QUIZ.b) QUIZ.done=true;
+    return null;
+  }
+
+  function quizRound(err){
+    const steps=QUIZ.chain.length-1;
+    const rows=QUIZ.chain.map((n,k)=>{
+      let row=`<li class="qstep ${k===0||n===QUIZ.b?'fix':''}"><span class="dot"></span>${NET.names[n]}</li>`;
+      if(k<QUIZ.chain.length-1){
+        const sh=NET.sharedTeamSeasons(n,QUIZ.chain[k+1]);
+        if(sh.length){
+          const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
+          row+=`<li class="qstep via"><span class="chip">${f.team}</span> ${f.season}${more}</li>`;
+        }
+      }
+      return row;
+    }).join('');
+    const target=`<div class="qstep fix" style="padding-left:16px"><span class="dot" style="left:1px"></span>${NET.names[QUIZ.b]}</div>`;
+    $('#quiz').innerHTML=
+      `<h2>Test your knowledge</h2>
+       <div class="lead">Get from <b>${NET.names[QUIZ.a]}</b> to
+         <b>${NET.names[QUIZ.b]}</b>. Name whoever links them, one at a time.</div>
+       <ul class="qchain">${rows}</ul>
+       ${QUIZ.done?'':target}
+       ${QUIZ.done?'':
+         `<div class="slot" style="margin-top:10px">
+            <input id="qnext" placeholder="Next teammate…" autocomplete="off">
+          </div>
+          <div id="quizRes" hidden></div>`}
+       ${err?`<div class="qerr">${err}</div>`:''}
+       ${QUIZ.done?quizVerdict():''}
+       <div style="color:var(--grey);font-size:11px;margin-top:9px">
+         ${steps} step${steps===1?'':'s'} so far</div>
+       ${QUIZ.done?'':`<button class="btn ghost" id="qgive">Show the shortest route</button>`}
+       <button class="btn ghost" id="qagain">${QUIZ.done?'Another pair':'Give up and restart'}</button>`;
+    if(!QUIZ.done){
+      const inp=$('#qnext');
+      inp.oninput=quizSuggest; inp.focus();
+      $('#quizRes').onclick=e=>{
+        const d=e.target.closest('[data-i]'); if(!d) return;
+        const bad=quizAdd(+d.dataset.i);
+        quizRound(bad);
+      };
+      $('#qgive').onclick=quizReveal;
+    }
+    const show=$('#qshow'); if(show) show.onclick=quizReveal;
+    $('#qagain').onclick=()=>{ QUIZ.a=-1; QUIZ.b=-1; quizSetup(); };
+    quizDraw();
+  }
+
+  function quizSuggest(){
+    const q=$('#qnext').value.trim().toLowerCase();
+    const box=$('#quizRes');
+    if(q.length<2){ box.hidden=true; return; }
+    const out=[];
+    for(let i=0;i<NET.P && out.length<25;i++) if(lower[i].indexOf(q)>=0) out.push(i);
+    box.hidden=false;
+    box.innerHTML=out.length?out.map(i=>
+      `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${NET.firstSeason[i]}–${NET.lastSeason[i]}</span></div>`
+    ).join(''):'<div style="color:var(--grey)">No players match</div>';
+  }
+
+  function quizVerdict(){
+    const yours=QUIZ.chain.length-1, best=QUIZ.best.degrees;
+    if(QUIZ.revealed) return `<div class="qdone">The shortest route is
+      <b>${best} steps</b>. It is drawn on the chart.</div>`;
+    if(yours===best) return `<div class="qdone"><b>${yours} steps.</b> That is the
+      shortest there is — nobody links them faster.</div>`;
+    return `<div class="qdone"><b>${yours} steps.</b> Linked, but it can be done
+      in ${best}. <span id="qshow" style="color:var(--amber);cursor:pointer;
+      text-decoration:underline">Show me</span></div>`;
+  }
+
+  function quizReveal(){
+    QUIZ.chain=QUIZ.best.path.slice().reverse();   // route returns b -> a
+    QUIZ.done=true; QUIZ.revealed=true;
+    quizRound();
+  }
+
+  // draw the chain the user has built, so the graph follows along
+  function quizDraw(){
+    VIEW.selected=QUIZ.chain[QUIZ.chain.length-1];
+    VIEW.path=QUIZ.chain.length>1?QUIZ.chain.slice():[];
+  }
+
+  document.getElementById('quizBtn').onclick=()=>QUIZ.on?quizClose():quizOpen();
   document.getElementById('ring').onclick=()=>setRing(!VIEW.ringMode);
   document.getElementById('zin').onclick=()=>VIEW.zoomBy(1.35);
   document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);
