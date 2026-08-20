@@ -29,6 +29,7 @@ const VIEW = (() => {
   let hasFace = null;     // one flag per player, so we never chase a 404
   let growFrom = 0, growWho = -1;   // a picked dot swelling into its picture
   const faceR = new Map();          // node -> radius its portrait took this frame
+  let showLabels = true;            // off while the quiz owns a phone screen
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -377,7 +378,7 @@ const VIEW = (() => {
      * -- tested against the boxes already placed. Ends of the chain are placed
      * first so they win the good positions, and a label that had to move gets a
      * leader line back to its dot. */
-    if (path.length > 1 && !moving && !ringSegs) {
+    if (showLabels && path.length > 1 && !moving && !ringSegs) {
       ctx.font = 'bold 11px Arial';
       ctx.textBaseline = 'middle';
       ctx.textAlign = 'left';
@@ -590,6 +591,7 @@ const VIEW = (() => {
     loadFaceFlags, faceFor,
     get faceFlagCount(){ return hasFace ? hasFace.reduce((a,b)=>a+b,0) : -1; },
     hasPortrait(i){ return !!(hasFace && hasFace[i]); },
+    set labels(v){ showLabels = !!v; dirty = true; }, get labels(){ return showLabels; },
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,

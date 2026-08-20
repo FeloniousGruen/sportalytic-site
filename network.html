@@ -93,6 +93,23 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .via::before{content:'';position:absolute;left:-13px;top:50%;width:9px;height:2px;background:var(--greyd)}
 .chip{display:inline-block;background:#1d2833;border:1px solid var(--greyd);border-radius:4px;
   padding:1px 5px;font-size:10px;letter-spacing:.04em;color:#9CC2DC;font-weight:bold}
+/* a way straight back to the chart from either card */
+.xclose{position:absolute;top:8px;right:9px;width:28px;height:28px;line-height:1;
+  background:transparent;border:0;color:var(--grey);font-size:24px;cursor:pointer;
+  border-radius:7px;padding:0}
+.xclose:hover{color:var(--ink);background:rgba(255,255,255,.07)}
+/* both cards are already absolutely positioned, so they are the containing
+   block for the close button without any help */
+#panel h2,#quiz h2{padding-right:30px}
+/* the share answer, over the chart, on a phone */
+/* sits at the top of the chart's own area, so it reads over empty space
+   rather than over the faces in the middle of the animation */
+#badge{position:absolute;left:10px;right:10px;top:calc(var(--top,0px) + 6px);
+  text-align:center;pointer-events:none;z-index:3}
+#badge b{display:block;font-family:var(--display);font-size:44px;color:#F38A1C;
+  text-shadow:0 2px 18px rgba(0,0,0,.85);line-height:1}
+#badge span{display:inline-block;margin-top:4px;max-width:30ch;color:#E7EEF5;font-size:11.5px;
+  line-height:1.35;text-shadow:0 1px 8px rgba(0,0,0,.9)}
 #stats{position:absolute;left:12px;bottom:12px;color:var(--grey);font-size:12px;line-height:1.5;font-variant-numeric:tabular-nums}
 #stats a{color:var(--grey);text-decoration:underline;cursor:pointer}
 #stats a:hover{color:var(--amber)}
@@ -168,6 +185,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 
   #topbar{top:6px;left:8px;right:8px;gap:6px}
   #title{top:var(--titleTop,50px);left:8px;right:8px;text-align:left;font-size:15px}
+  /* the round is the screen on a phone; the chart above it is context */
+  #quiz{max-height:72vh}
+  #quiz .lead{font-size:11.5px;margin-bottom:9px}
+  #badge b{font-size:34px}
   .hud{flex-wrap:wrap;gap:6px}
   .hud input{width:auto;flex:1 1 100%}
   #club,#season{flex:1 1 calc(50% - 3px);min-width:0;font-size:13px;padding:8px 9px}
@@ -223,8 +244,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   <div class="hud">
     <input id="q" placeholder="Search a player…" autocomplete="off">
     <select id="club"><option value="">Any club</option></select>
-    <span class="spacer"></span>
     <select id="season"><option value="">Any season</option></select>
+    <span class="spacer"></span>
   </div>
   <div id="results" hidden></div>
   </div>
@@ -246,16 +267,34 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 <script>
 const $=s=>document.querySelector(s);
 let CENTRE=0;
+/* On a phone the chart is the small half of the screen, so the cards carry
+   only what you cannot read off the chart itself: the chain is already drawn
+   there, and a card repeating it just buries the two buttons. */
+const PHONE=matchMedia('(max-width:820px)');
+// A window reporting zero width is one that has not been laid out, not a
+// phone -- and the media query matches zero, so ask the width directly.
+const onPhone=()=>innerWidth>0 && innerWidth<=820;
+// turning the handset sideways crosses the breakpoint, and the card that is
+// already open was built for the other one
+PHONE.addEventListener('change',()=>{
+  if(!$('#panel').hidden && PANEL_FOR>=0) renderPanel(PANEL_FOR);
+  VIEW.labels = $('#quiz').hidden || !onPhone();
+});
 
+let PANEL_FOR=-1;
 function renderPanel(i){
+  PANEL_FOR=i;
   const d=NET.info(i), p=NET.pathToCentre(i);
   const c=NET.info(CENTRE);
   $('#panel').hidden=false;
   $('#panel').classList.toggle('aside', !$('#quiz').hidden);
+  const small=onPhone();
   $('#panel').innerHTML=
-    `<h2>${d.name}</h2>
-     <div class="meta">${d.position||'—'} · ${d.first}–${d.last}</div>
-     ${i===CENTRE?`<div class="deg">This is the centre</div>`
+    `<button class="xclose" id="pclose" title="Back to the chart">&times;</button>
+     <h2>${d.name}</h2>
+     <div class="meta">${d.position||'—'} · ${d.first}–${d.last}${
+        small?(i===CENTRE?' · the centre':` · <b class="deg">${d.degree}°</b> from ${c.name}`):''}</div>
+     ${small?'':i===CENTRE?`<div class="deg">This is the centre</div>`
        :`<div><span class="deg">${d.degree}°</span> from ${c.name}</div>
           <div class="chain">${p.map((n,k)=>{
             let row=`<div class="node ${k===p.length-1?'end':''}"><span class="dot"></span>${NET.names[n]}</div>`;
@@ -274,6 +313,7 @@ function renderPanel(i){
      <div id="shareOut"></div>
      <button class="btn" id="rec">Centre chart on ${d.name}</button>`;
   $('#rec').onclick=()=>recentre(i);
+  $('#pclose').onclick=closePanel;
   $('#share').onclick=()=>{
     const r=NET.shareThrough(i);
     VIEW.setThrough(r.count?r.mask:null);
@@ -286,11 +326,20 @@ function renderPanel(i){
     }
     const other=r.count-r.exclusive;
     if(!r.count){
+      if(small){ showBadge('0%', `nobody reaches ${NET.names[CENTRE]} only through ${d.name}`); }
       $('#shareOut').innerHTML=
-        `<div class="shareBox"><b>0%</b> of the network reaches
+        (small?'':`<div class="shareBox"><b>0%</b> of the network reaches
           ${NET.names[CENTRE]} through ${d.name}. Every route to him is at least
-          as short without ${d.name} — nobody sits behind him.</div>
-         <button class="btn ghost" id="unshare">Back to the full chart</button>`;
+          as short without ${d.name} — nobody sits behind him.</div>`)+
+         `<button class="btn ghost" id="unshare">Back to the full chart</button>`;
+      $('#share').hidden=true;
+      $('#unshare').onclick=clearShare;
+      return;
+    }
+    if(small){
+      showBadge(r.pct.toFixed(1)+'%',
+        `of the network reaches ${NET.names[CENTRE]} through ${d.name}`);
+      $('#shareOut').innerHTML=`<button class="btn ghost" id="unshare">Back to the full chart</button>`;
       $('#share').hidden=true;
       $('#unshare').onclick=clearShare;
       return;
@@ -325,10 +374,30 @@ function renderPanel(i){
   VIEW.selected=i; VIEW.path=i===CENTRE?[]:p;
 }
 
+/* Close the player card and hand the screen back to the chart. The path stays
+   highlighted -- you asked to see it, and it is the chart that shows it. */
+function closePanel(){
+  clearShare();
+  $('#panel').hidden=true;
+  $('#results').hidden=true;
+}
+
+/* The share answer, on a phone, goes over the chart the animation is playing
+   on rather than into a card that would cover it. */
+function showBadge(big, small){
+  let b=$('#badge');
+  if(!b){ b=document.createElement('div'); b.id='badge';
+          document.getElementById('stage').appendChild(b); }
+  b.innerHTML=`<b>${big}</b><span>${small}</span>`;
+  b.hidden=false;
+}
+function hideBadge(){ const b=$('#badge'); if(b) b.hidden=true; }
+
 /* Undo a share view: drop the highlight and slide everyone back to where the
  * normal layout puts them. Selecting anyone else does this too, but you should
  * not have to pick a different player just to get the chart back. */
 function clearShare(){
+  hideBadge();
   if(VIEW.hasThrough){
     VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
   }
@@ -395,8 +464,8 @@ function syncSheet(){
   STAGE.style.setProperty('--sheet', card ? (card.offsetHeight + 64) + 'px' : '0px');
   const tb = document.getElementById('topbar').offsetHeight;
   const ti = document.getElementById('title').offsetHeight;
-  STAGE.style.setProperty('--titleTop', (tb + 4) + 'px');
-  STAGE.style.setProperty('--top', (tb + ti + 12) + 'px');
+  STAGE.style.setProperty('--titleTop', (tb + 12) + 'px');
+  STAGE.style.setProperty('--top', (tb + ti + 20) + 'px');
 }
 const watch = new ResizeObserver(syncSheet);
 ['panel','quiz','topbar','title'].forEach(id => watch.observe(document.getElementById(id)));
@@ -470,7 +539,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
                                       players:e.players,value:`${code}:${e.from}:${e.to}`}))
                     :[{name:m.name||code,from:m.from,to:m.to,players:m.players,value:code}];
     rows.forEach(r=>clubOpts.push({
-      label:`${r.name} (${code}, ${r.from}\u2013${r.to}) — ${r.players||0} players`,
+      label:`${r.name} (${r.from}\u2013${r.to})`,
       value:r.value, sort:r.name, current:r.to>=t.seasonMax}));
   });
   clubOpts.sort((a,b)=>a.sort.localeCompare(b.sort));
@@ -588,10 +657,14 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     QUIZ.on=true; QUIZ.done=false; QUIZ.chain=[]; QUIZ.best=null;
     $('#panel').hidden=true; $('#results').hidden=true;
     $('#quiz').hidden=false;
+    // the chart is the small half of a phone screen here: the chain reads as
+    // shape, and the names belong in the round, not stacked over the dots
+    VIEW.labels=!onPhone();
     quizSetup();
   }
   function quizClose(){
     QUIZ.on=false; $('#quiz').hidden=true;
+    VIEW.labels=true;
     $('#panel').classList.remove('aside');
     VIEW.path=[]; VIEW.selected=-1;
     renderPanel(CENTRE);
@@ -600,7 +673,8 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   function quizSetup(){
     const nm=i=>i>=0?`${NET.names[i]} (${NET.firstSeason[i]}–${NET.lastSeason[i]})`:'';
     $('#quiz').innerHTML=
-      `<h2>Test your knowledge</h2>
+      `<button class="xclose" id="qclose" title="Back to the chart">&times;</button>
+       <h2>Test your knowledge</h2>
        <div class="lead">Two players. Join them with as short a chain of
          teammates as you can — every pair you name has to have shared a squad
          in the same season.</div>
@@ -613,6 +687,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
        <div id="qmsg" class="qerr" hidden></div>
        <button class="btn" id="qgo">Start</button>
        <button class="btn ghost" id="qx">Close</button>`;
+    $('#qclose').onclick=quizClose;
     $('#qad').onclick=()=>{ QUIZ.a=randomPlayer(); quizSetup(); };
     $('#qbd').onclick=()=>{ QUIZ.b=randomPlayer(); quizSetup(); };
     $('#qgo').onclick=quizStart;
@@ -668,7 +743,8 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     const target=QUIZ.done?'':
       `<li class="qstep fix"><span class="dot"></span>${NET.names[QUIZ.b]}</li>`;
     $('#quiz').innerHTML=
-      `<h2>Test your knowledge</h2>
+      `<button class="xclose" id="qclose" title="Back to the chart">&times;</button>
+       <h2>Test your knowledge</h2>
        <div class="lead">Get from <b>${NET.names[QUIZ.a]}</b> to
          <b>${NET.names[QUIZ.b]}</b>. Name whoever links them, one at a time.</div>
        <ul class="qchain">${rows}${gap}${target}</ul>
@@ -691,6 +767,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
       $('#qclue').onclick=quizClue;
       $('#qgive').onclick=quizReveal;
     }
+    $('#qclose').onclick=quizClose;
     const show=$('#qshow'); if(show) show.onclick=quizReveal;
     $('#qagain').onclick=()=>{ QUIZ.a=-1; QUIZ.b=-1; quizSetup(); };
     quizDraw();
