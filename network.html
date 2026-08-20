@@ -267,10 +267,15 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
 .routes .qchain{margin:4px 0 0}
 #game:has(.routes){width:430px}
-/* a wide card eats into where the heading was centring, so the heading centres
-   in what is left of the canvas rather than sliding under it */
-#stage:has(#game:not([hidden])) #title{right:456px}
-#stage:has(#panel:not([hidden])) #title{right:320px}
+/* A wide card eats into where the heading was centring, so the heading centres
+   in what is left of the canvas rather than sliding under it. Desktop only:
+   on a phone the cards are a sheet along the bottom, and these rules -- which
+   outrank the phone ones on specificity, media query or not -- were squeezing
+   the heading to nothing and wrapping it down five lines. */
+@media(min-width:821px){
+  #stage:has(#game:not([hidden])) #title{right:456px}
+  #stage:has(#panel:not([hidden])) #title{right:320px}
+}
 /* the shortest route, shown beside yours: quieter, so the eye reads your own
    attempt first and the answer second */
 .qchain.best{opacity:.72}
@@ -374,6 +379,14 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 
   #topbar{top:6px;left:8px;right:8px;gap:6px}
   #title{top:var(--titleTop,50px);left:8px;right:8px;margin:0;width:auto;text-align:left;font-size:15px}
+  /* The menu opens with the page, and on a phone a full-height card would
+     leave the chart a sliver of what it is meant to be showing. The mode
+     descriptions tighten and the standing explanation goes -- it is the same
+     sentence every time and costs four lines. */
+  #game .menu-lead{display:none}
+  #game .gmenu{padding:9px 11px;margin-top:6px}
+  #game .gmenu b{font-size:13px}
+  #game .gmenu span{font-size:11px;line-height:1.35}
   /* the round is the screen on a phone; the chart above it is context */
   #quiz,#game{max-height:72vh}
   /* no room to sit them side by side on a phone */
@@ -401,9 +414,18 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   .chain,.qchain{max-height:none}
   .btn{padding:11px 13px}                 /* thumbs, not cursors */
 
+  /* the canvas sets touch-action:none to own dragging; the tool bar has to say
+     it wants horizontal drags back or the row cannot be scrolled at all */
   #tools{left:0;right:0;bottom:0;top:auto;border-radius:0;border-left:0;border-right:0;
     border-bottom:0;gap:6px;padding:7px 8px;overflow-x:auto;flex-wrap:nowrap;
-    justify-content:flex-start;-webkit-overflow-scrolling:touch}
+    justify-content:flex-start;-webkit-overflow-scrolling:touch;
+    touch-action:pan-x;overscroll-behavior-x:contain;scrollbar-width:none}
+  #tools::-webkit-scrollbar{display:none}
+  /* a scrolling row with no scrollbar looks like a row that ends there, so
+     fade the right edge to say there is more of it */
+  #toolwrap{position:absolute;left:0;right:0;bottom:0}
+  #toolwrap::after{content:'';position:absolute;right:0;bottom:0;width:34px;height:100%;
+    pointer-events:none;background:linear-gradient(90deg,transparent,var(--bg))}
   .tbtn{padding:9px 12px;font-size:12.5px;min-width:0;flex:0 0 auto}
   .tbtn.zoom{padding:8px 14px;font-size:16px}
   #stats{display:none}                    /* the title says the same thing */
@@ -443,7 +465,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   <div id="results" hidden></div>
   </div>
   <h1 id="title"></h1>
-  <div id="tools">
+  <div id="toolwrap"><div id="tools">
     <button class="tbtn" id="playBtn" title="Games played on the network">Play</button>
     <button class="tbtn" id="quizBtn" title="Link two players yourself, in as few steps as possible">Free play</button>
     <button class="tbtn" id="ring" title="Show only the players who shared a squad with the centre, grouped by club">Direct teammates</button>
@@ -451,7 +473,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
     <button class="tbtn zoom" id="zout" title="Zoom out">&minus;</button>
     <button class="tbtn" id="zfit" title="Fit to screen">Fit</button>
     <button class="tbtn" id="theme" title="Light or dark">☾</button>
-  </div>
+  </div></div>
   <div id="panel" hidden></div>
   <div id="quiz" hidden></div>
   <div id="game" hidden></div>
@@ -1140,8 +1162,8 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     gameEl.innerHTML=
       `<button class="xclose" id="gmclose" title="Back to the chart">&times;</button>
        <h2>Play</h2>
-       <div class="lead">Every link is checked against the record: two players
-         only join if they shared a squad in the same season.</div>
+       <div class="lead menu-lead">Every link is checked against the record: two
+         players only join if they shared a squad in the same season.</div>
        <button class="gmenu m-daily" id="gm2"><b>The daily</b>
          <span>One pair a day, the same for everyone. Join them in under 10.</span></button>
        <button class="gmenu m-round" id="gm1"><b>The round</b>
