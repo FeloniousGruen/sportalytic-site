@@ -208,27 +208,11 @@ const NET = (() => {
         py[c] = radius[c] * Math.sin(ang2);
       }
     }
-    // everyone else keeps their ring and shares out the remaining angle
-    const maxd = maxDist();
-    const rest = [];
-    for (let d = 0; d <= maxd; d++) rest.push([]);
-    for (let i = 0; i < P; i++) {
-      if (mask[i] || i === p || dist[i] < 1) continue;
-      rest[dist[i]].push(i);
-    }
-    for (let d = 1; d <= maxd; d++) {
-      const mem = rest[d];
-      if (!mem.length) continue;
-      mem.sort((x, y) => angle[x] - angle[y]);
-      for (let k = 0; k < mem.length; k++) {
-        const u = mem[k];
-        const a = secB[0] + (secB[1] - secB[0]) * ((k + 0.5) / mem.length);
-        angle[u] = a;
-        px[u] = radius[u] * Math.cos(a);
-        py[u] = radius[u] * Math.sin(a);
-      }
-    }
-    return { moved: P, frac, angle: pa, span: spanA };
+    // Everyone NOT in the highlight is left exactly where they were. An
+    // earlier version also re-angled them into the remaining wedge, which
+    // rearranged the whole chart to answer a question about one player; the
+    // point is to see the share against the graph you already had.
+    return { moved: inSet, frac, angle: pa, span: spanA };
   }
 
   function throughParent(v) { return par2 ? par2[v] : -1; }
