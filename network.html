@@ -384,7 +384,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      descriptions tighten and the standing explanation goes -- it is the same
      sentence every time and costs four lines. */
   #game .menu-lead{display:none}
-  #game .gmenu{padding:9px 11px;margin-top:6px}
+  #game .gmenu{padding:11px 12px;margin-top:7px;min-height:56px}
   #game .gmenu b{font-size:13px}
   #game .gmenu span{font-size:11px;line-height:1.35}
   /* the round is the screen on a phone; the chart above it is context */
@@ -402,8 +402,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   #results{align-self:stretch;min-width:0;max-height:30vh}
   /* the chart gets the room the sheet is not using, so it is centred in what
      you can actually see rather than half-hidden behind a card */
-  /* the chart takes what the controls and the card are not using */
-  canvas{top:var(--top,0px);height:calc(100% - var(--top,0px) - var(--sheet,0px))}
+  /* the chart takes what the controls and the card are not using, but never
+     less than this -- a tall card could otherwise collapse it to nothing */
+  canvas{top:var(--top,0px);
+    height:max(120px, calc(100% - var(--top,0px) - var(--sheet,0px)))}
 
   /* one sheet at a time, sitting on top of the tool bar */
   #panel,#quiz{right:8px;left:8px;top:auto;bottom:56px;width:auto;
@@ -496,10 +498,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260820a';</script>
-<script src="assets/net/app.js?v=20260820a"></script>
-<script src="assets/net/view.js?v=20260820a"></script>
-<script src="assets/net/game.js?v=20260820a"></script>
+<script>window.ASSET_V='20260820b';</script>
+<script src="assets/net/app.js?v=20260820b"></script>
+<script src="assets/net/view.js?v=20260820b"></script>
+<script src="assets/net/game.js?v=20260820b"></script>
 <script>
 const $=s=>document.querySelector(s);
 /* A dead page tells whoever is looking at it nothing. Anything thrown before
@@ -715,7 +717,10 @@ function syncKeyboard(){
   if(!vv) return;
   const kb = Math.max(0, innerHeight - vv.height - vv.offsetTop);
   document.documentElement.style.setProperty('--kb', kb + 'px');
-  document.documentElement.classList.toggle('kb-open', kb > 80);
+  const up = kb > 80;
+  document.documentElement.classList.toggle('kb-open', up);
+  // do not refit the chart under someone who is typing
+  if (typeof VIEW !== 'undefined') VIEW.autoFit = !up;
 }
 if(vv){
   vv.addEventListener('resize', syncKeyboard);
@@ -754,7 +759,19 @@ function keepOutRects(){
   return out;
 }
 
+/* Batched onto a frame. This writes CSS variables that change the canvas size,
+   and it is called from a ResizeObserver watching elements that the canvas
+   size affects -- doing that synchronously means "ResizeObserver loop
+   completed with undelivered notifications" and a visible stutter on a phone,
+   where the loop is slowest and the cards are biggest. */
+let sheetPending = false;
 function syncSheet(){
+  if (sheetPending) return;
+  sheetPending = true;
+  requestAnimationFrame(() => { sheetPending = false; syncSheetNow(); });
+}
+
+function syncSheetNow(){
   const p=document.getElementById('panel'), q=document.getElementById('quiz'),
         g=document.getElementById('game');
   const card = !g.hidden ? g : !q.hidden ? q : (!p.hidden ? p : null);
@@ -1196,14 +1213,21 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     VIEW.invalidate();
   }
 
+  let opening=false;
   async function openGame(){
+    if(opening) return;                 // a second tap while the first loads
+    opening=true;
     quizClose();
     $('#panel').hidden=true; $('#results').hidden=true;
     clearShare();
     gameEl.hidden=false;
     gameEl.innerHTML='<div class="lead">Loading the puzzles…</div>';
     try{ await GAME.load('assets/net'); }
-    catch(e){ gameEl.innerHTML='<div class="qerr">Could not load the puzzles.</div>'; return; }
+    catch(e){
+      gameEl.innerHTML='<div class="qerr">Could not load the puzzles.</div>';
+      opening=false; return;
+    }
+    opening=false;
     gameMenu();
   }
 
@@ -1242,7 +1266,14 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     gameEl.hidden?openGame():closeGame();
 
   // the games are the point of the page now, so lead with them
-  openGame();
+  openGame().then(()=>{
+    /* Straight away, not on the next frame. The batching exists to stop a
+       ResizeObserver loop, but the very first pass has to land before the
+       first paint or the chart draws full height and then jumps when the card
+       is measured. */
+    syncSheetNow();
+    VIEW.invalidate();
+  });
   document.getElementById('ring').onclick=()=>setRing(!VIEW.ringMode);
   document.getElementById('zin').onclick=()=>VIEW.zoomBy(1.35);
   document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);

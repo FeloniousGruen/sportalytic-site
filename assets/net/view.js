@@ -32,6 +32,7 @@ const VIEW = (() => {
   let showLabels = true;            // off while the quiz owns a phone screen
   let litMask = null;               // Expedition: 0 dark, 1 lit, 2 unlocked
   let interactive = true;           // off while a game owns the chart
+  let autoFit = true;               // off while a keyboard is up
   /* Page furniture labels must not cross. Held as a function rather than a
      list: the heading changes with the centre, cards open and close, and a
      stale set of rectangles is worse than none -- it moves labels away from
@@ -43,13 +44,20 @@ const VIEW = (() => {
     onPick = pickHandler || onPick;
     resize();
     addEventListener('resize', () => { resize(); fit(); });
-    // ...and refit whenever it changes, which on a phone is every time the
-    // bottom sheet opens or closes and hands the canvas its space back.
+    /* ...and refit when it changes materially, which on a phone is every time
+       the bottom sheet opens or closes. Two guards. A few pixels is not worth
+       a refit -- the keyboard settling, a card growing by a line -- and it
+       reads as the chart twitching. And autoFit goes off while a keyboard is
+       up, because refitting under someone who is typing moves the thing they
+       are looking at. */
     if (typeof ResizeObserver === 'function') {
       let pw = W, ph = H;
       new ResizeObserver(() => {
         resize();
-        if (W && H && (W !== pw || H !== ph)) { pw = W; ph = H; fit(); }
+        if (!W || !H) return;
+        const moved = Math.abs(W - pw) + Math.abs(H - ph);
+        pw = W; ph = H;
+        if (moved > 12 && autoFit) fit();
       }).observe(cv);
     }
     cv.addEventListener('pointermove', e => {
@@ -666,6 +674,7 @@ const VIEW = (() => {
     set lit(m){ litMask = m; dirty = true; }, get lit(){ return litMask; },
     /* A game in progress owns the chart: clicking through it would hand over
        the very links you are being asked to name. */
+    set autoFit(v){ autoFit = !!v; }, get autoFit(){ return autoFit; },
     setKeepOut(fn) {
       keepOut = typeof fn === 'function' ? fn : () => (fn || []);
       dirty = true;
