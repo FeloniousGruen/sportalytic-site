@@ -46,7 +46,7 @@ ap.add_argument('--faces', default='assets/net/faces')
 ap.add_argument('--workers', type=int, default=2)
 ap.add_argument('--delay', type=float, default=0.7,
                 help='minimum seconds between API calls; Wikimedia throttles bursts')
-ap.add_argument('--contact', default='https://sportalytic.netlify.app/network.html',
+ap.add_argument('--contact', default='https://github.com/FeloniousGruen/sportalytic-site',
                 help='email or url for the User-Agent, per Wikimedia robot policy')
 a = ap.parse_args()
 
