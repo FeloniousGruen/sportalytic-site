@@ -170,6 +170,39 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .gmenu b{display:block;font-size:13.5px;margin-bottom:2px}
 .gmenu span{color:var(--grey);font-size:11.5px;line-height:1.4}
 .qchain.card .qstep{padding:5px 0}
+/* One accent per mode, so which game you are in is obvious without reading. */
+#game{--accent:var(--amber)}
+#game.skin-round{--accent:#FBC247}
+#game.skin-daily{--accent:#5BA8E8}
+#game.skin-expedition{--accent:#7CC943}
+#game h2{color:var(--accent)}
+#game .gbig b{color:var(--accent)}
+#game .btn{background:var(--accent)}
+#game .btn.ghost{background:transparent;color:var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+#game .btn.ghost:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+#game .qstep.fix .dot{background:var(--accent)}
+#game .qdone{border-left-color:var(--accent)}
+#game .qdone b{color:var(--accent)}
+#game .qstep.gap input{border-color:var(--accent)}
+#game .gmenu:hover{border-color:var(--accent)}
+/* the distribution, Wordle-fashion: one bar a score, yours picked out */
+.dist{margin:12px 0 4px}
+.dhead{color:var(--grey);font-size:11px;margin-bottom:5px}
+.drow{display:flex;align-items:center;gap:7px;margin-bottom:3px}
+.dk{width:22px;text-align:right;color:var(--grey);font-size:11px;
+  font-variant-numeric:tabular-nums}
+.dbar{background:#2b3742;color:var(--ink);font-size:11px;font-weight:bold;
+  padding:2px 6px;border-radius:3px;min-width:14px;text-align:right;
+  transition:width .3s}
+.dbar.me{background:var(--accent);color:#0B1117}
+/* the archive: one square a day */
+.arch{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 4px}
+.aday{background:#1d2833;color:var(--grey);border:1px solid var(--greyd);
+  border-radius:6px;padding:5px 7px;font:inherit;font-size:11px;cursor:pointer}
+.aday:hover{border-color:var(--accent);color:var(--ink)}
+.aday.done{background:var(--accent);color:#0B1117;border-color:var(--accent)}
+.aday.gave{background:#3a2a1a;color:#F38A1C;border-color:#5a3f22}
 /* Test your knowledge. Sits where the player panel does, and takes over from
    it while a round is running. */
 #quiz{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
@@ -915,6 +948,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
 
   function gameMenu(){
     GAME.stop();
+    gameEl.className='';
     VIEW.labels=!onPhone();
     gameEl.innerHTML=
       `<button class="xclose" id="gmclose" title="Back to the chart">&times;</button>
@@ -928,11 +962,14 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
          <span>One pair a day, the same for everyone. Join them in under 10.</span></button>
        <button class="gmenu" id="gm3"><b>Expedition</b>
          <span>Start anywhere. Name a player, their teammates light up, and you
-           see how much of the network you can uncover.</span></button>`;
+           see how much of the network you can uncover.</span></button>
+       <button class="gmenu" id="gm4"><b>Archive</b>
+         <span>Any daily since the start, and how your scores have gone.</span></button>`;
     $('#gmclose').onclick=closeGame;
     $('#gm1').onclick=()=>{ VIEW.labels=!onPhone(); GAME.startRound(); };
     $('#gm2').onclick=()=>{ VIEW.labels=!onPhone(); GAME.startDaily(); };
     $('#gm3').onclick=()=>{ VIEW.labels=false; GAME.startExpedition(CENTRE); };
+    $('#gm4').onclick=()=>{ VIEW.labels=!onPhone(); GAME.renderArchive(); };
   }
 
   document.getElementById('playBtn').onclick=()=>

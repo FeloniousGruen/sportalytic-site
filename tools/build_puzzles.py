@@ -76,13 +76,25 @@ ok_pos = np.array([positions[pos_i[i]] in SKILL for i in range(P)])
 is_star = np.array([positions[pos_i[i]] in STAR for i in range(P)])
 base = (faces > 0) & ok_pos & (seasons >= a.min_seasons - 1)
 
-recent = base & (last >= 2006) & (first >= 1996)   # inside the last thirty
-mid = base & (first >= 1976)                       # inside the last fifty
-pool = np.where(mid)[0]
+# The all-time greats: the players whose portraits were fetched from Commons,
+# a list put together by name rather than by any statistic. These are the only
+# people old enough to be worth using as the far end of a long hole.
+great = np.zeros(P, bool)
+for r in json.load(open(os.path.join(HERE, 'tools', 'commons_manifest.json'))):
+    if r.get('url') and r.get('node') is not None:
+        great[int(r['node'])] = True
 
-print(f'{len(pool)} endpoints within fifty years; '
-      f'{int(recent.sum())} inside thirty, {int((recent & is_star).sum())} of those '
-      f'at a marquee position')
+recent = base & (last >= 2006)                     # played in the last twenty
+mid = base & (first >= 1976)                       # inside the last fifty
+
+# Every endpoint of every puzzle has to be one or the other: someone you have
+# watched, or someone you have heard of. A guard who played 1988-96 is neither,
+# and putting one in a hole makes it unplayable rather than hard.
+usable = recent | great
+pool = np.where(usable & (mid | great))[0]
+
+print(f'{int(recent.sum())} played in the last twenty years, '
+      f'{int(great.sum())} all-time greats, {len(pool)} usable endpoints')
 
 # ------------------------------------------------------------- traversal ----
 
@@ -135,8 +147,10 @@ def distances(src):
 # four apart -- the modern game is too tightly connected for that. The par-4
 # hole therefore comes from the fifty-year tier, which is still recognisable
 # (Tony Dorsett, Ozzie Newsome) without being unplayable.
+# r* : both players from the last twenty years
+# g* : one all-time great, one current player -- the eras a long hole crosses
 BUCKETS = [('r2', 2, 'recent'), ('r3', 3, 'recent'),
-           ('m3', 3, 'mid'), ('m4', 4, 'mid')]
+           ('g3', 3, 'great'), ('g4', 4, 'great')]
 buckets = {k: [] for k, _, _ in BUCKETS}
 rng = np.random.default_rng(a.seed)
 sources = pool.copy()
@@ -150,13 +164,22 @@ for n, s_ in enumerate(sources, 1):
     for key, d, tier in BUCKETS:
         if len(buckets[key]) >= a.per_bucket:
             continue
-        mask = recent if tier == 'recent' else mid
-        if not mask[s_]:
-            continue
-        hits = np.where((dist == d) & mask)[0]
-        hits = hits[hits > int(s_)]                  # each unordered pair once
-        if tier == 'recent' and not is_star[s_]:
-            hits = hits[is_star[hits]]               # one marquee name at least
+        if tier == 'recent':
+            if not recent[s_]:
+                continue
+            hits = np.where((dist == d) & recent)[0]
+            hits = hits[hits > int(s_)]              # each unordered pair once
+            if not is_star[s_]:
+                hits = hits[is_star[hits]]           # one marquee name at least
+        else:
+            # exactly one end a great, the other someone playing now
+            if great[s_]:
+                hits = np.where((dist == d) & recent & ~great)[0]
+            elif recent[s_]:
+                hits = np.where((dist == d) & great)[0]
+            else:
+                continue
+            hits = hits[hits != int(s_)]
         if hits.size > a.per_source:
             hits = rng.choice(hits, a.per_source, replace=False)
         for t in hits:

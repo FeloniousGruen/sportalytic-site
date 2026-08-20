@@ -29,6 +29,10 @@ const GAME = (() => {
   ];
   const PAR_TOTAL = HOLES.reduce((n, h) => n + h.par, 0);
   const DAILY_TARGET = 10;                 // beat this on the daily
+  /* Giving up is a fixed ten, not the par. Handing you the shortest route and
+     then scoring it as if you had found it made surrender the best play on any
+     hole you could not see -- you would card a par for pressing a button. */
+  const GIVE_UP = 10;
   const EPOCH = Date.UTC(2026, 0, 1);
 
   let puzzles = null;                      // pairs by distance, built offline
@@ -43,6 +47,11 @@ const GAME = (() => {
   }
 
   function init(el, exit) { host = el; onExit = exit; }
+
+  // each mode gets its own accent, so you can tell at a glance which you are in
+  function setSkin(name) {
+    if (host) host.className = name ? 'skin-' + name : '';
+  }
 
   // ---------------------------------------------------------------- utils --
   const lower = () => (lower.c || (lower.c = NET.names.map(s => s.toLowerCase())));
@@ -81,6 +90,47 @@ const GAME = (() => {
     };
   }
 
+  /* What you have played, kept on the device. There is no account and no
+     server, so this is also the only record of a distribution to compare a new
+     score against. */
+  const history = {
+    dailies() { return store.get('dailies', {}); },
+    rounds() { return store.get('rounds', []); },
+    saveDaily(day, rec) {
+      const all = history.dailies();
+      all[day] = rec;
+      store.set('dailies', all);
+    },
+    saveRound(rec) {
+      const all = history.rounds();
+      all.push(rec);
+      store.set('rounds', all.slice(-200));
+    },
+  };
+
+  /* A Wordle-style distribution: one bar per score, yours picked out. Counting
+     is done over whatever is in the history, so it reads as your own record
+     rather than a leaderboard nobody can verify. */
+  function distribution(values, mine, lo, hi, label) {
+    if (!values.length) return '';
+    const counts = {};
+    for (const v of values) {
+      const k = Math.min(hi, Math.max(lo, v));
+      counts[k] = (counts[k] || 0) + 1;
+    }
+    const max = Math.max(...Object.values(counts));
+    let rows = '';
+    for (let k = lo; k <= hi; k++) {
+      const c = counts[k] || 0;
+      const w = max ? Math.round(100 * c / max) : 0;
+      const here = k === Math.min(hi, Math.max(lo, mine));
+      rows += `<div class="drow"><span class="dk">${k === hi ? k + '+' : k}</span>
+        <span class="dbar ${here ? 'me' : ''}" style="width:${Math.max(w, c ? 8 : 2)}%">${
+          c || ''}</span></div>`;
+    }
+    return `<div class="dist"><div class="dhead">${label} · ${values.length} played</div>${rows}</div>`;
+  }
+
   const store = {
     get(k, d) { try { return JSON.parse(localStorage.getItem('sp.' + k)) ?? d; }
                 catch (e) { return d; } },
@@ -92,6 +142,18 @@ const GAME = (() => {
   /* One A -> B chain. Every mode that involves joining two players uses this;
      it owns the validation, the clue ladder and the chart highlight, and calls
      back when the chain closes. */
+  /* Hang the chart off one end of the puzzle, so the chain you are building
+     grows out of the middle instead of across a tree rooted on somebody with
+     nothing to do with it. */
+  function centreOn(i) {
+    VIEW.captureFrom();
+    NET.recentre(i);
+    VIEW.centre = i;
+    VIEW.setCentreImage(null);
+    VIEW.path = []; VIEW.selected = -1;
+    VIEW.beginMorph(800);
+  }
+
   function leg(a, b, opts = {}) {
     const L = {
       a, b, chain: [a], done: false, clues: 0, clueLevel: 0, clue: null,
@@ -99,7 +161,7 @@ const GAME = (() => {
     };
     L.best = NET.route(a, b).degrees;
     L.links = () => L.chain.length - 1;
-    L.score = () => L.links() + L.clues;
+    L.score = () => L.revealed ? GIVE_UP : L.links() + L.clues;
 
     L.add = function (i) {
       const last = L.chain[L.chain.length - 1];
@@ -205,6 +267,7 @@ const GAME = (() => {
      best there is, because a shortest route cannot be beaten. Everything above
      that is strokes dropped, which is why it reads like golf. */
   function startRound() {
+    setSkin('round');
     const rng = Math.random;
     state = {
       mode: 'round', hole: 0,
@@ -214,6 +277,7 @@ const GAME = (() => {
       }),
     };
     state.leg = leg(state.holes[0].a, state.holes[0].b, { par: HOLES[0].par });
+    centreOn(state.holes[0].a);
     render();
   }
 
@@ -234,6 +298,7 @@ const GAME = (() => {
     state.hole++;
     const nx = state.holes[state.hole];
     state.leg = leg(nx.a, nx.b, { par: nx.par });
+    centreOn(nx.a);
     render();
   }
 
@@ -259,29 +324,75 @@ const GAME = (() => {
   }
 
   // ------------------------------------------------------------ the daily --
-  function startDaily() {
-    const day = dayNumber();
-    const saved = store.get('daily', null);
-    const [a, b] = pick('m4', seeded(day * 2654435761));
-    state = { mode: 'daily', day, target: DAILY_TARGET };
-    if (saved && saved.day === day && saved.done) {
-      state.leg = leg(a, b);
+  /* Par 3, and four days in five it is two players from the last twenty years.
+     The fifth reaches back to an all-time great, which is the only way to get
+     any era into it without the linking players becoming unnameable. */
+  function dailyPuzzle(day) {
+    const rng = seeded(day * 2654435761);
+    const pool = (day % 5 === 4) ? 'g3' : 'r3';
+    return pick(pool, rng);
+  }
+
+  function startDaily(day = dayNumber()) {
+    setSkin('daily');
+    const [a, b] = dailyPuzzle(day);
+    const saved = history.dailies()[day];
+    state = { mode: 'daily', day, target: DAILY_TARGET, par: 3,
+              today: day === dayNumber() };
+    state.leg = leg(a, b, { par: 3 });
+    if (saved && saved.chain) {
       state.leg.chain = saved.chain;
-      state.leg.clues = saved.clues;
+      state.leg.clues = saved.clues || 0;
+      state.leg.revealed = !!saved.revealed;
       state.leg.done = true;
-      state.leg.revealed = saved.revealed;
       state.replay = true;
-    } else {
-      state.leg = leg(a, b);
     }
+    centreOn(a);
     render();
   }
 
   function saveDaily() {
-    store.set('daily', {
-      day: state.day, done: state.leg.done, chain: state.leg.chain,
-      clues: state.leg.clues, revealed: state.leg.revealed,
+    if (state.replay) return;              // do not overwrite the first attempt
+    history.saveDaily(state.day, {
+      chain: state.leg.chain, clues: state.leg.clues,
+      revealed: state.leg.revealed, score: state.leg.score(),
     });
+    state.replay = true;
+  }
+
+  /* Every past daily is still playable: the puzzle comes from the day number,
+     so nothing had to be stored for it to exist. What is stored is how you did.
+   */
+  function renderArchive() {
+    const today = dayNumber();
+    const all = history.dailies();
+    const days = [];
+    for (let d = today; d > Math.max(-1, today - 60); d--) days.push(d);
+    const scores = Object.values(all).map(r => r.score).filter(n => n != null);
+    const rounds = history.rounds();
+    host.innerHTML = exitBtn() +
+      `<h2>Archive</h2>
+       <div class="lead">Every daily since the start is still there. Your record
+         is kept on this device only.</div>
+       ${scores.length ? distribution(scores, -1, 3, 10, 'Your dailies') : ''}
+       ${rounds.length ? distribution(rounds.map(r => r.shot), -1, 15, 27, 'Your rounds') : ''}
+       <div class="gmeta">Pick a day</div>
+       <div class="arch">${days.map(d => {
+         const r = all[d];
+         const cls = r ? (r.revealed ? 'gave' : 'done') : '';
+         return `<button class="aday ${cls}" data-day="${d}"
+                   title="${r ? 'scored ' + r.score : 'not played'}">${
+                   d === today ? 'today' : '#' + d}</button>`;
+       }).join('')}</div>
+       ${rounds.length ? `<div class="gmeta">Rounds played: ${rounds.length},
+          best ${Math.min(...rounds.map(r => r.shot))}</div>` : ''}
+       <button class="btn ghost" id="gagain">Back</button>`;
+    host.querySelector('.arch').onclick = e => {
+      const b = e.target.closest('[data-day]');
+      if (b) { setSkin('daily'); startDaily(+b.dataset.day); }
+    };
+    $('#gagain').onclick = () => onExit();
+    $('#gclose').onclick = () => onExit();
   }
 
   // -------------------------------------------------------- the expedition --
@@ -290,6 +401,7 @@ const GAME = (() => {
      working out who stands at the edge of what you have found, and the map is
      the only clue you get. */
   function startExpedition(start) {
+    setSkin('expedition');
     NET.recentre(start);
     const lit = new Uint8Array(NET.P);
     state = { mode: 'expedition', start, lit, unlocked: [], litCount: 0 };
@@ -331,8 +443,9 @@ const GAME = (() => {
     const daily = state.mode === 'daily';
     const head = daily
       ? `<h2>The daily</h2>
-         <div class="lead">Four links apart at best. Join them in under
-           <b>${state.target}</b> — puzzle #${state.day}.</div>`
+         <div class="lead">${state.par} links apart at best. Join them in under
+           <b>${state.target}</b> — puzzle #${state.day}${
+           state.today ? '' : ' (from the archive)'}.</div>`
       : `<h2>Hole ${state.hole + 1} of 5</h2>
          <div class="lead">Par <b>${L.par}</b>. Join
            <b>${NET.names[L.a]}</b> to <b>${NET.names[L.b]}</b>.</div>`;
@@ -355,8 +468,15 @@ const GAME = (() => {
       }
     }
 
+    let chart = '';
+    if (L.done && daily) {
+      saveDaily();
+      const all = history.dailies();
+      const scores = Object.values(all).map(r => r.score).filter(n => n != null);
+      chart = distribution(scores, L.score(), 3, 10, 'Your dailies');
+    }
     const t = state.mode === 'round' ? roundTotals() : null;
-    host.innerHTML = exitBtn() + head + chainHtml(L, true) + verdict +
+    host.innerHTML = exitBtn() + head + chainHtml(L, true) + verdict + chart +
       `<div class="gmeta">${L.links()} link${L.links() === 1 ? '' : 's'}${
         L.clues ? ` · ${L.clues} clue${L.clues === 1 ? '' : 's'}` : ''}${
         t && t.played ? ` · round so far ${t.shot} (par ${t.par})` : ''}</div>` +
@@ -374,7 +494,6 @@ const GAME = (() => {
       $('#gclue').onclick = () => { L.nextClue(); render(); };
       $('#ggive').onclick = () => { L.reveal(); if (daily) saveDaily(); render(); };
     } else {
-      if (daily) saveDaily();
       const nx = $('#gnexth'); if (nx) nx.onclick = nextHole;
       const ag = $('#gagain'); if (ag) ag.onclick = () => onExit();
     }
@@ -385,6 +504,12 @@ const GAME = (() => {
   function renderCard() {
     const t = roundTotals();
     const diff = t.shot - t.par;
+    if (!state.saved) {
+      history.saveRound({ shot: t.shot, par: t.par,
+                          holes: state.holes.map(h => [h.a, h.b, h.par, h.score]) });
+      state.saved = true;
+    }
+    const past = history.rounds().map(r => r.shot);
     host.innerHTML = exitBtn() +
       `<h2>The card</h2>
        <div class="lead">${diff === 0
@@ -399,6 +524,7 @@ const GAME = (() => {
                     : over ? `<span style="color:var(--grey)"> +${over}</span>` : ''}</li>`;
        }).join('')}</ul>
        <div class="gmeta">Par ${t.par} · you shot ${t.shot}</div>
+       ${distribution(past, t.shot, t.par, t.par + 12, 'Your rounds')}
        <button class="btn" id="gshare">Share the card</button>
        <button class="btn ghost" id="gagain">Play another round</button>`;
     $('#gshare').onclick = async () => {
@@ -438,6 +564,7 @@ const GAME = (() => {
   }
 
   return { load, init, startRound, startDaily, startExpedition, dayNumber,
+           renderArchive, setSkin,
            get state() { return state; },
-           stop() { state = null; VIEW.lit = null; } };
+           stop() { state = null; VIEW.lit = null; setSkin(null); } };
 })();
