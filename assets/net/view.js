@@ -133,8 +133,27 @@ const VIEW = (() => {
     dirty = true;
   }
 
+  /* The heading and the controls sit across the top of the canvas, so the
+     chart is centred in what is left underneath them rather than in the whole
+     rectangle. Doing it here rather than by panning afterwards means it holds
+     however the chart is rotated, and survives a fit -- panning did not,
+     because a morph resets the camera before the new path is even set. */
+  function topInset() {
+    let m = 0;
+    const cx = W / 2;
+    for (const r of keepOut()) {
+      if (r.y > H * 0.4) continue;                 // not along the top
+      // and only what actually stands over the chart: the player card is off
+      // to one side, so counting it squashed the chart for no reason
+      if (r.x > cx || r.x + r.w < cx) continue;
+      m = Math.max(m, r.y + r.h);
+    }
+    return Math.max(0, Math.min(m + 10, H * 0.3));
+  }
+  const midY = () => topInset() + (H - topInset()) / 2;
+
   const sx = x => (x - cam.x) * cam.scale + W / 2;
-  const sy = y => (y - cam.y) * cam.scale + H / 2;
+  const sy = y => (y - cam.y) * cam.scale + midY();
 
   /* Uniform bucket grid over layout space. Rebuilt whenever the layout changes;
    * 28k points into ~64px buckets makes hit-testing a handful of comparisons. */
@@ -170,7 +189,7 @@ const VIEW = (() => {
 
   function pick(mx, my) {
     if (!grid) return -1;
-    const wx = (mx - W / 2) / cam.scale + cam.x, wy = (my - H / 2) / cam.scale + cam.y;
+    const wx = (mx - W / 2) / cam.scale + cam.x, wy = (my - midY()) / cam.scale + cam.y;
     // a player wearing a portrait should be grabbable by the portrait, not by
     // the small dot hiding behind it
     const centreR = Math.max(58, Math.min(104, cam.scale * 1.15)) / 2;
@@ -623,7 +642,7 @@ const VIEW = (() => {
     // off the bottom edge. At 99.9 the tail costs about 8% of the zoom and
     // everything that is out there stays on screen.
     const r = rs[Math.floor(rs.length * 0.999)] || rs[rs.length - 1] || 1;
-    return Math.min(W, H) / (2 * r) * 0.94;
+    return Math.min(W, H - topInset()) / (2 * r) * 0.94;
   }
 
   function fit() { cam.x = 0; cam.y = 0; cam.scale = fitScale(); dirty = true; }
@@ -647,7 +666,8 @@ const VIEW = (() => {
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,
-    set path(p) { path = p; dirty = true; }, get path() { return path; },
+    set path(p) { path = p; dirty = true; },
+    get path() { return path; },
     set selected(i) {
       if (i !== selected) { growWho = i; growFrom = performance.now(); }
       selected = i; dirty = true;
