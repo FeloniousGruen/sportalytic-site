@@ -408,6 +408,13 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   /* one sheet at a time, sitting on top of the tool bar */
   #panel,#quiz{right:8px;left:8px;top:auto;bottom:56px;width:auto;
     max-height:48vh;overflow:auto;padding:13px;font-size:13.5px}
+  /* keyboard up: the card climbs above it and takes the room the chart was
+     using, and the tool bar goes -- it is behind the keyboard regardless */
+  :root.kb-open #panel,:root.kb-open #quiz,:root.kb-open #game{
+    bottom:calc(var(--kb,0px) + 8px);
+    max-height:calc(100% - var(--kb,0px) - 74px)}
+  :root.kb-open #tools,:root.kb-open #toolwrap{display:none}
+  :root.kb-open #title{display:none}
   #panel.aside{right:8px}                 /* nowhere sideways to go */
   #panel h2{font-size:17px}
   #quiz h2{font-size:15px}
@@ -696,6 +703,32 @@ function setRing(on){
     btn.classList.remove('on');
   }
 }
+
+/* The on-screen keyboard covers the bottom of the window, which is exactly
+   where the cards sit. visualViewport is the only thing that reports it: the
+   layout viewport does not change when a keyboard opens, so innerHeight is no
+   help. The difference between the two is the keyboard, and --kb carries it
+   into the CSS so a card can sit above it. Losing the chart is the right trade
+   -- you cannot type into something you cannot see. */
+const vv = window.visualViewport;
+function syncKeyboard(){
+  if(!vv) return;
+  const kb = Math.max(0, innerHeight - vv.height - vv.offsetTop);
+  document.documentElement.style.setProperty('--kb', kb + 'px');
+  document.documentElement.classList.toggle('kb-open', kb > 80);
+}
+if(vv){
+  vv.addEventListener('resize', syncKeyboard);
+  vv.addEventListener('scroll', syncKeyboard);
+}
+/* and keep whatever you are typing into on screen inside its own card */
+addEventListener('focusin', e => {
+  if(!e.target.matches || !e.target.matches('input')) return;
+  setTimeout(() => {
+    syncKeyboard();
+    e.target.scrollIntoView({block:'nearest', behavior:'smooth'});
+  }, 260);
+});
 
 /* On a phone the panel and the quiz are a sheet across the bottom, and the
    canvas hands over that space so the chart stays centred in what is visible.
