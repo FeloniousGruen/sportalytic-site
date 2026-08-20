@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10 Degrees of Erling Haaland — Sportalytic</title>
+<meta name="description" content="Every player in the English top flight since 1888, linked by shared club-seasons. Click anyone to see their path to the centre, or make them the centre.">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<!-- Link previews. Without an og:image a messenger scrapes the favicon and
+     scales a 192px mark to card size, which is what made this look so poor.
+     NOTE: some scrapers (Facebook and WhatsApp among them) insist on an
+     absolute og:image. Once the live domain is settled, put it in front of
+     these two paths -- https://<domain>/assets/share.jpg -- or the preview
+     will keep falling back on those services. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sportalytic">
+<meta property="og:title" content="10 Degrees of Erling Haaland">
+<meta property="og:description" content="Every player in the English top flight since 1888, joined wherever two of them shared a club. Click anyone to see their route to the centre, or make them the centre.">
+<meta property="og:image" content="assets/share-football.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="10 Degrees of Erling Haaland">
+<meta name="twitter:description" content="Every player in the English top flight since 1888, joined wherever two of them shared a club. Click anyone to see their route to the centre, or make them the centre.">
+<meta name="twitter:image" content="assets/share-football.jpg">
+<style>
+@font-face{font-family:"Archivo Black";src:url("assets/ArchivoBlack.woff2") format("woff2");font-weight:400;font-display:swap}
+:root{
+  --bg:#0B1117;--panel:#141C25;--ink:#FFFFFF;--amber:#FBC247;--blue:#4E7FA8;
+  --grey:#6C7A88;--greyd:#39454F;--maxw:1240px;
+  --display:"Archivo Black","Arial Black",Arial,sans-serif;
+  --body:Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+/* Light mode. Not white but a cool off-white, text a deep slate rather than
+   black, and the amber darkened for text -- the brand yellow is built for a
+   near-black background and has nothing like enough contrast on a pale one.
+   The button keeps the bright yellow, with dark text inside it. */
+:root[data-theme="light"]{
+  --bg:#F4F6F8;--panel:#FFFFFF;--ink:#1A202C;--amber:#D97706;--blue:#2C5F86;
+  --grey:#64748B;--greyd:#E2E8F0;
+  --shadow:0 4px 14px rgba(16,24,40,.07),0 1px 3px rgba(16,24,40,.06);
+}
+:root[data-theme="light"] header{background:rgba(255,255,255,.86);
+  border-bottom-color:#E2E8F0}
+:root[data-theme="light"] .cta{background:#FBC247;color:#1A202C}
+:root[data-theme="light"] #panel,:root[data-theme="light"] #quiz,
+:root[data-theme="light"] #game,:root[data-theme="light"] #results,
+:root[data-theme="light"] #tools,:root[data-theme="light"] #gres,
+:root[data-theme="light"] #quizRes{box-shadow:var(--shadow);border-color:#E2E8F0}
+:root[data-theme="light"] #tools{background:rgba(255,255,255,.86)}
+:root[data-theme="light"] .tbtn{background:#fff;border-color:#D8E0E8;color:#1A202C}
+:root[data-theme="light"] .tbtn:hover{background:#F4F6F8}
+:root[data-theme="light"] .tbtn.on{background:#FBC247;color:#1A202C;border-color:#FBC247}
+:root[data-theme="light"] .hud input,:root[data-theme="light"] .hud select{
+  background:#fff;border-color:#D8E0E8}
+:root[data-theme="light"] .btn{color:#1A202C}
+:root[data-theme="light"] .chip{background:#EEF2F6;color:#2C5F86}
+:root[data-theme="light"] .shareBox,:root[data-theme="light"] .qdone,
+:root[data-theme="light"] .qclue,:root[data-theme="light"] #gres div:hover,
+:root[data-theme="light"] #results div:hover,
+:root[data-theme="light"] #quizRes div:hover{background:#F1F5F9}
+:root[data-theme="light"] .dbar{background:#E2E8F0;color:#1A202C}
+:root[data-theme="light"] .aday{background:#F1F5F9;color:#64748B;border-color:#E2E8F0}
+:root[data-theme="light"] .qstep.gap input{background:#fff}
+:root[data-theme="light"] .gmenu{background:#F8FAFC;border-color:#E2E8F0;color:#1A202C}
+/* The mode colours are picked for a near-black panel and go pale and weak on
+   white -- and the archive, being near-white, disappears entirely. Light mode
+   takes each one several steps darker and puts more of it in the fill. */
+:root[data-theme="light"] .gmenu.m-round{--c:#0D9488}
+:root[data-theme="light"] .gmenu.m-daily{--c:#B45309}
+:root[data-theme="light"] .gmenu.m-expedition{--c:#A21CAF}
+:root[data-theme="light"] .gmenu.m-archive{--c:#475569}
+:root[data-theme="light"] .gmenu[class*="m-"]{
+  background:color-mix(in srgb,var(--c) 13%,#FFFFFF);
+  border-color:color-mix(in srgb,var(--c) 55%,#FFFFFF)}
+:root[data-theme="light"] .gmenu[class*="m-"] span{color:#334155}
+:root[data-theme="light"] .gmenu[class*="m-"]:hover{
+  background:color-mix(in srgb,var(--c) 22%,#FFFFFF);
+  border-color:var(--c);
+  box-shadow:0 0 0 1px var(--c) inset,0 2px 10px rgba(16,24,40,.10)}
+:root[data-theme="light"] .gmenu[class*="m-"]:hover b{color:var(--c)}
+/* and the same for the card once you are inside a mode */
+:root[data-theme="light"] #game.skin-round{--accent:#0D9488}
+:root[data-theme="light"] #game.skin-daily{--accent:#B45309}
+:root[data-theme="light"] #game.skin-expedition{--accent:#A21CAF}
+:root[data-theme="light"] #game.skin-archive{--accent:#475569}
+:root[data-theme="light"] #game .btn{color:#FFFFFF}
+:root[data-theme="light"] .dbar.me{color:#FFFFFF}
+:root[data-theme="light"] .qchain::before,:root[data-theme="light"] .chain::before{
+  background:#E2E8F0}
+:root[data-theme="light"] .node .dot,:root[data-theme="light"] .qstep .dot{
+  border-color:#fff}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;overflow:hidden}
+a{color:inherit}
+header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(11,17,23,.8);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+.bar{max-width:var(--maxw);margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:20px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{width:26px;height:26px}
+.brand span{font-family:var(--display);font-size:15px;text-transform:uppercase}
+nav{display:flex;gap:18px;margin-right:auto}
+nav a{text-decoration:none;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--grey);padding:4px 0;border-bottom:2px solid transparent}
+nav a:hover{color:var(--ink);border-bottom-color:var(--amber)}
+.cta{background:var(--amber);color:#0B1117;text-decoration:none;font-weight:bold;font-size:12px;
+  letter-spacing:.09em;text-transform:uppercase;padding:9px 15px;border-radius:8px;white-space:nowrap}
+.cta:hover{filter:brightness(1.08)}
+#stage{position:fixed;inset:60px 0 0 0}
+/* Explicit 100%, never auto: a canvas is a replaced element, so width:auto
+   makes it size from its width attribute -- which resize() sets from the
+   element's own size, and the two feed each other until it is 4800px wide. */
+canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch-action:none}
+/* One column: title, controls, results. Absolute as a block so it floats over
+   the canvas, but laid out normally inside, so a two-line name pushes the
+   search box down rather than sitting on top of it. */
+#topbar{position:absolute;top:8px;left:12px;right:330px;z-index:5;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#topbar>*{pointer-events:auto}
+/* Centred on the canvas, which is where the chart's middle is, and tucked up
+   under the controls rather than a line below them. */
+/* width:fit-content, not a full-width block: the label placer measures this
+   element, and a full-width box would fence off the whole band either side of
+   the words instead of just the words. */
+#title{position:absolute;top:50px;left:0;right:0;margin:0 auto;width:fit-content;
+  max-width:calc(100% - 24px);text-align:center;
+  font-family:var(--display);font-size:22px;text-transform:uppercase;
+  line-height:1.15;pointer-events:none;z-index:4}
+#title b{color:var(--amber);font-weight:inherit}
+.hud{display:flex;gap:8px;align-items:center}
+.hud .spacer{flex:1}
+.hud input,.hud select{background:var(--panel);color:var(--ink);border:1px solid var(--greyd);border-radius:8px;padding:9px 11px;font:inherit;font-size:14px}
+.hud optgroup{background:#0B1117;color:var(--amber);font-style:normal;font-weight:bold}
+.hud optgroup option{color:var(--ink);font-weight:normal}
+.hud input{width:200px;flex:0 0 auto}
+#club{flex:0 1 260px;min-width:0}
+#season{flex:0 0 auto;min-width:118px}
+/* The era picker changes the graph rather than the search, so it reads as the
+   odd one out on purpose: it carries the accent the other two do not. */
+#era{flex:0 0 auto;min-width:160px;border-color:rgba(251,194,71,.45)}
+#era.narrowed{border-color:var(--amber);color:var(--amber)}
+:root[data-theme="light"] #era{border-color:rgba(217,119,6,.5)}
+:root[data-theme="light"] #era.narrowed{border-color:var(--amber);color:var(--amber)}
+/* Said once, under the controls, when the era has taken most of the record
+   away -- otherwise the chart looks broken rather than filtered. */
+#eraNote{align-self:flex-start;max-width:min(560px,100%);background:var(--panel);
+  border:1px solid var(--greyd);border-left:3px solid var(--amber);border-radius:8px;
+  padding:8px 11px;font-size:12px;line-height:1.5;color:#9CC2DC}
+#eraNote b{color:var(--amber)}
+#eraNote button{background:none;border:0;padding:0;font:inherit;color:var(--amber);
+  text-decoration:underline;cursor:pointer}
+#results{align-self:flex-start;min-width:260px;background:var(--panel);border:1px solid var(--greyd);border-radius:10px;max-height:46vh;overflow:auto;min-width:260px;z-index:5}
+#results div{padding:8px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
+#results div:hover{background:#1d2833}
+#panel{position:absolute;right:12px;top:12px;width:296px;transition:right .18s;background:var(--panel);border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px}
+#panel h2{font-family:var(--display);font-size:19px;margin:0 0 2px;text-transform:uppercase;line-height:1.1}
+#panel .meta{color:var(--grey);font-size:13px;margin-bottom:12px}
+#panel .deg{color:var(--amber);font-weight:bold}
+.chain{margin:10px 0 0;list-style:none;max-height:34vh;overflow:auto}
+.shareBox{margin:9px 0 2px;padding:9px 10px;background:#1d2833;border-left:3px solid #F38A1C;
+  border-radius:6px;font-size:12px;line-height:1.5}
+.shareBox b{color:#F38A1C;font-size:17px}
+.note{margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.09);
+  color:#9CC2DC;font-size:11px;line-height:1.5}
+.note b{color:#F38A1C;font-size:12px}
+.muted2{color:var(--grey);display:block;margin-top:5px;font-size:10px}
+.btn{display:inline-block;margin-top:12px;background:var(--amber);color:#0B1117;border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:bold;font-size:13px;cursor:pointer;width:100%}
+/* an undo sits beside a primary action, so it reads quieter than one */
+.btn.ghost{background:transparent;color:var(--amber);border:1px solid rgba(251,194,71,.45);margin-top:8px}
+.btn.ghost:hover{background:rgba(251,194,71,.1)}
+#tools{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:stretch;
+  background:rgba(11,17,23,.72);backdrop-filter:blur(10px);padding:8px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.10)}
+.tbtn{background:var(--panel);color:var(--ink);border:1px solid #4a5866;border-radius:9px;
+  padding:11px 15px;font:inherit;font-size:14px;font-weight:bold;cursor:pointer;min-width:48px;
+  box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.tbtn:hover{border-color:var(--amber);color:var(--amber);background:#1d2833}
+.tbtn.on{background:var(--amber);color:#0B1117;border-color:var(--amber)}
+.tbtn.zoom{font-size:19px;line-height:1;padding:9px 15px}
+.chain{position:relative;padding-left:18px}
+.chain::before{content:'';position:absolute;left:5px;top:9px;bottom:9px;width:2px;background:var(--greyd)}
+.node{position:relative;padding:2px 0;font-size:13px}
+.node .dot{position:absolute;left:-17px;top:7px;width:9px;height:9px;border-radius:50%;
+  background:var(--grey);border:2px solid var(--panel)}
+.node.end .dot{background:var(--amber)}
+.via{position:relative;color:var(--grey);font-size:11px;padding:1px 0 1px 0;display:flex;
+  align-items:center;gap:5px}
+.via::before{content:'';position:absolute;left:-13px;top:50%;width:9px;height:2px;background:var(--greyd)}
+.chip{display:inline-block;background:#1d2833;border:1px solid var(--greyd);border-radius:4px;
+  padding:1px 5px;font-size:10px;letter-spacing:.04em;color:#9CC2DC;font-weight:bold}
+/* a way straight back to the chart from either card */
+.xclose{position:absolute;top:8px;right:9px;width:28px;height:28px;line-height:1;
+  background:transparent;border:0;color:var(--grey);font-size:24px;cursor:pointer;
+  border-radius:7px;padding:0}
+.xclose:hover{color:var(--ink);background:rgba(255,255,255,.07)}
+/* both cards are already absolutely positioned, so they are the containing
+   block for the close button without any help */
+#panel h2,#quiz h2{padding-right:30px}
+/* the share answer, over the chart, on a phone */
+/* sits at the top of the chart's own area, so it reads over empty space
+   rather than over the faces in the middle of the animation */
+#badge{position:absolute;left:10px;right:10px;top:calc(var(--top,0px) + 6px);
+  text-align:center;pointer-events:none;z-index:3}
+#badge b{display:block;font-family:var(--display);font-size:44px;color:#F38A1C;
+  text-shadow:0 2px 18px rgba(0,0,0,.85);line-height:1}
+#badge span{display:inline-block;margin-top:4px;max-width:30ch;color:#E7EEF5;font-size:11.5px;
+  line-height:1.35;text-shadow:0 1px 8px rgba(0,0,0,.9)}
+#stats{position:absolute;left:12px;bottom:12px;color:var(--grey);font-size:12px;line-height:1.5;font-variant-numeric:tabular-nums}
+#stats a{color:var(--grey);text-decoration:underline;cursor:pointer}
+#stats a:hover{color:var(--amber)}
+/* Photo credits. The CC portraits are free to use but nearly all of them ask
+   to be credited, so the list has to be reachable from the page itself. */
+#credits{position:absolute;inset:0;background:rgba(11,17,23,.9);backdrop-filter:blur(6px);
+  z-index:70;display:flex;align-items:center;justify-content:center;padding:24px}
+.credbox{background:var(--panel);border:1px solid var(--greyd);border-radius:12px;
+  max-width:760px;width:100%;max-height:100%;display:flex;flex-direction:column;padding:20px}
+.credbox h2{font-family:var(--display);font-size:19px;margin:0 0 8px;text-transform:uppercase}
+.credbox p{margin:0 0 12px;color:var(--grey);font-size:12.5px;line-height:1.6}
+.credbox p a{color:var(--amber)}
+.credlist{overflow:auto;border-top:1px solid var(--greyd);font-size:12px}
+.credlist div{display:grid;grid-template-columns:150px 1fr 110px;gap:10px;padding:6px 2px;
+  border-bottom:1px solid rgba(255,255,255,.05);align-items:baseline}
+.credlist b{font-weight:normal;color:var(--ink)}
+.credlist a{color:#9CC2DC}
+.credlist span{color:var(--grey);text-align:right}
+@media(max-width:620px){.credlist div{grid-template-columns:1fr;gap:1px}
+  .credlist span{text-align:left}}
+/* While a round is running the quiz owns the right-hand corner, so a player
+   card opened by clicking a dot moves along rather than landing on top of it. */
+#panel.aside{right:320px}
+#game{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
+  border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px;z-index:7;
+  max-height:calc(100vh - 140px);overflow:auto}
+#game h2{font-family:var(--display);font-size:17px;margin:0 0 8px;text-transform:uppercase;
+  padding-right:30px}
+#game .lead{color:var(--grey);font-size:12px;line-height:1.5;margin-bottom:10px}
+.gmeta{color:var(--grey);font-size:11px;margin-top:8px}
+.gbig{margin:6px 0 10px}
+.gbig b{font-family:var(--display);font-size:30px;color:var(--amber);display:block;line-height:1}
+.gbig span{color:var(--grey);font-size:11.5px}
+.gmenu{display:block;width:100%;text-align:left;background:#1d2833;color:var(--ink);
+  border:1px solid var(--greyd);border-radius:9px;padding:11px 12px;margin-top:8px;
+  font:inherit;font-size:13px;cursor:pointer}
+.gmenu:hover{border-color:var(--grey)}   /* only the plain ones */
+.gmenu b{display:block;font-size:13.5px;margin-bottom:2px}
+.gmenu span{color:var(--grey);font-size:11.5px;line-height:1.4}
+/* Colour by what the mode is for, not just to tell them apart.
+     daily       the brand yellow -- the one thing to come back for each day
+     round       teal, cool and focused, a set task with a number at the end
+     expedition  magenta, the deep end: open-ended and the hardest to finish
+     archive     slate, because it is a record of play rather than play, and
+                 should not compete with the three live games above it
+   Border and title carry the colour; the fill is the same hue at a tenth. */
+.gmenu.m-round{--c:#2DD4BF} .gmenu.m-daily{--c:#FBC247}
+.gmenu.m-expedition{--c:#E879F9} .gmenu.m-archive{--c:#E2E8F0}
+.gmenu[class*="m-"]{border:1px solid var(--c);
+  background:color-mix(in srgb,var(--c) 10%,transparent)}
+.gmenu[class*="m-"] b{color:var(--c)}
+.gmenu[class*="m-"] span{color:#AEBAC6}
+.gmenu[class*="m-"]{transition:background .15s,box-shadow .15s,transform .15s}
+/* hover lightens the mode's own colour; nothing here turns amber */
+.gmenu[class*="m-"]:hover{background:color-mix(in srgb,var(--c) 26%,transparent);
+  border-color:color-mix(in srgb,var(--c) 70%,white);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 70%,white) inset,
+             0 0 18px color-mix(in srgb,var(--c) 28%,transparent);
+  transform:translateY(-1px)}
+.gmenu[class*="m-"]:hover b{color:color-mix(in srgb,var(--c) 70%,white)}
+.gmenu[class*="m-"]:active{transform:none}
+/* The archive is white rather than grey: it is a place to go, not a thing
+   switched off. It steps back by a lighter fill, not by looking disabled. */
+.gmenu.m-archive{border-color:color-mix(in srgb,var(--c) 40%,transparent);
+  background:color-mix(in srgb,var(--c) 6%,transparent)}
+.qchain.card .qstep{padding:5px 0}
+/* Two routes read side by side; the card widens to hold them. A subheading
+   here is doing real work -- which of these is yours -- so it is a heading and
+   not a caption. */
+.rhead{font-family:var(--display);font-size:11.5px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink);margin:2px 0 2px}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.routes .qchain{margin:4px 0 0}
+#game:has(.routes){width:430px}
+/* The heading does not move for anything. An earlier version re-centred it
+   whenever a card opened, to avoid a wide card clipping it -- but that meant
+   the heading slid left every time you pressed Play, which is far more
+   noticeable than the clipping it was avoiding. It only ever overlapped with
+   the wide two-route card on a narrow desktop, and by about 30px. The card
+   sits above it in any case, so it is the card that covers the heading rather
+   than the heading breaking. */
+/* the shortest route, shown beside yours: quieter, so the eye reads your own
+   attempt first and the answer second */
+.qchain.best{opacity:.72}
+.qchain.best::before{background:repeating-linear-gradient(180deg,
+  var(--greyd) 0 3px,transparent 3px 7px)}
+.qchain.best .qstep .dot{background:var(--greyd)}
+.qchain.best .qstep.fix .dot{background:var(--accent)}
+/* The game's suggestion list. It had no rules at all, so it rendered as bare
+   text: no hover, no pointer, and a caret that said "select me" rather than
+   "click me". */
+#gres{background:#0B1117;border:1px solid var(--greyd);border-radius:9px;
+  max-height:200px;overflow:auto;margin-top:6px}
+#gres div{padding:8px 10px;cursor:pointer;font-size:13px;user-select:none;
+  border-bottom:1px solid rgba(255,255,255,.05)}
+#gres div:last-child{border-bottom:0}
+#gres div:hover{background:#1d2833}
+#results div,#quizRes div{user-select:none}
+/* One accent per mode, so which game you are in is obvious without reading. */
+#game{--accent:var(--amber)}
+#game.skin-round{--accent:#2DD4BF}
+#game.skin-daily{--accent:#FBC247}
+#game.skin-expedition{--accent:#E879F9}
+#game.skin-archive{--accent:#E2E8F0}
+#game h2{color:var(--accent)}
+#game .gbig b{color:var(--accent)}
+#game .btn{background:var(--accent)}
+#game .btn.ghost{background:transparent;color:var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+#game .btn.ghost:hover{background:color-mix(in srgb,var(--accent) 12%,transparent)}
+#game .qstep.fix .dot{background:var(--accent)}
+#game .qdone{border-left-color:var(--accent)}
+#game .qdone b{color:var(--accent)}
+#game .qstep.gap input{border-color:var(--accent)}
+
+/* the distribution, Wordle-fashion: one bar a score, yours picked out */
+.dist{margin:12px 0 4px}
+.dhead{color:var(--grey);font-size:11px;margin-bottom:5px}
+.drow{display:flex;align-items:center;gap:7px;margin-bottom:3px}
+.dk{width:22px;text-align:right;color:var(--grey);font-size:11px;
+  font-variant-numeric:tabular-nums}
+.dbar{background:#2b3742;color:var(--ink);font-size:11px;font-weight:bold;
+  padding:2px 6px;border-radius:3px;min-width:14px;text-align:right;
+  transition:width .3s}
+.dbar.me{background:var(--accent);color:#0B1117}
+/* the archive: one square a day */
+.arch{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 4px}
+.aday{background:#1d2833;color:var(--grey);border:1px solid var(--greyd);
+  border-radius:6px;padding:5px 7px;font:inherit;font-size:11px;cursor:pointer}
+.aday:hover{border-color:var(--accent);color:var(--ink)}
+.aday.done{background:var(--accent);color:#0B1117;border-color:var(--accent)}
+.aday.gave{background:#3a2a1a;color:#F38A1C;border-color:#5a3f22}
+/* Test your knowledge. Sits where the player panel does, and takes over from
+   it while a round is running. */
+#quiz{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
+  border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px;z-index:6}
+#quiz h2{font-family:var(--display);font-size:17px;margin:0 0 10px;text-transform:uppercase}
+#quiz .lead{color:var(--grey);font-size:12px;line-height:1.5;margin-bottom:12px}
+.slot{display:flex;gap:6px;align-items:center;margin-bottom:7px}
+.slot input{flex:1;min-width:0;background:#0B1117;color:var(--ink);border:1px solid var(--greyd);
+  border-radius:7px;padding:8px 9px;font:inherit;font-size:13px}
+.slot button{background:#1d2833;color:var(--amber);border:1px solid var(--greyd);border-radius:7px;
+  padding:8px 9px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.slot button:hover{border-color:var(--amber)}
+.slot .tag{font-size:10px;color:var(--grey);width:16px;text-align:center;font-weight:bold}
+#quizRes{background:#0B1117;border:1px solid var(--greyd);border-radius:9px;
+  max-height:190px;overflow:auto;margin-top:6px}
+#quizRes div{padding:7px 10px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+#quizRes div:hover{background:#1d2833}
+.qchain{list-style:none;margin:10px 0;padding-left:16px;position:relative;max-height:30vh;overflow:auto}
+.qchain::before{content:'';position:absolute;left:4px;top:8px;bottom:8px;width:2px;background:var(--greyd)}
+.qstep{position:relative;padding:3px 0;font-size:13px}
+.qstep .dot{position:absolute;left:-15px;top:8px;width:8px;height:8px;border-radius:50%;
+  background:var(--grey);border:2px solid var(--panel)}
+.qstep.fix .dot{background:var(--amber)}
+.qstep .via{color:var(--grey);font-size:11px}
+/* the box you type into lives in the chain, in the gap it is there to close */
+.qstep.gap{padding:6px 0 6px 0}
+.qstep.gap input{width:100%;background:#0B1117;color:var(--ink);border:1px solid var(--amber);
+  border-radius:7px;padding:8px 9px;font:inherit;font-size:13px}
+.qstep.gap::before{content:'';position:absolute;left:-11px;top:0;bottom:0;width:2px;
+  background:repeating-linear-gradient(180deg,var(--amber) 0 3px,transparent 3px 7px)}
+.qclue{margin-top:6px;padding:7px 9px;background:#1d2833;border-left:3px solid var(--blue);
+  border-radius:6px;color:#9CC2DC;font-size:11.5px;line-height:1.45}
+.qclue b{color:var(--ink)}
+.qerr{color:#F38A1C;font-size:12px;line-height:1.45;margin:8px 0 0}
+.qdone{margin:10px 0 0;padding:9px 10px;background:#1d2833;border-left:3px solid var(--amber);
+  border-radius:6px;font-size:12px;line-height:1.5}
+.qdone b{color:var(--amber);font-size:16px}
+#loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:15px}
+/* Phones. No room for a right-hand column, so the cards become a sheet across
+   the bottom; the tool bar is pinned below them in a single row that scrolls
+   sideways rather than wrapping into three, and the chart keeps everything in
+   between. */
+@media(max-width:820px){
+  .bar{height:52px;gap:10px;padding:0 12px}
+  .brand span{font-size:13px}
+  .brand img{width:22px;height:22px}
+  nav{display:none}                       /* the logo already goes home */
+  .cta{padding:7px 11px;font-size:11px}
+  #stage{inset:52px 0 0 0}
+
+  #topbar{top:6px;left:8px;right:8px;gap:6px}
+  #title{top:var(--titleTop,50px);left:8px;right:8px;margin:0;width:auto;text-align:left;font-size:15px}
+  /* The menu opens with the page, and on a phone a full-height card would
+     leave the chart a sliver of what it is meant to be showing. The mode
+     descriptions tighten and the standing explanation goes -- it is the same
+     sentence every time and costs four lines. */
+  #game .menu-lead{display:none}
+  #game .gmenu{padding:11px 12px;margin-top:7px;min-height:56px}
+  #game .gmenu b{font-size:13px}
+  #game .gmenu span{font-size:11px;line-height:1.35}
+  /* the round is the screen on a phone; the chart above it is context */
+  #quiz,#game{max-height:72vh}
+  /* no room to sit them side by side on a phone */
+  #game:has(.routes){width:auto}
+  .routes{grid-template-columns:1fr;gap:8px}
+  #game{right:8px;left:8px;top:auto;bottom:56px;width:auto;padding:13px}
+  #quiz .lead{font-size:11.5px;margin-bottom:9px}
+  #badge b{font-size:34px}
+  .hud{flex-wrap:wrap;gap:6px}
+  .hud input{width:auto;flex:1 1 100%}
+  /* the era gets its own line: "Premier League only" does not fit in a third
+     of a phone, and it is the control that changes what the chart means */
+  #era{flex:1 1 100%;min-width:0;font-size:13px;padding:8px 9px}
+  #club,#season{flex:1 1 calc(50% - 3px);min-width:0;font-size:13px;padding:8px 9px}
+  #eraNote{font-size:11.5px;padding:7px 9px}
+  .hud .spacer{display:none}
+  #results{align-self:stretch;min-width:0;max-height:30vh}
+  /* the chart gets the room the sheet is not using, so it is centred in what
+     you can actually see rather than half-hidden behind a card */
+  /* the chart takes what the controls and the card are not using, but never
+     less than this -- a tall card could otherwise collapse it to nothing */
+  canvas{top:var(--top,0px);
+    height:max(120px, calc(100% - var(--top,0px) - var(--sheet,0px)))}
+
+  /* one sheet at a time, sitting on top of the tool bar */
+  #panel,#quiz{right:8px;left:8px;top:auto;bottom:56px;width:auto;
+    max-height:48vh;overflow:auto;padding:13px;font-size:13.5px}
+  /* keyboard up: the card climbs above it and takes the room the chart was
+     using, and the tool bar goes -- it is behind the keyboard regardless */
+  :root.kb-open #panel,:root.kb-open #quiz,:root.kb-open #game{
+    bottom:calc(var(--kb,0px) + 8px);
+    max-height:calc(100% - var(--kb,0px) - 74px)}
+  :root.kb-open #tools,:root.kb-open #toolwrap{display:none}
+  :root.kb-open #title{display:none}
+  #panel.aside{right:8px}                 /* nowhere sideways to go */
+  #panel h2{font-size:17px}
+  #quiz h2{font-size:15px}
+  .chain,.qchain{max-height:none}
+  .btn{padding:11px 13px}                 /* thumbs, not cursors */
+
+  /* the canvas sets touch-action:none to own dragging; the tool bar has to say
+     it wants horizontal drags back or the row cannot be scrolled at all */
+  #tools{left:0;right:0;bottom:0;top:auto;border-radius:0;border-left:0;border-right:0;
+    border-bottom:0;gap:6px;padding:7px 8px;overflow-x:auto;flex-wrap:nowrap;
+    justify-content:flex-start;-webkit-overflow-scrolling:touch;
+    touch-action:pan-x;overscroll-behavior-x:contain;scrollbar-width:none}
+  #tools::-webkit-scrollbar{display:none}
+  /* a scrolling row with no scrollbar looks like a row that ends there, so
+     fade the right edge to say there is more of it */
+  #toolwrap{position:absolute;left:0;right:0;bottom:0}
+  #toolwrap::after{content:'';position:absolute;right:0;bottom:0;width:34px;height:100%;
+    pointer-events:none;background:linear-gradient(90deg,transparent,var(--bg))}
+  .tbtn{padding:9px 12px;font-size:12.5px;min-width:0;flex:0 0 auto}
+  .tbtn.zoom{padding:8px 14px;font-size:16px}
+  #stats{display:none}                    /* the title says the same thing */
+  #credits{padding:8px}
+  .credbox{padding:14px}
+  .credbox h2{font-size:16px}
+  .credlist div{grid-template-columns:1fr;gap:1px;padding:8px 2px}
+  .credlist span{text-align:left}
+}
+/* a short landscape phone has no vertical room to give away */
+@media(max-width:820px) and (max-height:520px){
+  #panel,#quiz{max-height:64vh}
+  #results{bottom:calc(64vh + 60px);max-height:24vh}
+}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <a class="brand" href="index.html"><img src="assets/logo.png" alt=""><span>Sportalytic</span></a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="network.html">NFL</a>
+    <a href="index.html#/reels">Our work</a>
+  </nav>
+  <a class="cta" href="index.html#contact">Get in touch</a>
+</div></header>
+
+<div id="stage">
+  <canvas id="cv"></canvas>
+  <div id="loading">Loading the network…</div>
+  <div id="topbar">
+  <div class="hud">
+    <input id="q" placeholder="Search a player…" autocomplete="off">
+    <select id="era" title="Which seasons count as a link"></select>
+    <select id="club"><option value="">Any club</option></select>
+    <select id="season"><option value="">Any season</option></select>
+    <span class="spacer"></span>
+  </div>
+  <div id="eraNote" hidden></div>
+  <div id="results" hidden></div>
+  </div>
+  <h1 id="title"></h1>
+  <div id="toolwrap"><div id="tools">
+    <button class="tbtn" id="playBtn" title="Games played on the network">Play</button>
+    <button class="tbtn" id="quizBtn" title="Link two players yourself, in as few steps as possible">Free play</button>
+    <button class="tbtn" id="ring" title="Show only the players who shared a club with the centre, grouped by club">Direct teammates</button>
+    <button class="tbtn zoom" id="zin" title="Zoom in">+</button>
+    <button class="tbtn zoom" id="zout" title="Zoom out">&minus;</button>
+    <button class="tbtn" id="zfit" title="Fit to screen">Fit</button>
+    <button class="tbtn" id="theme" title="Light or dark">☾</button>
+  </div></div>
+  <div id="panel" hidden></div>
+  <div id="quiz" hidden></div>
+  <div id="game" hidden></div>
+  <div id="stats"></div>
+</div>
+
+<!-- Versioned URLs, and they have to stay versioned.
+     /assets/* was served `immutable, max-age=31536000` until August 2026, so
+     every browser that visited before then has app.js and view.js pinned for a
+     year. The HTML is never cached, so those browsers load this page against
+     year-old scripts, and it dies on the first call to something that did not
+     exist yet -- no chart, and nothing happens when you press Play. The header
+     is fixed for future fetches but a stored immutable entry is never
+     revalidated, so the only way past it is a URL the cache has not seen.
+     Bump ASSET_V whenever anything under assets/net/ changes. -->
+<script>window.ASSET_V='20260821a';
+/* Everything the shared engine needs to know about which sport this is. Read
+   by game.js as it loads, so it has to come first.
+
+   The round is par 2·3·4·5·6 — twenty, and twenty is the best there is, since
+   a shortest route cannot be beaten. The NFL page has to stop at 4 because
+   almost every well-known pair over there is exactly 2 apart; English football
+   spreads properly (26% at 2, 23% at 3, 16% at 4, 13% at 5, 7% at 6 across the
+   notable pool), so a proper round of golf fits the data. The par 5 and 6
+   holes draw their far end from a much stricter list of names — at that
+   distance the only thing holding the puzzle up is knowing who you are being
+   asked to reach. See tools/build_football_puzzles.py. */
+window.SPORT={
+  base:'assets/foot',
+  store:'spf.',                 // separate from the NFL history, or both are nonsense
+  title:'11 Degrees — Football',
+  shareUrl:'https://sportalytic.co.uk/football.html',
+  holes:[{par:2,pool:'r2'},{par:3,pool:'r3'},{par:4,pool:'g4'},
+         {par:5,pool:'i5'},{par:6,pool:'i6'}],
+  dailyPools:['r3','r3','r3','r3','g3'],
+  dailyPar:3, dailyTarget:10,
+};
+</script>
+<script src="assets/net/app.js?v=20260821a"></script>
+<script src="assets/net/view.js?v=20260821a"></script>
+<script src="assets/net/game.js?v=20260821a"></script>
+<script>
+const DATA='assets/foot';
+const $=s=>document.querySelector(s);
+/* A dead page tells whoever is looking at it nothing. Anything thrown before
+   or during setup gets said out loud, which is how the stale-cache failure
+   above should have announced itself instead of just not working. */
+addEventListener('error', e => {
+  const el = document.getElementById('loading');
+  if (!el) return;
+  el.innerHTML = `<div style="max-width:32em;text-align:center;line-height:1.6">
+      <b style="color:var(--amber)">Something went wrong loading this page.</b><br>
+      ${String((e && e.message) || e).replace(/</g, '&lt;')}
+      <div style="margin-top:12px;font-size:13px;color:var(--grey)">
+        A hard refresh usually clears it.</div></div>`;
+});
+let CENTRE=0;
+/* Where the chart sits when nothing is being played. A game re-roots it, and
+   leaving one should not strand you on somebody else's puzzle. */
+let HOME=0;
+/* On a phone the chart is the small half of the screen, so the cards carry
+   only what you cannot read off the chart itself: the chain is already drawn
+   there, and a card repeating it just buries the two buttons. */
+const PHONE=matchMedia('(max-width:820px)');
+// A window reporting zero width is one that has not been laid out, not a
+// phone -- and the media query matches zero, so ask the width directly.
+const onPhone=()=>innerWidth>0 && innerWidth<=820;
+// turning the handset sideways crosses the breakpoint, and the card that is
+// already open was built for the other one
+PHONE.addEventListener('change',()=>{
+  if(!$('#panel').hidden && PANEL_FOR>=0) renderPanel(PANEL_FOR);
+  VIEW.labels = $('#quiz').hidden || !onPhone();
+});
+
+let PANEL_FOR=-1;
+function renderPanel(i){
+  PANEL_FOR=i;
+  const d=NET.info(i), p=NET.pathToCentre(i);
+  const c=NET.info(CENTRE);
+  $('#panel').hidden=false;
+  $('#panel').classList.toggle('aside', !$('#quiz').hidden);
+  const small=onPhone();
+  $('#panel').innerHTML=
+    `<button class="xclose" id="pclose" title="Back to the chart">&times;</button>
+     <h2>${d.name}</h2>
+     <div class="meta">${d.position||'—'} · ${d.first}–${d.last}${
+        small?(i===CENTRE?' · the centre':` · <b class="deg">${d.degree}°</b> from ${c.name}`):''}</div>
+     ${small?'':i===CENTRE?`<div class="deg">This is the centre</div>`
+       :`<div><span class="deg">${d.degree}°</span> from ${c.name}</div>
+          <div class="chain">${p.map((n,k)=>{
+            let row=`<div class="node ${k===p.length-1?'end':''}"><span class="dot"></span>${NET.names[n]}</div>`;
+            if(k<p.length-1){
+              // the link itself: which club and year actually joins these two
+              const sh=NET.sharedTeamSeasons(n,p[k+1]);
+              if(sh.length){
+                const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
+                const full=sh.map(x=>`${x.team} ${NET.seasonLabel(x.season)}`).join(', ');
+                const nm=(NET.tables.teamMeta[f.team]||{}).name||f.team;
+                row+=`<div class="via" title="${nm} — ${full}"><span class="chip">${f.team}</span> ${NET.seasonLabel(f.season)}${more}</div>`;
+              }
+            }
+            return row;}).join('')}</div>`}
+     <button class="btn" id="share">Share of connections</button>
+     <div id="shareOut"></div>
+     <button class="btn" id="rec">Centre chart on ${d.name}</button>`;
+  $('#rec').onclick=()=>recentre(i);
+  $('#pclose').onclick=closePanel;
+  $('#share').onclick=()=>{
+    const r=NET.shareThrough(i);
+    VIEW.setThrough(r.count?r.mask:null);
+    // nobody routes through a player with nothing behind them: leave the chart
+    // exactly as it is rather than spinning it for a 0% answer
+    if(r.count){
+      VIEW.captureFrom();
+      NET.shareLayout(i, r.mask);
+      VIEW.beginMorph(850);
+    }
+    const other=r.count-r.exclusive;
+    if(!r.count){
+      if(small){ showBadge('0%', `nobody reaches ${NET.names[CENTRE]} only through ${d.name}`); }
+      $('#shareOut').innerHTML=
+        (small?'':`<div class="shareBox"><b>0%</b> of the network reaches
+          ${NET.names[CENTRE]} through ${d.name}. Every route to him is at least
+          as short without ${d.name} — nobody sits behind him.</div>`)+
+         `<button class="btn ghost" id="unshare">Back</button>`;
+      $('#share').hidden=true;
+      $('#unshare').onclick=clearShare;
+      return;
+    }
+    if(small){
+      showBadge(r.pct.toFixed(1)+'%',
+        `of the network reaches ${NET.names[CENTRE]} through ${d.name}`);
+      $('#shareOut').innerHTML=`<button class="btn ghost" id="unshare">Back</button>`;
+      $('#share').hidden=true;
+      $('#unshare').onclick=clearShare;
+      return;
+    }
+    $('#shareOut').innerHTML=
+      `<div class="shareBox"><b>${r.pct.toFixed(1)}%</b> of the network
+        (${r.count.toLocaleString()} of ${r.total.toLocaleString()}) reaches
+        ${NET.names[CENTRE]} by a shortest route through ${d.name}.
+        <div class="note">But a shortest route is rarely the only one.
+        ${other.toLocaleString()} of them have an equally short route that avoids
+        ${d.name} entirely — only <b>${r.exclusive.toLocaleString()}</b>
+        (${r.exclusivePct.toFixed(1)}%) actually get further away without him.
+        That is why these dots also belong to other players, and why they move
+        when you ask a different one.</div>
+        ${DEBUG?`<span class="muted2">two extra passes, ${r.ms.toFixed(0)} ms</span>`:''}</div>
+       <button class="btn ghost" id="unshare">Back</button>`;
+    $('#share').hidden=true;
+    $('#unshare').onclick=clearShare;
+  };
+  if(VIEW.hasThrough){            // leaving a share view: put the layout back
+    VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
+  }
+  if(DEBUG) document.body.dataset.dbg=JSON.stringify({sel:i,face:!!VIEW.faceFor(i),flags:VIEW.faceFlagCount});
+  VIEW.setThrough(null);
+  // swing the chart so this player's chain runs down the screen, where
+  // horizontal labels have the most room not to collide
+  if(i!==CENTRE && !VIEW.ringMode){
+    VIEW.captureFrom();
+    // only swings when the chain is within ~30 degrees of horizontal
+    if(NET.rotateSo(i)) VIEW.beginMorph(650);
+  }
+  VIEW.selected=i; VIEW.path=i===CENTRE?[]:p;
+}
+
+/* Close the player card and hand the screen back to the chart. The path stays
+   highlighted -- you asked to see it, and it is the chart that shows it. */
+function closePanel(){
+  clearShare();
+  $('#panel').hidden=true;
+  $('#results').hidden=true;
+}
+
+/* The share answer, on a phone, goes over the chart the animation is playing
+   on rather than into a card that would cover it. */
+function showBadge(big, small){
+  let b=$('#badge');
+  if(!b){ b=document.createElement('div'); b.id='badge';
+          document.getElementById('stage').appendChild(b); }
+  b.innerHTML=`<b>${big}</b><span>${small}</span>`;
+  b.hidden=false;
+}
+function hideBadge(){ const b=$('#badge'); if(b) b.hidden=true; }
+
+/* Undo a share view: drop the highlight and slide everyone back to where the
+ * normal layout puts them. Selecting anyone else does this too, but you should
+ * not have to pick a different player just to get the chart back. */
+function clearShare(){
+  hideBadge();
+  if(VIEW.hasThrough){
+    VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
+  }
+  VIEW.setThrough(null);
+  $('#shareOut').innerHTML='';
+  const b=$('#share'); if(b) b.hidden=false;
+}
+
+const FACES={};   // player id -> portrait override, when one is not in the faces set
+function applyCentreImage(){ VIEW.setCentreImage(FACES[CENTRE]||null); }
+
+function recentre(i){
+  recentreQuiet(i);
+  setHome(i);                        // a deliberate recentre becomes the new home
+  renderPanel(i);
+}
+
+/* Recentre without opening the player panel. The quiz hangs its round off
+   player A and wants the chart to move, but not a card about him on top of the
+   round. */
+function setHome(i){ HOME=i; }
+
+function recentreQuiet(i){
+  VIEW.captureFrom();
+  const r=NET.recentre(i);
+  CENTRE=i; VIEW.centre=i; VIEW.path=[]; VIEW.selected=i;
+  setRing(false);
+  VIEW.beginMorph(950);
+  applyCentreImage();
+  stats(r);
+}
+
+/* First-ring view: the centre's direct teammates, grouped into a wedge per
+ * club. Toggling back off just recomputes the full layout. */
+function setRing(on){
+  const btn=document.getElementById('ring');
+  if(on){
+    // a path highlight makes no sense once only the first ring is shown
+    VIEW.path=[]; VIEW.selected=-1; VIEW.setThrough(null);
+    $('#panel').hidden=true; $('#results').hidden=true;
+    VIEW.captureFrom();
+    const segs=NET.ringLayout(CENTRE);
+    VIEW.setRingSegments(segs);
+    VIEW.beginMorph(800);
+    btn.classList.add('on');
+  }else{
+    if(!VIEW.ringMode){ btn.classList.remove('on'); return; }
+    VIEW.captureFrom();
+    NET.recentre(CENTRE);
+    VIEW.setRingSegments(null);
+    VIEW.beginMorph(800);
+    btn.classList.remove('on');
+  }
+}
+
+/* The on-screen keyboard covers the bottom of the window, which is exactly
+   where the cards sit. visualViewport is the only thing that reports it: the
+   layout viewport does not change when a keyboard opens, so innerHeight is no
+   help. The difference between the two is the keyboard, and --kb carries it
+   into the CSS so a card can sit above it. Losing the chart is the right trade
+   -- you cannot type into something you cannot see. */
+const vv = window.visualViewport;
+function syncKeyboard(){
+  if(!vv) return;
+  const kb = Math.max(0, innerHeight - vv.height - vv.offsetTop);
+  document.documentElement.style.setProperty('--kb', kb + 'px');
+  const up = kb > 80;
+  document.documentElement.classList.toggle('kb-open', up);
+  // do not refit the chart under someone who is typing
+  if (typeof VIEW !== 'undefined') VIEW.autoFit = !up;
+}
+if(vv){
+  vv.addEventListener('resize', syncKeyboard);
+  vv.addEventListener('scroll', syncKeyboard);
+}
+/* and keep whatever you are typing into on screen inside its own card */
+addEventListener('focusin', e => {
+  if(!e.target.matches || !e.target.matches('input')) return;
+  setTimeout(() => {
+    syncKeyboard();
+    e.target.scrollIntoView({block:'nearest', behavior:'smooth'});
+  }, 260);
+});
+
+/* On a phone the panel and the quiz are a sheet across the bottom, and the
+   canvas hands over that space so the chart stays centred in what is visible.
+   Watching the two elements' hidden flag catches every route in and out
+   without threading a call through each of them. */
+const STAGE=document.getElementById('stage');
+/* Everything the page draws on top of the canvas, measured in canvas
+   coordinates and handed to the renderer so chain labels go around it rather
+   than under it. Recomputed whenever any of it moves or resizes. */
+function keepOutRects(){
+  const cv=document.getElementById('cv');
+  if(!cv) return [];
+  const base=cv.getBoundingClientRect();
+  const pad=6, out=[];
+  for(const id of ['title','topbar','panel','quiz','game','tools']){
+    const el=document.getElementById(id);
+    if(!el || el.hidden || !el.offsetParent) continue;
+    const r=el.getBoundingClientRect();
+    if(!r.width || !r.height) continue;
+    out.push({x:r.left-base.left-pad, y:r.top-base.top-pad,
+              w:r.width+pad*2, h:r.height+pad*2});
+  }
+  return out;
+}
+
+/* Batched onto a frame. This writes CSS variables that change the canvas size,
+   and it is called from a ResizeObserver watching elements that the canvas
+   size affects -- doing that synchronously means "ResizeObserver loop
+   completed with undelivered notifications" and a visible stutter on a phone,
+   where the loop is slowest and the cards are biggest. */
+let sheetPending = false;
+function syncSheet(){
+  if (sheetPending) return;
+  sheetPending = true;
+  requestAnimationFrame(() => { sheetPending = false; syncSheetNow(); });
+}
+
+function syncSheetNow(){
+  const p=document.getElementById('panel'), q=document.getElementById('quiz'),
+        g=document.getElementById('game');
+  const card = !g.hidden ? g : !q.hidden ? q : (!p.hidden ? p : null);
+  STAGE.classList.toggle('sheet', !!card);
+  // Measured rather than guessed at: reserving a flat 48vh leaves a dead band
+  // under a short card and clips the chart under a tall one.
+  STAGE.style.setProperty('--sheet', card ? (card.offsetHeight + 64) + 'px' : '0px');
+  const tb = document.getElementById('topbar').offsetHeight;
+  const ti = document.getElementById('title').offsetHeight;
+  STAGE.style.setProperty('--titleTop', (tb + 12) + 'px');
+  STAGE.style.setProperty('--top', (tb + ti + 20) + 'px');
+}
+const watch = new ResizeObserver(syncSheet);
+['panel','quiz','game','topbar','title'].forEach(id => watch.observe(document.getElementById(id)));
+['panel','quiz','game'].forEach(id =>
+  new MutationObserver(syncSheet).observe(document.getElementById(id),
+    {attributes:true,attributeFilter:['hidden']}));
+addEventListener('resize', syncSheet);
+
+/* Light or dark, remembered, and honouring the system setting the first time.
+   NET owns the canvas colours because the chart is not CSS. */
+const THEME_KEY='sp.theme';
+function applyTheme(name){
+  document.documentElement.dataset.theme = name;
+  /* `const NET = ...` at the top of a classic script is a lexical binding, not
+     a property of window -- so testing window.NET is always false and the
+     canvas kept its dark palette while the page went light. */
+  if(typeof NET !== 'undefined' && NET.setTheme) NET.setTheme(name);
+  if(typeof VIEW !== 'undefined' && VIEW.invalidate) VIEW.invalidate();
+  const b=document.getElementById('theme');
+  if(b){ b.textContent = name==='light' ? '☀' : '☾';
+         b.title = name==='light' ? 'Switch to dark' : 'Switch to light'; }
+  try{ localStorage.setItem(THEME_KEY,name); }catch(e){}
+}
+(function initTheme(){
+  let saved=null;
+  try{ saved=localStorage.getItem(THEME_KEY); }catch(e){}
+  // dark is the house style; light is a choice you make, not one made for you
+  document.documentElement.dataset.theme = saved || 'dark';
+})();
+
+// ?debug in the URL brings back the timing readout used while building this
+const DEBUG=location.search.indexOf('debug')>=0;
+function stats(r){
+  // "The 11 degrees of Erling Haaland" -- both halves change with the centre
+  $('#title').innerHTML=`The <b>${r.ecc}</b> degrees of <b>${NET.names[CENTRE]}</b>`;
+  const E=NET.era();
+  $('#stats').innerHTML=
+    `${NET.P.toLocaleString()} players · centred on ${NET.names[CENTRE]} · `+
+    (E.restricted?`${NET.reached().toLocaleString()} reachable in
+       ${NET.seasonLabel(E.lo)}–${NET.seasonLabel(Math.min(E.hi,NET.tables.seasonMax))} · `:'')+
+    `${r.ecc} degrees deep · <a id="credLink">Photo credits</a>`+
+    (DEBUG?`<br>recentre ${(r.bfsMs+r.layoutMs).toFixed(1)} ms `+
+      `(bfs ${r.bfsMs.toFixed(1)} + layout ${r.layoutMs.toFixed(1)}) · `+
+      `<span id="fps"></span>`:'');
+}
+
+/* Photo credits. Every Commons portrait on this page is freely licensed, but
+   82 of them are CC and ask to be credited, so the list has to be somewhere a
+   visitor can actually get to. Loaded on demand -- it is 20 KB nobody needs
+   unless they open it. */
+let CREDITS=null;
+async function showCredits(){
+  const box=document.createElement('div');
+  box.id='credits';
+  box.innerHTML=`<div class="credbox"><h2>Photo credits</h2>
+    <div class="credlist">Loading…</div></div>`;
+  box.onclick=e=>{ if(e.target===box) box.remove(); };
+  document.getElementById('stage').appendChild(box);
+  if(!CREDITS){
+    try{ CREDITS=await fetch(`${DATA}/faces/credits.json`+(window.ASSET_V?`?v=${window.ASSET_V}`:'')).then(r=>r.json()); }
+    catch(e){ box.querySelector('.credlist').textContent='Could not load the credits file.'; return; }
+  }
+  const cc=CREDITS.filter(r=>r.l!=='Public domain'&&r.l!=='CC0').length;
+  const url=f=>'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(f);
+  box.querySelector('.credbox').innerHTML=
+    `<h2>Photo credits</h2>
+     <p>The ${CREDITS.length} portraits on this page come from
+       <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia
+       Commons</a> — ${CREDITS.length-cc} in the public domain, ${cc} under a
+       Creative Commons licence and credited below. Each name links to the file
+       and its full licence terms. Club badges are the trademarks of their clubs.</p>
+     <div class="credlist">${CREDITS.map(r=>
+       `<div><b>${r.n}</b><a href="${url(r.f)}" target="_blank" rel="noopener noreferrer">${r.f}</a>`+
+       `<span>${r.l}${r.a?' · '+r.a:(r.l==='Public domain'||r.l==='CC0'?'':' · author not stated')}</span></div>`
+     ).join('')}</div>
+     <button class="btn ghost" style="flex:0 0 auto" id="credClose">Close</button>`;
+  box.querySelector('#credClose').onclick=()=>box.remove();
+}
+document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(); });
+
+(async()=>{
+  let meta;
+  try{
+    meta=await NET.load(DATA);
+  }catch(err){
+    // Silence here used to mean the loading line sat there for ever, which
+    // tells whoever is looking at it nothing at all.
+    $('#loading').innerHTML=
+      `<div style="max-width:34em;text-align:center;line-height:1.6">
+         <b style="color:var(--amber)">The network could not be loaded.</b><br>
+         ${String(err && err.message || err).replace(/</g,'&lt;')}
+         <div style="margin-top:14px;font-size:13px;color:var(--grey)">
+           If this is an older phone, updating the browser should fix it.</div>
+       </div>`;
+    return;
+  }
+  await VIEW.loadLogoIndex(DATA);
+  await VIEW.loadFaceFlags(DATA);
+  $('#loading').remove();
+  const t=NET.tables;
+  const club=$('#club'), season=$('#season'), eraSel=$('#era');
+  // Clubs still in the top flight first, then everyone who has dropped out of
+  // it. Unlike the NFL data no club code covers two different entities, so
+  // there is nothing to split into eras -- Arsenal and Woolwich Arsenal are one
+  // club in the source, and so are Manchester City and Ardwick.
+  const SL=y=>NET.seasonLabel(y);
+  const clubOpts=[];
+  t.teams.forEach(code=>{
+    const m=t.teamMeta[code]||{};
+    clubOpts.push({label:`${m.name||code} (${SL(m.from)}\u2013${SL(m.to)})`,
+                   value:code, sort:m.name||code, current:m.to>=t.seasonMax});
+  });
+  clubOpts.sort((a,b)=>a.sort.localeCompare(b.sort));
+  for(const [label,want] of [['In the top flight now',true],['Been and gone',false]]){
+    const rows=clubOpts.filter(o=>o.current===want);
+    if(!rows.length) continue;
+    const g=document.createElement('optgroup'); g.label=`${label} (${rows.length})`;
+    rows.forEach(o=>g.appendChild(new Option(o.label,o.value)));
+    club.appendChild(g);
+  }
+  function fillSeasons(clubVal){
+    const keep=season.value;
+    season.length=1;                       // keep "Any season"
+    let years=null;
+    if(clubVal){
+      const [code,lo,hi]=clubVal.split(':');
+      const m=t.teamMeta[code];
+      if(m&&m.seasons){
+        years=m.seasons.filter(y=>!lo||(y>=+lo&&y<=+hi));
+      }
+    }
+    if(!years) years=Array.from({length:t.seasonMax-t.seasonMin+1},(_,k)=>t.seasonMax-k);
+    else years=years.slice().sort((a,b)=>b-a);
+    // only seasons the current era actually contains: offering 1974/75 while
+    // the graph is set to the Premier League returns nothing and says nothing
+    const E=NET.era();
+    years=years.filter(y=>y>=E.lo&&y<=E.hi);
+    years.forEach(y=>season.add(new Option(SL(y),y)));
+    // hold the chosen year if the new club also played it
+    season.value=years.includes(+keep)?keep:'';
+  }
+
+  /* ----------------------------------------------------------- the era ----
+   * Which seasons count as a link. This restricts the graph rather than the
+   * drawing -- see NET.setEra for why that is the only honest reading of it.
+   *
+   * The catch is that the centre may not be in the era you have picked.
+   * Haaland never played a minute of the old First Division, and rooting a
+   * 1946-91 graph on him gives a chart of exactly one dot, which reads as a
+   * bug. Each era therefore names a fallback centre, worked out offline as the
+   * most capped player whose whole career sits inside it, and the page moves
+   * there and says so rather than showing you nothing. */
+  t.eras.forEach(e=>eraSel.add(new Option(e.name,e.id)));
+  eraSel.value='all';
+  const eraById=id=>t.eras.find(e=>e.id===id)||t.eras[0];
+  // Haaland: where the page opens, and where widening the era again returns
+  // you. Assigned below, once the notable table has been read.
+  let ORIGIN=0;
+  let borrowed=false;               // is the centre one an era lent us?
+
+  function applyEra(id,{announce=true,teardown=true}={}){
+    const e=eraById(id);
+    const res=NET.setEra(e.from,e.to);
+    eraSel.classList.toggle('narrowed',!res.all);
+    if(teardown){
+      // anything hanging off the old graph is about a graph that no longer exists
+      closePanel(); quizClose(); GAME.stop(); gameEl.hidden=true; gameEl.className='';
+      VIEW.interactive=true; VIEW.labels=!onPhone(); VIEW.lit=null;
+      setRing(false);
+    }
+    /* Whose chart this is now. Three cases, in order:
+       the centre still played in this era, so nothing moves; it does not, so
+       the era lends us its own most-capped player; or we are widening back out
+       and the centre we are on was only ever a loan, in which case go home
+       rather than stranding the reader on a 1930s full back. */
+    let moved=null;
+    if(!NET.playsInEra(CENTRE)){
+      if(e.centre!=null && NET.playsInEra(e.centre)){
+        moved=NET.names[CENTRE];
+        CENTRE=e.centre; HOME=e.centre; borrowed=true;
+      }
+    }else if(borrowed && CENTRE!==ORIGIN && NET.playsInEra(ORIGIN)){
+      CENTRE=ORIGIN; HOME=ORIGIN; borrowed=false;
+    }
+    const rr=NET.recentre(CENTRE);
+    VIEW.centre=CENTRE; VIEW.path=[]; VIEW.selected=CENTRE;
+    applyCentreImage();
+    VIEW.fit(); VIEW.buildGrid(); VIEW.invalidate();
+    stats(rr);
+    fillSeasons(club.value);
+    const note=$('#eraNote');
+    if(!announce || (res.all && !moved)){ note.hidden=true; return; }
+    note.hidden=false;
+    /* The years, not the era's name. "never played in old first division" is
+       what slotting a label into a sentence gets you; a date range reads
+       properly whatever the era is called. */
+    const span=`${NET.seasonLabel(e.from)}–${NET.seasonLabel(Math.min(e.to,t.seasonMax))}`;
+    note.innerHTML=
+      (moved?`<b>${moved}</b> never played in ${span}, so the chart has moved to
+              <b>${NET.names[CENTRE]}</b>. `:'')+
+      (res.all?'':`${e.note} <b>${res.players.toLocaleString()}</b> of
+        ${NET.P.toLocaleString()} players are in it, and the distances are worked
+        out over those seasons alone. `)+
+      `<button id="eraAll">Back to all time</button>`;
+    const b=document.getElementById('eraAll');
+    if(b) b.onclick=()=>{ eraSel.value='all'; applyEra('all'); };
+  }
+
+  /* The games are built on the whole record -- the puzzle pools were picked
+     offline against every season -- so a round started inside "Premier League
+     only" would set you pairs with no route between them. Widen back out first
+     and say so, rather than handing over a puzzle that cannot be solved. */
+  function fullRecordToPlay(){
+    if(!NET.era().restricted) return;
+    eraSel.value='all';
+    applyEra('all',{announce:false,teardown:false});
+    const note=$('#eraNote');
+    note.hidden=false;
+    note.innerHTML=`The games are played over the whole record, so the era has
+      gone back to <b>all time</b>.`;
+    setTimeout(()=>{ if(note.textContent.indexOf('games are played')>=0) note.hidden=true; },6000);
+  }
+  fillSeasons('');
+
+  CENTRE=(t.notable&&t.notable['Erling Haaland'])||0;
+  HOME=CENTRE;      // where leaving a game returns you
+  ORIGIN=CENTRE;    // and where widening the era back out returns you
+  const r=NET.recentre(CENTRE);
+  VIEW.setKeepOut(keepOutRects);   // measured fresh on every draw
+  VIEW.init($('#cv'), i=>{
+    /* The Play card sits where the player card does. Opening the menu and then
+       clicking a dot used to stack one on top of the other; now the menu gets
+       out of the way, which is what clicking a dot meant anyway. A game already
+       running keeps the chart to itself -- see VIEW.interactive. */
+    if(!$('#game').hidden) closeGame();
+    renderPanel(i);
+  });
+  VIEW.centre=CENTRE; VIEW.fit(); VIEW.buildGrid(); VIEW.tick();
+  applyCentreImage();
+  stats(r);
+  console.log('load',meta.ms.toFixed(0)+'ms', 'recentre',(r.bfsMs+r.layoutMs).toFixed(1)+'ms');
+
+  // ---- search + club/season filter ----
+  const lower=NET.names.map(s=>s.toLowerCase());
+  function rosterOf(team,yr){
+    const set=new Set();
+    let lo=-Infinity, hi=Infinity;
+    if(team && team.indexOf(':')>0){                  // "CODE:from:to" era pick
+      const p=team.split(':'); team=p[0]; lo=+p[1]; hi=+p[2];
+    }
+    for(let ts=0;ts<NET.tsSeason.length;ts++){
+      if(team && t.teams[NET.tsTeam[ts]]!==team) continue;
+      if(NET.tsSeason[ts]<lo || NET.tsSeason[ts]>hi) continue;
+      if(yr && NET.tsSeason[ts]!==+yr) continue;
+      for(let j=NET.t_ip[ts];j<NET.t_ip[ts+1];j++) set.add(NET.t_ix[j]);
+    }
+    return set;
+  }
+  function search(){
+    const q=$('#q').value.trim().toLowerCase();
+    const team=club.value, yr=season.value;
+    if(!q && !team && !yr){ $('#results').hidden=true; return; }
+    const pool=(team||yr)?rosterOf(team,yr):null;
+    const out=[];
+    for(let i=0;i<NET.P && out.length<60;i++){
+      if(pool && !pool.has(i)) continue;
+      if(q && lower[i].indexOf(q)<0) continue;
+      out.push(i);
+    }
+    $('#results').hidden=false;
+    $('#results').innerHTML=out.length?out.map(i=>
+      `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${NET.firstSeason[i]}–${NET.lastSeason[i]}</span></div>`
+    ).join(''):'<div style="color:var(--grey)">No players match</div>';
+  }
+  /* ---------------------------------------------------------- the quiz ----
+   * Two players; join them yourself in as few steps as you can. Every step you
+   * add is checked against the real record -- two players are only linked if
+   * they were on the same squad in the same season -- so the chain you build
+   * is a claim the data either supports or does not.
+   *
+   * The answer is worked out up front with NET.route, which does not disturb
+   * the chart: recentring on one of the two would give the other's degree away
+   * just by which ring it landed in. */
+  const QUIZ={on:false,a:-1,b:-1,chain:[],best:null,done:false,revealed:false,
+            clue:null,clueLevel:0};
+
+  // Random players are drawn from those with a portrait. That set is the
+  // modern and the famous, which is the difference between a game and an
+  // exercise in naming punters from 1961.
+  let pickable=null;
+  function pickablePool(){
+    if(!pickable){
+      pickable=[];
+      // A portrait means modern or famous; four seasons means someone you have
+      // plausibly heard of rather than a name off a 2025 practice squad.
+      for(let i=0;i<NET.P;i++)
+        if(VIEW.hasPortrait(i) && NET.lastSeason[i]-NET.firstSeason[i]>=3) pickable.push(i);
+      if(pickable.length<50) pickable=Array.from({length:NET.P},(_,i)=>i);
+    }
+    return pickable;
+  }
+  function randomPlayer(){
+    const p=pickablePool();
+    return p[Math.floor(Math.random()*p.length)];
+  }
+  function findByName(s){
+    // the boxes show "Name (1996-2008)", so drop a trailing span before looking
+    s=s.replace(/\s*\((?:\d{4})\s*[–-]\s*(?:\d{4})\)\s*$/,'').trim().toLowerCase();
+    if(!s) return -1;
+    let exact=-1, part=-1;
+    for(let i=0;i<NET.P;i++){
+      if(lower[i]===s){ exact=i; break; }
+      if(part<0 && lower[i].indexOf(s)>=0) part=i;
+    }
+    return exact>=0?exact:part;
+  }
+
+  function quizOpen(){
+    fullRecordToPlay();
+    QUIZ.on=true; QUIZ.done=false; QUIZ.chain=[]; QUIZ.best=null;
+    // a share answer left over from the last player is not about this round
+    clearShare();
+    $('#panel').hidden=true; $('#results').hidden=true;
+    $('#quiz').hidden=false;
+    // the chart is the small half of a phone screen here: the chain reads as
+    // shape, and the names belong in the round, not stacked over the dots
+    VIEW.labels=!onPhone();
+    quizSetup();
+  }
+  function quizClose(){
+    QUIZ.on=false; $('#quiz').hidden=true;
+    VIEW.labels=true;
+    $('#panel').classList.remove('aside');
+    VIEW.path=[]; VIEW.selected=-1;
+    renderPanel(CENTRE);
+  }
+
+  function quizSetup(){
+    const nm=i=>i>=0?`${NET.names[i]} (${NET.firstSeason[i]}–${NET.lastSeason[i]})`:'';
+    $('#quiz').innerHTML=
+      `<button class="xclose" id="qclose" title="Back to the chart">&times;</button>
+       <h2>Test your knowledge</h2>
+       <div class="lead">Two players. Join them with as short a chain of
+         teammates as you can — every pair you name has to have played for the
+         same club in the same season.</div>
+       <div class="slot"><span class="tag">A</span>
+         <input id="qa" placeholder="Anyone…" value="${QUIZ.a>=0?nm(QUIZ.a):''}">
+         <button id="qad">Random</button></div>
+       <div class="slot"><span class="tag">B</span>
+         <input id="qb" placeholder="Anyone…" value="${QUIZ.b>=0?nm(QUIZ.b):''}">
+         <button id="qbd">Random</button></div>
+       <div id="qmsg" class="qerr" hidden></div>
+       <button class="btn" id="qgo">Start</button>
+       <button class="btn ghost" id="qx">Close</button>`;
+    $('#qclose').onclick=quizClose;
+    $('#qad').onclick=()=>{ QUIZ.a=randomPlayer(); quizSetup(); };
+    $('#qbd').onclick=()=>{ QUIZ.b=randomPlayer(); quizSetup(); };
+    $('#qgo').onclick=quizStart;
+    $('#qx').onclick=quizClose;
+  }
+
+  function quizStart(){
+    const a=$('#qa').value.trim()?findByName($('#qa').value):randomPlayer();
+    const b=$('#qb').value.trim()?findByName($('#qb').value):randomPlayer();
+    const say=t=>{ $('#qmsg').hidden=false; $('#qmsg').textContent=t; };
+    if(a<0) return say('No player matches the first name.');
+    if(b<0) return say('No player matches the second name.');
+    if(a===b) return say('Pick two different players.');
+    QUIZ.a=a; QUIZ.b=b;
+    const r=NET.route(a,b);
+    if(r.degrees<0) return say(`${NET.names[a]} and ${NET.names[b]} are not connected at all.`);
+    QUIZ.best=r; QUIZ.chain=[a]; QUIZ.done=false; QUIZ.revealed=false;
+    QUIZ.clue=null; QUIZ.clueLevel=0;
+    // hang the round off player A, so the chain grows outward from him
+    if(CENTRE!==a) recentreQuiet(a);
+    quizRound();
+  }
+
+  // A step is legal only if it shared a team-season with the last one added.
+  function quizAdd(i){
+    const last=QUIZ.chain[QUIZ.chain.length-1];
+    if(i===last) return 'That is the player you are already on.';
+    if(QUIZ.chain.indexOf(i)>=0) return 'That player is already in your chain.';
+    const sh=NET.sharedTeamSeasons(last,i);
+    if(!sh.length) return `${NET.names[last]} and ${NET.names[i]} were never teammates.`;
+    QUIZ.chain.push(i); QUIZ.clue=null; QUIZ.clueLevel=0;
+    if(i===QUIZ.b) QUIZ.done=true;
+    return null;
+  }
+
+  function quizRound(err){
+    const steps=QUIZ.chain.length-1;
+    const link=(u,v)=>{
+      const sh=NET.sharedTeamSeasons(u,v);
+      if(!sh.length) return '';
+      const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
+      return `<li class="qstep via"><span class="chip">${f.team}</span> ${NET.seasonLabel(f.season)}${more}</li>`;
+    };
+    const rows=QUIZ.chain.map((n,k)=>
+      `<li class="qstep ${k===0?'fix':''}"><span class="dot"></span>${NET.names[n]}</li>`
+      +(k<QUIZ.chain.length-1?link(n,QUIZ.chain[k+1]):'')).join('');
+    // The box to type in sits between the chain and the target, so what you
+    // are being asked to bridge is the gap you can see.
+    const gap=QUIZ.done?'':
+      `<li class="qstep gap"><input id="qnext" placeholder="Next teammate…" autocomplete="off">
+         <div id="quizRes" hidden></div>
+         ${QUIZ.clue?`<div class="qclue">${QUIZ.clue}</div>`:''}</li>`;
+    const target=QUIZ.done?'':
+      `<li class="qstep fix"><span class="dot"></span>${NET.names[QUIZ.b]}</li>`;
+    $('#quiz').innerHTML=
+      `<button class="xclose" id="qclose" title="Back to the chart">&times;</button>
+       <h2>Test your knowledge</h2>
+       <div class="lead">Get from <b>${NET.names[QUIZ.a]}</b> to
+         <b>${NET.names[QUIZ.b]}</b>. Name whoever links them, one at a time.</div>
+       <ul class="qchain">${rows}${gap}${target}</ul>
+       ${err?`<div class="qerr">${err}</div>`:''}
+       ${QUIZ.done?quizVerdict():''}
+       <div style="color:var(--grey);font-size:11px;margin-top:9px">
+         ${steps} step${steps===1?'':'s'} so far</div>
+       ${QUIZ.done?'':
+         `<button class="btn ghost" id="qclue">${QUIZ.clueLevel?'Another clue':'Clue'}</button>
+          <button class="btn ghost" id="qgive">Show the shortest route</button>`}
+       <button class="btn ghost" id="qagain">${QUIZ.done?'Another pair':'Give up and restart'}</button>`;
+    if(!QUIZ.done){
+      const inp=$('#qnext');
+      inp.oninput=quizSuggest; inp.focus();
+      $('#quizRes').onclick=e=>{
+        const d=e.target.closest('[data-i]'); if(!d) return;
+        const bad=quizAdd(+d.dataset.i);
+        quizRound(bad);
+      };
+      $('#qclue').onclick=quizClue;
+      $('#qgive').onclick=quizReveal;
+    }
+    $('#qclose').onclick=quizClose;
+    const show=$('#qshow'); if(show) show.onclick=quizReveal;
+    $('#qagain').onclick=()=>{ QUIZ.a=-1; QUIZ.b=-1; quizSetup(); };
+    quizDraw();
+  }
+
+  /* A clue about the next player on a shortest route from wherever you have
+   * got to -- recomputed each time, so it stays useful after you have wandered
+   * off the route the chart happened to draw. Club first, then the season. */
+  function quizClue(){
+    const last=QUIZ.chain[QUIZ.chain.length-1];
+    const r=NET.route(last,QUIZ.b);
+    const next=r.path[r.path.length-2];        // path runs b -> ... -> last
+    if(next==null){ QUIZ.clue='No route left from here.'; return quizRound(); }
+    const sh=NET.sharedTeamSeasons(last,next);
+    if(!sh.length){ QUIZ.clue='No clue available.'; return quizRound(); }
+    QUIZ.clueLevel=Math.min(2,(QUIZ.clueLevel||0)+1);
+    const f=sh[0];
+    const nm=(NET.tables.teamMeta[f.team]||{}).name||f.team;
+    QUIZ.clue=QUIZ.clueLevel===1
+      ? `Someone who played for <b>${nm}</b> with ${NET.names[last]}.`
+      : `Someone who played for <b>${nm}</b> with ${NET.names[last]}, in <b>${NET.seasonLabel(f.season)}</b>.`;
+    quizRound();
+  }
+
+  function quizSuggest(){
+    const q=$('#qnext').value.trim().toLowerCase();
+    const box=$('#quizRes');
+    if(q.length<2){ box.hidden=true; return; }
+    const out=[];
+    for(let i=0;i<NET.P && out.length<25;i++) if(lower[i].indexOf(q)>=0) out.push(i);
+    box.hidden=false;
+    box.innerHTML=out.length?out.map(i=>
+      `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${NET.firstSeason[i]}–${NET.lastSeason[i]}</span></div>`
+    ).join(''):'<div style="color:var(--grey)">No players match</div>';
+  }
+
+  function quizVerdict(){
+    const yours=QUIZ.chain.length-1, best=QUIZ.best.degrees;
+    if(QUIZ.revealed) return `<div class="qdone">The shortest route is
+      <b>${best} steps</b>. It is drawn on the chart.</div>`;
+    if(yours===best) return `<div class="qdone"><b>${yours} steps.</b> That is the
+      shortest there is — nobody links them faster.</div>`;
+    return `<div class="qdone"><b>${yours} steps.</b> Linked, but it can be done
+      in ${best}. <span id="qshow" style="color:var(--amber);cursor:pointer;
+      text-decoration:underline">Show me</span></div>`;
+  }
+
+  function quizReveal(){
+    QUIZ.chain=QUIZ.best.path.slice().reverse();   // route returns b -> a
+    QUIZ.done=true; QUIZ.revealed=true;
+    quizRound();
+  }
+
+  // draw the chain the user has built, so the graph follows along
+  function quizDraw(){
+    VIEW.selected=-1;          // nothing is "picked" here, so no gold ring
+    VIEW.path=QUIZ.chain.length>1?QUIZ.chain.slice():[];
+  }
+
+  document.getElementById('quizBtn').onclick=()=>QUIZ.on?quizClose():quizOpen();
+
+  /* ------------------------------------------------------- the game menu ----
+   * The modes live in game.js; this only opens and closes the card and hands
+   * the chart back afterwards. */
+  const gameEl=document.getElementById('game');
+  // leaving a mode goes back to the menu; the menu's own x leaves the game
+  GAME.init(gameEl, ()=>gameMenu(), i=>{
+    // a game re-roots the chart, so the heading has to follow it
+    CENTRE=i; applyCentreImage(); stats({ecc:NET.maxDist(), bfsMs:0, layoutMs:0});
+  });
+
+  function closeGame(){
+    GAME.stop();
+    gameEl.hidden=true;
+    gameEl.className='';
+    VIEW.interactive=true;
+    VIEW.labels=true; VIEW.path=[]; VIEW.selected=-1; VIEW.lit=null;
+    if(NET.dist[CENTRE]!==0){ recentreQuiet(CENTRE); }
+    VIEW.invalidate();
+  }
+
+  let opening=false;
+  async function openGame(){
+    if(opening) return;                 // a second tap while the first loads
+    opening=true;
+    fullRecordToPlay();
+    quizClose();
+    $('#panel').hidden=true; $('#results').hidden=true;
+    clearShare();
+    gameEl.hidden=false;
+    gameEl.innerHTML='<div class="lead">Loading the puzzles…</div>';
+    try{ await GAME.load(DATA); }
+    catch(e){
+      gameEl.innerHTML='<div class="qerr">Could not load the puzzles.</div>';
+      opening=false; return;
+    }
+    opening=false;
+    gameMenu();
+  }
+
+  function gameMenu(){
+    GAME.stop();
+    gameEl.className='';
+    VIEW.interactive=true;
+    VIEW.labels=true;
+    if(NET.dist[HOME]!==0) recentreQuiet(HOME);   // put the chart back
+    VIEW.labels=!onPhone();
+    gameEl.innerHTML=
+      `<button class="xclose" id="gmclose" title="Back to the chart">&times;</button>
+       <h2>Play</h2>
+       <div class="lead menu-lead">Every link is checked against the record: two
+         players only join if they played for the same club in the same season.</div>
+       <button class="gmenu m-daily" id="gm2"><b>The daily</b>
+         <span>One pair a day, the same for everyone. Join them in under 10.</span></button>
+       <button class="gmenu m-round" id="gm1"><b>The round</b>
+         <span>Five holes, par 2·3·4·5·6. Twenty is the best there is.
+           Clues cost a stroke.</span></button>
+       <button class="gmenu m-expedition" id="gm3"><b>Expedition</b>
+         <span>Start anywhere. Name a player, their teammates light up, and you
+           see how much of the network you can uncover.</span></button>
+       <button class="gmenu m-archive" id="gm4"><b>Archive</b>
+         <span>Any daily since the start, and how your scores have gone.</span></button>`;
+    $('#gmclose').onclick=closeGame;
+    // starting a mode locks the chart; the menu itself does not
+    const play=fn=>()=>{ VIEW.interactive=false; fn(); };
+    $('#gm1').onclick=play(()=>{ VIEW.labels=!onPhone(); GAME.startRound(); });
+    $('#gm2').onclick=play(()=>{ VIEW.labels=!onPhone(); GAME.startDaily(); });
+    $('#gm3').onclick=play(()=>{ VIEW.labels=false; GAME.startExpedition(CENTRE); });
+    $('#gm4').onclick=()=>{ VIEW.labels=!onPhone(); GAME.setSkin('archive'); GAME.renderArchive(); };
+  }
+
+  document.getElementById('playBtn').onclick=()=>
+    gameEl.hidden?openGame():closeGame();
+
+  // the games are the point of the page now, so lead with them
+  openGame().then(()=>{
+    /* Straight away, not on the next frame. The batching exists to stop a
+       ResizeObserver loop, but the very first pass has to land before the
+       first paint or the chart draws full height and then jumps when the card
+       is measured. */
+    syncSheetNow();
+    VIEW.invalidate();
+  });
+  document.getElementById('ring').onclick=()=>setRing(!VIEW.ringMode);
+  document.getElementById('zin').onclick=()=>VIEW.zoomBy(1.35);
+  document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);
+  document.getElementById('zfit').onclick=()=>VIEW.fit();
+  applyTheme(document.documentElement.dataset.theme || 'dark');
+  document.getElementById('theme').onclick=()=>
+    applyTheme(document.documentElement.dataset.theme==='light'?'dark':'light');
+  $('#q').addEventListener('input',search);
+  club.addEventListener('change',()=>{ fillSeasons(club.value); search(); });
+  season.addEventListener('change',search);
+  eraSel.addEventListener('change',()=>{ applyEra(eraSel.value); search(); });
+  $('#results').addEventListener('click',e=>{
+    const d=e.target.closest('[data-i]'); if(!d)return;
+    $('#results').hidden=true; renderPanel(+d.dataset.i);
+  });
+
+  // fps readout
+  let last=performance.now(), frames=0;
+  setInterval(()=>{
+    const now=performance.now(), f=VIEW.perf.frames-frames;
+    const el=document.getElementById('fps');
+    if(el) el.textContent=`${(f*1000/(now-last)).toFixed(0)} fps · draw ${VIEW.perf.draw.toFixed(1)} ms `+
+      `(edges ${VIEW.perf.edges.toFixed(1)} / nodes ${VIEW.perf.nodes.toFixed(1)})`;
+    last=now; frames=VIEW.perf.frames;
+  },500);
+})();
+</script>
+</body>
+</html>

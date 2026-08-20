@@ -1,10 +1,16 @@
-/* Sportalytic — NFL teammate network, interactive.
+/* Sportalytic — teammate networks, interactive.
  *
  * The whole point of this page is that any player can become the centre. That
  * means a breadth-first pass over the real teammate relation on every click,
  * so the data is shipped as the bipartite player <-> (team, season) index and
  * traversed directly rather than as 2.2M materialised edges. See
  * tools/build_network_data.py for why.
+ *
+ * Two datasets use this engine -- every NFL player since 1920, and every
+ * English top-flight footballer since 1888 -- so nothing below may assume
+ * which. What differs is carried in tables.json (the season style, the era
+ * presets) and in the base path handed to load(); everything else is the same
+ * bipartite index and the same traversal.
  */
 'use strict';
 
@@ -97,7 +103,10 @@ const NET = (() => {
     return inflate(await res.arrayBuffer(), url);
   }
 
+  let BASE = 'assets/net';
+
   async function load(base = 'assets/net') {
+    BASE = base;
     const t0 = performance.now();
     const [gbuf, nbuf, tbl] = await Promise.all([
       loadGz(`${base}/graph.bin.gz`),
@@ -148,6 +157,51 @@ const NET = (() => {
     return { ms: performance.now() - t0, players: P, teamSeasons: T };
   }
 
+  /* ------------------------------------------------------------- the era ----
+   * Restricting the graph to a span of seasons, which is what "Premier League
+   * only" and the era presets do.
+   *
+   * The restriction has to bite on the TRAVERSAL, not on the drawing. Hiding
+   * dots outside the era would leave the distances quietly wrong: two players
+   * joined only through a 1975 dressing room are not two apart in the Premier
+   * League, they are not connected at all, and a chart that still drew them
+   * one ring apart would be lying about the only thing it is for.
+   *
+   * So a barred club-season simply is not there. `tsOK` is null when the whole
+   * record is in play, which is the common case and costs nothing.
+   */
+  let tsOK = null;                 // per club-season: may the traversal use it
+  let eraLo = -32768, eraHi = 32767;
+  let inEra = null;                // per player: did they play inside the era
+
+  function setEra(lo, hi) {
+    eraLo = lo == null ? -32768 : lo;
+    eraHi = hi == null ? 32767 : hi;
+    if (eraLo <= tables.seasonMin && eraHi >= tables.seasonMax) {
+      tsOK = null; inEra = null;
+      return { players: P, teamSeasons: T, all: true };
+    }
+    tsOK = new Uint8Array(T);
+    let kept = 0;
+    for (let k = 0; k < T; k++) {
+      if (tsSeason[k] >= eraLo && tsSeason[k] <= eraHi) { tsOK[k] = 1; kept++; }
+    }
+    inEra = new Uint8Array(P);
+    let people = 0;
+    for (let i = 0; i < P; i++) {
+      for (let k = p_ip[i], ke = p_ip[i + 1]; k < ke; k++) {
+        if (tsOK[p_ix[k]]) { inEra[i] = 1; people++; break; }
+      }
+    }
+    return { players: people, teamSeasons: kept, all: false };
+  }
+
+  const era = () => ({ lo: eraLo, hi: eraHi, restricted: !!tsOK });
+  // "Did this player ever appear inside the era" -- what search and the random
+  // pickers need, and not the same question as "is he reachable from here",
+  // which depends on the centre.
+  const playsInEra = i => !inEra || !!inEra[i];
+
   /* Breadth-first over the bipartite index. A roster is absorbed once and then
    * skipped: without that, a team-season is rewalked for every one of its ~54
    * members, which is both slower and how an earlier version managed to enqueue
@@ -163,6 +217,7 @@ const NET = (() => {
       for (let i = p_ip[u], ie = p_ip[u + 1]; i < ie; i++) {
         const ts = p_ix[i];
         if (tstamp[ts] === stamp) continue;
+        if (tsOK && !tsOK[ts]) continue;
         tstamp[ts] = stamp;
         for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) {
           const v = t_ix[j];
@@ -231,7 +286,7 @@ const NET = (() => {
     if (!inSet) return { moved: 0, frac: 0 };
 
     const pa = Math.atan2(py[p], px[p]) || 0;
-    const frac = inSet / Math.max(1, P - 1);
+    const frac = inSet / Math.max(1, reached() - 1);
     const spanA = 2 * Math.PI * frac;
     const a0A = pa - spanA / 2;
     const secB = [pa + spanA / 2, pa - spanA / 2 + 2 * Math.PI];
@@ -322,6 +377,17 @@ const NET = (() => {
   }
 
   function maxDist() { let m = 0; for (let i = 0; i < P; i++) if (dist[i] > m) m = dist[i]; return m; }
+  // how many players the current centre can get to at all
+  function reached() { let n = 0; for (let i = 0; i < P; i++) if (dist[i] >= 0) n++; return n; }
+
+  /* A football season straddles two years and is written that way. The build
+     stores the starting year -- 1992 -- because every range test and every
+     sort wants a plain integer; this is the only place that matters. tables
+     .json says which style the dataset is in, so the NFL page is untouched. */
+  function seasonLabel(y) {
+    if (!tables || tables.seasonStyle !== 'split') return String(y);
+    return `${y}/${String((y + 1) % 100).padStart(2, '0')}`;
+  }
 
   function pathToCentre(v) {
     const out = [];
@@ -354,6 +420,7 @@ const NET = (() => {
     const out = new Set();
     for (let k = p_ip[i], ke = p_ip[i + 1]; k < ke; k++) {
       const ts = p_ix[k];
+      if (tsOK && !tsOK[ts]) continue;
       for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) out.add(t_ix[j]);
     }
     out.delete(i);
@@ -368,6 +435,7 @@ const NET = (() => {
     const out = [];
     for (let i = p_ip[u], ie = p_ip[u + 1]; i < ie; i++) {
       const a = p_ix[i];
+      if (tsOK && !tsOK[a]) continue;   // that season is outside the era
       for (let j = p_ip[v], je = p_ip[v + 1]; j < je; j++) {
         if (p_ix[j] === a) { out.push(a); break; }
       }
@@ -437,6 +505,7 @@ const NET = (() => {
       for (let i = p_ip[u], ie = p_ip[u + 1]; i < ie; i++) {
         const ts = p_ix[i];
         if (tstamp2[ts] === stamp) continue;
+        if (tsOK && !tsOK[ts]) continue;
         tstamp2[ts] = stamp;
         for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) {
           const v = t_ix[j];
@@ -466,6 +535,7 @@ const NET = (() => {
       for (let i = p_ip[u], ie = p_ip[u + 1]; i < ie; i++) {
         const ts = p_ix[i];
         if (tstamp3[ts] === st3) continue;
+        if (tsOK && !tsOK[ts]) continue;
         tstamp3[ts] = st3;
         for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) {
           const v = t_ix[j];
@@ -480,9 +550,13 @@ const NET = (() => {
       else if (dist3[v] > dist[v]) exclusive++;
     }
 
-    return { count, exclusive, stranded, total: P - 1,
-             pct: 100 * count / (P - 1),
-             exclusivePct: 100 * exclusive / (P - 1),
+    // Out of everyone the centre can actually reach, not out of everyone in the
+    // file: under an era filter most of the record is not in the graph at all,
+    // and dividing by it would report a share of a network nobody is looking at.
+    const total = Math.max(1, reached() - 1);
+    return { count, exclusive, stranded, total,
+             pct: 100 * count / total,
+             exclusivePct: 100 * exclusive / total,
              ms: performance.now() - t0, mask: through };
   }
 
@@ -495,7 +569,8 @@ const NET = (() => {
 
   return {
     load, inflate, bfs, layout, recentre, pathToCentre, route, info, maxDist,
-    neighbours,
+    neighbours, reached, seasonLabel, setEra, era, playsInEra,
+    get base() { return BASE; },
     sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
     throughParent,
     get P() { return P; }, get names() { return names; },

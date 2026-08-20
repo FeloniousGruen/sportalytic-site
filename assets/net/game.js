@@ -17,18 +17,39 @@
 const GAME = (() => {
 
   const $ = s => document.querySelector(s);
-  /* Five holes: 2, 3, 3, 3, 4 -- fifteen in all, and fifteen is the best there
-     is, since a shortest route cannot be beaten. The first three come from the
-     pool of players active in the last thirty years, the last two reach back
-     within fifty, which is as far as a round can go and still be playable.
-     Distance is an era gap, so a par 5 or 6 would mean naming journeymen from
-     the 1950s and nobody finishes those. */
-  const HOLES = [
-    { par: 2, pool: 'r2' }, { par: 3, pool: 'r3' }, { par: 3, pool: 'r3' },
-    { par: 3, pool: 'g3' }, { par: 4, pool: 'g4' },
-  ];
+
+  /* Everything that differs between the two datasets. The page sets
+     window.SPORT before this script loads; the defaults below are the NFL, so
+     network.html keeps working having said nothing.
+
+     The pars are per-sport because the graphs are not the same shape. NFL
+     distance is almost entirely an era gap -- 78% of well-known pairs are
+     exactly 2 apart -- so its round tops out at 4. English football spreads
+     much wider (2, 3, 4, 5 and 6 are all common between names you have heard
+     of), because a top flight of twenty clubs over 138 years churns far less,
+     so its round can climb properly. Measured, not guessed: see the working in
+     tools/build_puzzles.py.
+
+     `store` namespaces the saved history. Sharing one prefix would pile
+     football scores into the NFL distribution and make both meaningless. */
+  const CFG = Object.assign({
+    base: 'assets/net',
+    store: 'sp.',
+    title: '11 Degrees',
+    shareUrl: 'https://sportalytic.co.uk/network.html',
+    holes: [{ par: 2, pool: 'r2' }, { par: 3, pool: 'r3' }, { par: 3, pool: 'r3' },
+            { par: 3, pool: 'g3' }, { par: 4, pool: 'g4' }],
+    // one entry per day of a repeating cycle, so most dailies are modern and
+    // the occasional one reaches back
+    dailyPools: ['r3', 'r3', 'r3', 'r3', 'g3'],
+    dailyPar: 3,
+    dailyTarget: 10,
+    unit: 'squad',                         // "shared a squad" / "shared a club"
+  }, (typeof window !== 'undefined' && window.SPORT) || {});
+
+  const HOLES = CFG.holes;
   const PAR_TOTAL = HOLES.reduce((n, h) => n + h.par, 0);
-  const DAILY_TARGET = 10;                 // beat this on the daily
+  const DAILY_TARGET = CFG.dailyTarget;    // beat this on the daily
   /* Giving up is a fixed ten, not the par. Handing you the shortest route and
      then scoring it as if you had found it made surrender the best play on any
      hole you could not see -- you would card a par for pressing a button. */
@@ -41,7 +62,7 @@ const GAME = (() => {
   let onExit = null;                       // hand the screen back to the chart
   let state = null;                        // whatever mode is running
 
-  async function load(base = 'assets/net') {
+  async function load(base = CFG.base) {
     if (puzzles) return puzzles;
     puzzles = await fetch(`${base}/puzzles.json${NET.V()}`).then(r => r.json());
     return puzzles;
@@ -138,9 +159,9 @@ const GAME = (() => {
   }
 
   const store = {
-    get(k, d) { try { return JSON.parse(localStorage.getItem('sp.' + k)) ?? d; }
+    get(k, d) { try { return JSON.parse(localStorage.getItem(CFG.store + k)) ?? d; }
                 catch (e) { return d; } },
-    set(k, v) { try { localStorage.setItem('sp.' + k, JSON.stringify(v)); }
+    set(k, v) { try { localStorage.setItem(CFG.store + k, JSON.stringify(v)); }
                 catch (e) { /* private browsing; the game still plays */ } },
   };
 
@@ -213,7 +234,7 @@ const GAME = (() => {
       const initials = NET.names[next].split(/\s+/)
         .map(w => w[0]).filter(Boolean).join('.');
       const bits = [`played for <b>${club}</b>`];
-      if (L.clueLevel >= 2) bits.push(`in <b>${f.season}</b>`);
+      if (L.clueLevel >= 2) bits.push(`in <b>${NET.seasonLabel(f.season)}</b>`);
       if (L.clueLevel >= 3) bits.push(`as a <b>${info.position || '?'}</b>`);
       if (L.clueLevel >= 4) bits.push(`initials <b>${initials}</b>`);
       L.clue = 'Someone who ' + bits.join(', ') + '.';
@@ -240,7 +261,8 @@ const GAME = (() => {
     const sh = NET.sharedTeamSeasons(u, v);
     if (!sh.length) return '';
     const f = sh[0], more = sh.length > 1 ? ` +${sh.length - 1}` : '';
-    return `<li class="qstep via"><span class="chip">${f.team}</span> ${f.season}${more}</li>`;
+    return `<li class="qstep via"><span class="chip">${f.team}</span> ${
+      NET.seasonLabel(f.season)}${more}</li>`;
   }
 
   function routeHtml(nodes, cls = '') {
@@ -342,18 +364,18 @@ const GAME = (() => {
       const mark = h.gave ? '❌' : over === 0 ? '🟢' : over <= 2 ? '🟡' : '🔴';
       return `${mark} par ${h.par} — ${NET.names[h.a]} → ${NET.names[h.b]}: ${h.score}`;
     }).join('\n');
-    return `11 Degrees — The Round\n${t.shot} strokes, par ${t.par} (${
+    return `${CFG.title} — The Round\n${t.shot} strokes, par ${t.par} (${
       diff === 0 ? 'level' : '+' + diff})\n\n${rows}\n\nHave a go:\n${SHARE_URL}`;
   }
 
   /* Wordle-style: the shape of the result, not the answer. Nobody wants the
      linking players spoiled for them by a friend's share. */
-  const SHARE_URL = 'https://sportalytic.co.uk/network.html';
+  const SHARE_URL = CFG.shareUrl;
 
   function dailyShareText() {
     const L = state.leg, links = L.links(), par = L.best;
     const who = `${NET.names[L.a]} → ${NET.names[L.b]}`;
-    const head = `11 Degrees — daily #${state.day}\n${who}`;
+    const head = `${CFG.title} — daily #${state.day}\n${who}`;
     if (L.revealed) {
       return `${head}\n❌ Beat me today. See if you can do better.\n${SHARE_URL}`;
     }
@@ -385,17 +407,17 @@ const GAME = (() => {
      any era into it without the linking players becoming unnameable. */
   function dailyPuzzle(day) {
     const rng = seeded(day * 2654435761);
-    const pool = (day % 5 === 4) ? 'g3' : 'r3';
-    return pick(pool, rng);
+    const cyc = CFG.dailyPools;
+    return pick(cyc[((day % cyc.length) + cyc.length) % cyc.length], rng);
   }
 
   function startDaily(day = dayNumber()) {
     setSkin('daily');
     const [a, b] = dailyPuzzle(day);
     const saved = history.dailies()[day];
-    state = { mode: 'daily', day, target: DAILY_TARGET, par: 3,
+    state = { mode: 'daily', day, target: DAILY_TARGET, par: CFG.dailyPar,
               today: day === dayNumber() };
-    state.leg = leg(a, b, { par: 3 });
+    state.leg = leg(a, b, { par: CFG.dailyPar });
     if (saved && saved.chain) {
       // what you actually played, which after giving up is however far you got
       state.leg.chain = saved.chain;
@@ -431,8 +453,8 @@ const GAME = (() => {
       `<h2>Archive</h2>
        <div class="lead">Every daily since the start is still there. Your record
          is kept on this device only.</div>
-       ${scores.length ? distribution(scores, -1, 3, 10, 'Your dailies') : ''}
-       ${rounds.length ? distribution(rounds.map(r => r.shot), -1, 15, 27, 'Your rounds') : ''}
+       ${scores.length ? distribution(scores, -1, CFG.dailyPar, GIVE_UP, 'Your dailies') : ''}
+       ${rounds.length ? distribution(rounds.map(r => r.shot), -1, PAR_TOTAL, PAR_TOTAL + 12, 'Your rounds') : ''}
        <div class="gmeta">Pick a day</div>
        <div class="arch">${days.map(d => {
          const r = all[d];
@@ -503,7 +525,7 @@ const GAME = (() => {
          <div class="lead">${state.par} links apart at best. Join them in under
            <b>${state.target}</b> — puzzle #${state.day}${
            state.today ? '' : ' (from the archive)'}.</div>`
-      : `<h2>Hole ${state.hole + 1} of 5</h2>
+      : `<h2>Hole ${state.hole + 1} of ${HOLES.length}</h2>
          <div class="lead">Par <b>${L.par}</b>. Join
            <b>${NET.names[L.a]}</b> to <b>${NET.names[L.b]}</b>.</div>`;
 
@@ -549,7 +571,7 @@ const GAME = (() => {
       saveDaily();
       const all = history.dailies();
       const scores = Object.values(all).map(r => r.score).filter(n => n != null);
-      chart = distribution(scores, L.score(), 3, 10, 'Your dailies');
+      chart = distribution(scores, L.score(), CFG.dailyPar, GIVE_UP, 'Your dailies');
     }
     const t = state.mode === 'round' ? roundTotals() : null;
     host.innerHTML = exitBtn() + head +
@@ -560,7 +582,7 @@ const GAME = (() => {
       (L.done
         ? (state.mode === 'round'
             ? `<button class="btn" id="gnexth">${
-                state.hole === 4 ? 'See the card' : 'Next hole'}</button>`
+                state.hole === HOLES.length - 1 ? 'See the card' : 'Next hole'}</button>`
             : `<button class="btn" id="gshare">Share your result</button>
                <button class="btn ghost" id="gagain">Back</button>`)
         : `<button class="btn ghost" id="gclue">${

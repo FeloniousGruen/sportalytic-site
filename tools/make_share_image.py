@@ -10,14 +10,24 @@ breadth-first pass and radial layout, so the card is the chart rather than an
 impression of it. Drawn at 3x and reduced with LANCZOS, which is what gives the
 rings their soft edge -- the same trick the reels use.
 
+Both networks use this. --data/--centre/--out pick which.
+
 Usage: python3 tools/make_share_image.py
+       python3 tools/make_share_image.py --data assets/foot \
+               --centre "Erling Haaland" --cards football
 """
-import gzip, os, struct
+import argparse, gzip, os, struct
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-NET = os.path.join(HERE, 'assets', 'net')
+
+ap = argparse.ArgumentParser()
+ap.add_argument('--data', default='assets/net')
+ap.add_argument('--centre', default='Travis Kelce')
+ap.add_argument('--cards', choices=['nfl', 'football'], default='nfl')
+A = ap.parse_args()
+NET = os.path.join(HERE, *A.data.split('/'))
 
 W, H, SS = 1200, 630, 3
 BG = (11, 17, 23)
@@ -26,7 +36,7 @@ DEG_COLOUR = ['#2e2e2e', '#f4b400', '#6a5acd', '#23b5d3', '#ff7f50',
               '#ff4fa3', '#7cc943', '#2ec4b6', '#c77dff', '#ff9f1c',
               '#00a8ff', '#7a7a7a']
 RING_GAP = 1.6
-CENTRE_NAME = 'Travis Kelce'
+CENTRE_NAME = A.centre
 
 
 def rgb(h):
@@ -132,7 +142,7 @@ im = im.resize((W, H), Image.LANCZOS)
 dr = ImageDraw.Draw(im, 'RGBA')
 
 # the centre's portrait, if there is one
-face = os.path.join(NET, 'faces', f'{centre}.webp')
+face = os.path.join(NET, 'faces', f'{centre}.webp')   # files are named by node index
 if os.path.exists(face):
     d = 96
     ph = Image.open(face).convert('RGBA').resize((d, d), Image.LANCZOS)
@@ -149,12 +159,18 @@ def font(sz):
 
 
 x0, y0 = 62, 196
-CARDS = [
+CARDS = {
+  'nfl': [
     ('share-network.jpg', '11 DEGREES OF', 'TRAVIS KELCE',
      'Every NFL player since 1920,\njoined wherever two of them\nshared a squad.'),
     ('share.jpg', 'SPORT,', 'IN NUMBERS',
      'Reels, carousels and stills that\nmake the numbers worth\nwatching.'),
-]
+  ],
+  'football': [
+    ('share-football.jpg', '10 DEGREES OF', 'ERLING HAALAND',
+     'Every player in the English top\nflight since 1888, joined wherever\ntwo of them shared a club.'),
+  ],
+}[A.cards]
 for fname, l1, l2, body in CARDS:
     card = im.copy()
     d2 = ImageDraw.Draw(card, 'RGBA')

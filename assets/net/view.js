@@ -556,7 +556,13 @@ const VIEW = (() => {
 
   function invalidate() { dirty = true; }
 
+  /* Which dataset's portraits and club marks to fetch. Set by whichever of the
+     two loaders runs first; both pages call them at start-up. */
+  let BASE = 'assets/net';
+  function setBase(b) { BASE = b; }
+
   async function loadFaceFlags(base = 'assets/net') {
+    BASE = base;
     // NET.inflate copes with the file arriving already decoded; see it for why
     try {
       const res = await fetch(`${base}/faces.bin.gz${NET.V()}`);
@@ -573,7 +579,7 @@ const VIEW = (() => {
     const im = new Image();
     im.onload = () => { dirty = true; };
     im.onerror = () => { FACES[i] = null; };
-    im.src = `assets/net/faces/${i}.webp${NET.V()}`;   // indices moved; see the note in network.html
+    im.src = `${BASE}/faces/${i}.webp${NET.V()}`;   // indices moved; see the note in network.html
     FACES[i] = im;
     return im;
   }
@@ -604,15 +610,16 @@ const VIEW = (() => {
     const im = new Image();
     im.onload = () => { dirty = true; };
     im.onerror = () => { LOGOS[code] = null; };
-    im.src = `assets/net/logos/${code}.png${NET.V()}`;
+    im.src = `${BASE}/logos/${code}.png${NET.V()}`;
     LOGOS[code] = im;
     return im;
   }
 
   async function loadLogoIndex(base = 'assets/net') {
-    try { logoCodes = await fetch(`${base}/logos/index.json`).then(r => r.json()); }
+    BASE = base;
+    try { logoCodes = await fetch(`${base}/logos/index.json${NET.V()}`).then(r => r.json()); }
     catch (e) { logoCodes = []; }
-    try { logoColours = await fetch(`${base}/logos/colours.json`).then(r => r.json()); }
+    try { logoColours = await fetch(`${base}/logos/colours.json${NET.V()}`).then(r => r.json()); }
     catch (e) { logoColours = {}; }
   }
 
@@ -667,7 +674,7 @@ const VIEW = (() => {
   return {
     init, draw, tick, fit, fitScale, buildGrid, captureFrom, beginMorph, perf, cam,
     setCentreImage, setRingSegments, setThrough, zoomBy, loadLogoIndex,
-    loadFaceFlags, faceFor,
+    loadFaceFlags, faceFor, setBase,
     get faceFlagCount(){ return hasFace ? hasFace.reduce((a,b)=>a+b,0) : -1; },
     hasPortrait(i){ return !!(hasFace && hasFace[i]); },
     set labels(v){ showLabels = !!v; dirty = true; }, get labels(){ return showLabels; },
