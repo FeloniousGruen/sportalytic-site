@@ -250,26 +250,66 @@ const VIEW = (() => {
       }
     }
 
-    // names last, so the centre portrait cannot clip its own label
+    /* Names last, so the centre portrait cannot clip its own label.
+     *
+     * Consecutive stops on a path sit one ring apart, which at a fitted zoom is
+     * far closer than a line of text is tall, so placing every label at its dot
+     * guarantees a pile-up. Each label instead takes the first free slot from a
+     * candidate list -- either side, then progressively further above and below
+     * -- tested against the boxes already placed. Ends of the chain are placed
+     * first so they win the good positions, and a label that had to move gets a
+     * leader line back to its dot. */
     if (path.length > 1 && !moving) {
       ctx.font = 'bold 11px Arial';
       ctx.textBaseline = 'middle';
       ctx.textAlign = 'left';
-      for (let k = 0; k < path.length; k++) {
+      const BOX = 16, GAP = 3;
+      const placed = [];
+      const hits = r => placed.some(q =>
+        !(r.x + r.w + GAP < q.x || q.x + q.w + GAP < r.x ||
+          r.y + r.h + GAP < q.y || q.y + q.h + GAP < r.y));
+      // both ends matter most: the player asked for and the centre
+      const order = path.map((_, k) => k)
+        .sort((a, b) => (a === 0 || a === path.length - 1 ? 0 : 1)
+                      - (b === 0 || b === path.length - 1 ? 0 : 1));
+      const drawn = [];
+      for (const k of order) {
         const i = path[k];
         const [x, y] = frameXY(i);
         const X = sx(x), Y = sy(y);
         if (X < -40 || Y < -20 || X > W + 40 || Y > H + 20) continue;
         const label = NET.names[i];
-        const tw = ctx.measureText(label).width;
-        // clear the centre portrait rather than sitting under it
-        const pad = (i === centre && centreImg) ? Math.max(34, Math.min(96, cam.scale * 1.15)) / 2 + 6 : 9;
-        const right = X < W - tw - 40;
-        const bx = right ? X + pad : X - tw - pad - 6;
+        const tw = ctx.measureText(label).width + 8;
+        const pad = (i === centre && centreImg)
+          ? Math.max(34, Math.min(96, cam.scale * 1.15)) / 2 + 6 : 10;
+        let best = null;
+        for (const dy of [0, -15, 15, -30, 30, -45, 45, -62, 62, -80, 80]) {
+          for (const side of [1, -1]) {
+            const bx = side > 0 ? X + pad : X - tw - pad;
+            if (bx < 4 || bx + tw > W - 4) continue;
+            const r = { x: bx, y: Y + dy - BOX / 2, w: tw, h: BOX };
+            if (r.y < 4 || r.y + BOX > H - 4) continue;
+            if (!hits(r)) { best = { r, dy, side }; break; }
+          }
+          if (best) break;
+        }
+        if (!best) continue;            // no room: leave it out rather than stack
+        placed.push(best.r);
+        drawn.push({ k, X, Y, ...best, label });
+      }
+      for (const d of drawn) {
+        if (Math.abs(d.dy) > 7) {       // moved, so show where it belongs
+          ctx.strokeStyle = 'rgba(251,194,71,0.45)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(d.X + (d.side > 0 ? 5 : -5), d.Y);
+          ctx.lineTo(d.side > 0 ? d.r.x : d.r.x + d.r.w, d.r.y + BOX / 2);
+          ctx.stroke();
+        }
         ctx.fillStyle = 'rgba(11,17,23,0.85)';
-        ctx.fillRect(bx - 3, Y - 8, tw + 8, 16);
-        ctx.fillStyle = (k === path.length - 1) ? '#fff' : NET.PATH;
-        ctx.fillText(label, bx + 1, Y);
+        ctx.fillRect(d.r.x, d.r.y, d.r.w, BOX);
+        ctx.fillStyle = (d.k === path.length - 1) ? '#fff' : NET.PATH;
+        ctx.fillText(d.label, d.r.x + 4, d.r.y + BOX / 2);
       }
     }
     if (hover >= 0) ring(hover, '#fff');
