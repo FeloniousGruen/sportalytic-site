@@ -71,7 +71,8 @@ mem = mem[mem.uid.isin(idx)]
 ALIAS = {'KAN': 'KC', 'GNB': 'GB', 'NWE': 'NE', 'NOR': 'NO',
          'TAM': 'TB', 'SFO': 'SF', 'LAR': 'LA',
          'CHB': 'CHI',          # Bears: CHB 1922-59 then CHI 1960-2025
-         'AZ': 'ARI'}           # nflverse switched Arizona to AZ for 2026
+         'AZ': 'ARI',           # nflverse switched Arizona to AZ for 2026
+         'COW': 'DAL'}          # Cowboys: COW 1960-62 then DAL 1963-
 mem['team'] = mem.team.map(lambda t: ALIAS.get(t, t))
 
 ts_keys = sorted({(t, int(s)) for t, s in zip(mem.team, mem.season)})
@@ -119,14 +120,14 @@ TEAM_NAMES = {
   'DUL': 'Duluth Eskimos', 'PRO': 'Providence Steam Roller',
   'POT': 'Pottsville Maroons', 'FYJ': 'Frankford Yellow Jackets',
   'CHH': 'Chicago Hornets', 'CHR': 'Chicago Rockets', 'CHS': 'Chicago Staleys',
-  'CHT': 'Chicago Tigers', 'COL': 'Columbus Panhandles', 'COW': 'Dallas Cowboys',
+  'CHT': 'Chicago Tigers', 'COL': 'Columbus Panhandles', 
   'DON': 'Los Angeles Dons', 'ECG': 'Evansville Crimson Giants',
   'HAR': 'Hartford Blues', 'KEN': 'Kenosha Maroons', 'LOU': 'Louisville Colonels',
   'MUN': 'Muncie Flyers', 'NEW': 'Newark Tornadoes', 'NYB': 'New York Bulldogs',
   'NYT': 'New York Titans', 'NYY': 'New York Yankees', 'OOR': 'Oorang Indians',
   'ORG': 'Orange Tornadoes', 'POR': 'Portsmouth Spartans',
   'RI': 'Rock Island Independents', 'SI': 'Staten Island Stapletons',
-  'TEX': 'Dallas Texans', 'TON': 'Tonawanda Kardex',
+  'TEX': 'Dallas Texans (AFL)', 'TON': 'Tonawanda Kardex',
   'C-P': 'Card-Pitt', 'P-P': 'Phil-Pitt Steagles',
   'CAL': 'California', 'IND_H': '', 'DEC_H': '',
 }
@@ -146,6 +147,7 @@ TEAM_ERAS = {
   'BOS': [('Boston Bulldogs', 1929, 1929), ('Boston Braves / Redskins', 1932, 1936),
           ('Boston Yanks', 1944, 1948), ('Boston Patriots', 1960, 1970)],
   'LA':  [('Los Angeles Buccaneers', 1926, 1926), ('Los Angeles Rams', 1950, 2100)],
+  'DAL': [('Dallas Texans (NFL)', 1952, 1952), ('Dallas Cowboys', 1960, 2100)],
 }
 
 teams = sorted({t for t, _ in ts_keys})
@@ -191,13 +193,22 @@ for ti, code in enumerate(teams):
         for j in range(t_ip[k], t_ip[k + 1]):
             members.add(int(t_ix[j]))
     entry = {'name': TEAM_NAMES.get(code, ''), 'from': min(seasons),
-             'to': max(seasons), 'players': len(members)}
+             'to': max(seasons), 'players': len(members),
+             'seasons': sorted(set(seasons))}
     if code in TEAM_ERAS:
         eras = []
         for nm, lo, hi in TEAM_ERAS[code]:
             yrs = [y for y in seasons if lo <= y <= hi]
-            if yrs:
-                eras.append({'name': nm, 'from': min(yrs), 'to': max(yrs)})
+            if not yrs:
+                continue
+            mem = set()
+            for k, (t, y) in enumerate(ts_keys):
+                if t != code or not (lo <= y <= hi):
+                    continue
+                for j in range(t_ip[k], t_ip[k + 1]):
+                    mem.add(int(t_ix[j]))
+            eras.append({'name': nm, 'from': min(yrs), 'to': max(yrs),
+                         'players': len(mem)})
         if len(eras) > 1:
             entry['eras'] = eras
     team_meta[code] = entry

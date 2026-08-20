@@ -150,7 +150,12 @@ const VIEW = (() => {
       ctx.beginPath();
       const step = 1;
       for (let i = 0; i < n; i += step) {
-        const p = par[i]; if (p < 0) continue;
+        // while a share is up, the highlighted players hang off the player in
+        // question rather than off the branch they arrived from
+        let p = (throughMask && throughMask[i]) ? NET.throughParent(i) : par[i];
+        if (p < 0 || (throughMask && throughMask[i] && !throughMask[p] && p !== selected))
+          p = par[i];
+        if (p < 0) continue;
         if (ringSegs && (dist[i] > 1 || dist[p] > 1)) continue;
         let ax = px[i], ay = py[i], bx = px[p], by = py[p];
         if (useMorph) {

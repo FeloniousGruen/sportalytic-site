@@ -31,11 +31,14 @@ nav a:hover{color:var(--ink);border-bottom-color:var(--amber)}
 .cta:hover{filter:brightness(1.08)}
 #stage{position:fixed;inset:60px 0 0 0}
 canvas{width:100%;height:100%;display:block;touch-action:none}
-.hud{position:absolute;top:12px;left:12px;display:flex;gap:8px;flex-wrap:wrap;max-width:min(560px,calc(100% - 24px))}
+.hud{position:absolute;top:12px;left:12px;right:330px;display:flex;gap:8px;align-items:center}
+.hud .spacer{flex:1}
 .hud input,.hud select{background:var(--panel);color:var(--ink);border:1px solid var(--greyd);border-radius:8px;padding:9px 11px;font:inherit;font-size:14px}
-.hud input{min-width:200px}
-#club{max-width:250px}
-.hud select{max-width:250px}
+.hud optgroup{background:#0B1117;color:var(--amber);font-style:normal;font-weight:bold}
+.hud optgroup option{color:var(--ink);font-weight:normal}
+.hud input{width:200px;flex:0 0 auto}
+#club{flex:0 1 300px;min-width:0}
+#season{flex:0 0 auto;min-width:120px}
 #results{position:absolute;top:56px;left:12px;background:var(--panel);border:1px solid var(--greyd);border-radius:10px;max-height:46vh;overflow:auto;min-width:260px;z-index:5}
 #results div{padding:8px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
 #results div:hover{background:#1d2833}
@@ -76,8 +79,9 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 #loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:15px}
 @media(max-width:820px){
   #panel{right:8px;left:8px;top:auto;bottom:8px;width:auto}
-  .hud{max-width:calc(100% - 16px)}
-  .hud input{min-width:0;flex:1}
+  .hud{right:8px;flex-wrap:wrap}
+  .hud input{width:auto;flex:1 1 100%}
+  .hud .spacer{display:none}
 }
 </style>
 </head>
@@ -97,6 +101,7 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
   <div class="hud">
     <input id="q" placeholder="Search a player…" autocomplete="off">
     <select id="club"><option value="">Any club</option></select>
+    <span class="spacer"></span>
     <select id="season"><option value="">Any season</option></select>
   </div>
   <div id="results" hidden></div>
@@ -140,7 +145,7 @@ function renderPanel(i){
             return row;}).join('')}</div>`}
      <button class="btn" id="share">Share of connections</button>
      <div id="shareOut"></div>
-     <button class="btn" id="rec">Centre the chart on ${d.name}</button>`;
+     <button class="btn" id="rec">Centre chart on ${d.name}</button>`;
   $('#rec').onclick=()=>recentre(i);
   $('#share').onclick=()=>{
     const r=NET.shareThrough(i);
@@ -170,7 +175,7 @@ function renderPanel(i){
         (${r.exclusivePct.toFixed(1)}%) actually get further away without him.
         That is why these dots also belong to other players, and why they move
         when you ask a different one.</div>
-        <span class="muted2">two extra passes, ${r.ms.toFixed(0)} ms</span></div>`;
+        ${DEBUG?`<span class="muted2">two extra passes, ${r.ms.toFixed(0)} ms</span>`:''}</div>`;
   };
   if(VIEW.hasThrough){            // leaving a share view: put the layout back
     VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
@@ -180,8 +185,8 @@ function renderPanel(i){
   // horizontal labels have the most room not to collide
   if(i!==CENTRE && !VIEW.ringMode){
     VIEW.captureFrom();
-    NET.rotateSo(i);   // nearest of down / up
-    VIEW.beginMorph(650);
+    // only swings when the chain is within ~30 degrees of horizontal
+    if(NET.rotateSo(i)) VIEW.beginMorph(650);
   }
   VIEW.selected=i; VIEW.path=i===CENTRE?[]:p;
 }
@@ -223,13 +228,15 @@ function setRing(on){
   }
 }
 
+// ?debug in the URL brings back the timing readout used while building this
+const DEBUG=location.search.indexOf('debug')>=0;
 function stats(r){
   $('#stats').innerHTML=
     `${NET.P.toLocaleString()} players · centred on ${NET.names[CENTRE]} · `+
-    `${r.ecc} degrees deep<br>`+
-    `recentre ${(r.bfsMs+r.layoutMs).toFixed(1)} ms `+
-    `(bfs ${r.bfsMs.toFixed(1)} + layout ${r.layoutMs.toFixed(1)}) · `+
-    `<span id="fps"></span>`;
+    `${r.ecc} degrees deep`+
+    (DEBUG?`<br>recentre ${(r.bfsMs+r.layoutMs).toFixed(1)} ms `+
+      `(bfs ${r.bfsMs.toFixed(1)} + layout ${r.layoutMs.toFixed(1)}) · `+
+      `<span id="fps"></span>`:'');
 }
 
 (async()=>{
@@ -240,22 +247,43 @@ function stats(r){
   const club=$('#club'), season=$('#season');
   // A code that covers more than one franchise (BAL is the Colts then the
   // Ravens) is offered once per era rather than as one misleading entry.
+  // clubs still playing first, then everything that has folded or moved on
   const clubOpts=[];
   t.teams.forEach(code=>{
     const m=t.teamMeta[code]||{};
-    if(m.eras){
-      m.eras.forEach(e=>clubOpts.push({
-        label:`${e.name} (${code}, ${e.from}\u2013${e.to})`,
-        value:`${code}:${e.from}:${e.to}`, sort:e.name}));
-    }else{
-      const label=m.name?`${m.name} (${code})`:`${code} \u00b7 ${m.from}\u2013${m.to}`;
-      clubOpts.push({label:`${label} — ${m.players||0} players`, value:code,
-                     sort:m.name||('zzz'+code)});
-    }
+    const rows=m.eras?m.eras.map(e=>({name:e.name,from:e.from,to:e.to,
+                                      players:e.players,value:`${code}:${e.from}:${e.to}`}))
+                    :[{name:m.name||code,from:m.from,to:m.to,players:m.players,value:code}];
+    rows.forEach(r=>clubOpts.push({
+      label:`${r.name} (${code}, ${r.from}\u2013${r.to}) — ${r.players||0} players`,
+      value:r.value, sort:r.name, current:r.to>=t.seasonMax}));
   });
-  clubOpts.sort((a,b)=>a.sort.localeCompare(b.sort))
-          .forEach(o=>club.add(new Option(o.label,o.value)));
-  for(let y=t.seasonMax;y>=t.seasonMin;y--) season.add(new Option(y,y));
+  clubOpts.sort((a,b)=>a.sort.localeCompare(b.sort));
+  for(const [label,want] of [['Current clubs',true],['Historic clubs',false]]){
+    const rows=clubOpts.filter(o=>o.current===want);
+    if(!rows.length) continue;
+    const g=document.createElement('optgroup'); g.label=`${label} (${rows.length})`;
+    rows.forEach(o=>g.appendChild(new Option(o.label,o.value)));
+    club.appendChild(g);
+  }
+  function fillSeasons(clubVal){
+    const keep=season.value;
+    season.length=1;                       // keep "Any season"
+    let years=null;
+    if(clubVal){
+      const [code,lo,hi]=clubVal.split(':');
+      const m=t.teamMeta[code];
+      if(m&&m.seasons){
+        years=m.seasons.filter(y=>!lo||(y>=+lo&&y<=+hi));
+      }
+    }
+    if(!years) years=Array.from({length:t.seasonMax-t.seasonMin+1},(_,k)=>t.seasonMax-k);
+    else years=years.slice().sort((a,b)=>b-a);
+    years.forEach(y=>season.add(new Option(y,y)));
+    // hold the chosen year if the new club also played it
+    season.value=years.includes(+keep)?keep:'';
+  }
+  fillSeasons('');
 
   CENTRE=(t.notable&&t.notable['Travis Kelce'])||0;
   const r=NET.recentre(CENTRE);
@@ -303,7 +331,8 @@ function stats(r){
   document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);
   document.getElementById('zfit').onclick=()=>VIEW.fit();
   $('#q').addEventListener('input',search);
-  club.addEventListener('change',search); season.addEventListener('change',search);
+  club.addEventListener('change',()=>{ fillSeasons(club.value); search(); });
+  season.addEventListener('change',search);
   $('#results').addEventListener('click',e=>{
     const d=e.target.closest('[data-i]'); if(!d)return;
     $('#results').hidden=true; renderPanel(+d.dataset.i);

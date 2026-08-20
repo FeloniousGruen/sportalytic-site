@@ -27,6 +27,7 @@ const NET = (() => {
   let wA0, wSpan, wAcc;
   let dist2, order2, tstamp2, through;   // second traversal, for share-of-connections
   let dist3, order3, tstamp3;            // third: the same graph with the pick removed
+  let par2;                              // parent in the traversal from the pick
   let stampCounter = 0;
 
   async function loadGz(url) {
@@ -86,6 +87,7 @@ const NET = (() => {
     dist3 = new Int16Array(P);
     order3 = new Int32Array(P);
     tstamp3 = new Int32Array(T).fill(-1);
+    par2 = new Int32Array(P);
     return { ms: performance.now() - t0, players: P, teamSeasons: T };
   }
 
@@ -149,69 +151,100 @@ const NET = (() => {
 
   let centreId = 0;
 
-  /* Turn the highlight into a pie: everyone routing through the player takes a
-   * single wedge sized to their exact share, everyone else takes the rest.
+  /* Re-hang everyone routing through the player behind HIM.
    *
-   * Radius is untouched, so every player stays on the ring they were already
-   * on and the chart keeps its shape -- only the angle changes, exactly as the
-   * reel does it. Within each wedge, players are ordered by which top-level
-   * branch they belong to, so subtrees stay contiguous and the spokes survive
-   * instead of collapsing into bare arcs. */
+   * Placing them in a wedge was not enough: their links still ran back to the
+   * branches they came from, so they read as belonging to other players'
+   * spokes. Here they are laid out as a tree rooted at the selected player,
+   * using the traversal from him (par2) for both the nesting and the links, so
+   * the wedge becomes one connected fan hanging off his dot -- the share is
+   * visible as an area and as a structure.
+   *
+   * Radius still comes from distance to the CENTRE, so nobody changes ring and
+   * the rest of the chart is untouched beyond taking the remaining angle. */
   function shareLayout(p, mask) {
     let inSet = 0;
     for (let i = 0; i < P; i++) if (mask[i]) inSet++;
-    if (!inSet) return { moved: 0, frac: 0 };      // nothing to gather
+    if (!inSet) return { moved: 0, frac: 0 };
 
-    const root = order[0];
-    const branch = new Int32Array(P).fill(-1);
-    for (let k = 1; k < P; k++) {
-      const u = order[k];
-      if (dist[u] < 0) continue;
-      branch[u] = parent[u] === root ? u : branch[parent[u]];
-    }
-    // the pie is anchored on the player, so his own wedge sits under him
     const pa = Math.atan2(py[p], px[p]) || 0;
     const frac = inSet / Math.max(1, P - 1);
     const spanA = 2 * Math.PI * frac;
-    const secA = [pa - spanA / 2, pa + spanA / 2];
+    const a0A = pa - spanA / 2;
     const secB = [pa + spanA / 2, pa - spanA / 2 + 2 * Math.PI];
 
-    const maxd = maxDist();
-    const rings = [];
-    for (let d = 0; d <= maxd; d++) rings.push([[], []]);
-    for (let i = 0; i < P; i++) {
-      const d = dist[i];
-      if (d < 1 || d > maxd) continue;
-      rings[d][mask[i] ? 0 : 1].push(i);
+    // leaf counts over the p-rooted tree, restricted to the highlighted set
+    const lv = new Float64Array(P);
+    const kids = new Map();
+    for (let k = order2.length - 1, seen = 0; k >= 0 && seen < inSet + 1; k--) { /* noop */ break; }
+    const inOrder = [];
+    for (let k = 0; k < P; k++) {
+      const u = order2[k];
+      if (u === p) { inOrder.push(u); continue; }
+      if (!mask[u] || dist2[u] < 0) continue;
+      inOrder.push(u);
+      const q = (par2[u] >= 0 && (mask[par2[u]] || par2[u] === p)) ? par2[u] : p;
+      let arr = kids.get(q); if (!arr) { arr = []; kids.set(q, arr); }
+      arr.push(u);
     }
-    const key = u => (branch[u] < 0 ? -1 : angle[branch[u]]);
-    for (let d = 1; d <= maxd; d++) {
-      for (const g of [0, 1]) {
-        const mem = rings[d][g];
-        if (!mem.length) continue;
-        // group by branch first so a subtree stays in one piece
-        mem.sort((x, y) => (key(x) - key(y)) || (angle[x] - angle[y]));
-        const [s0, s1] = g === 0 ? secA : secB;
-        for (let k = 0; k < mem.length; k++) {
-          const u = mem[k];
-          const a = s0 + (s1 - s0) * ((k + 0.5) / mem.length);
-          angle[u] = a;
-          px[u] = radius[u] * Math.cos(a);
-          py[u] = radius[u] * Math.sin(a);
-        }
+    for (let k = inOrder.length - 1; k >= 0; k--) {
+      const u = inOrder[k];
+      if (!lv[u]) lv[u] = 1;
+      const ch = kids.get(u);
+      if (ch) { let t = 0; for (const c of ch) t += lv[c] || 1; lv[u] = t; }
+    }
+    // wedge nesting down the p-rooted tree
+    const wa = new Float64Array(P), ws = new Float64Array(P), wacc = new Float64Array(P);
+    wa[p] = a0A; ws[p] = spanA; wacc[p] = 0;
+    for (const u of inOrder) {
+      const ch = kids.get(u);
+      if (!ch) continue;
+      for (const c of ch) {
+        const w = ws[u] * ((lv[c] || 1) / (lv[u] || 1));
+        wa[c] = wa[u] + wacc[u]; ws[c] = w; wacc[u] += w; wacc[c] = 0;
+        const ang2 = wa[c] + w / 2;
+        angle[c] = ang2;
+        px[c] = radius[c] * Math.cos(ang2);
+        py[c] = radius[c] * Math.sin(ang2);
       }
     }
-    px[root] = 0; py[root] = 0;
+    // everyone else keeps their ring and shares out the remaining angle
+    const maxd = maxDist();
+    const rest = [];
+    for (let d = 0; d <= maxd; d++) rest.push([]);
+    for (let i = 0; i < P; i++) {
+      if (mask[i] || i === p || dist[i] < 1) continue;
+      rest[dist[i]].push(i);
+    }
+    for (let d = 1; d <= maxd; d++) {
+      const mem = rest[d];
+      if (!mem.length) continue;
+      mem.sort((x, y) => angle[x] - angle[y]);
+      for (let k = 0; k < mem.length; k++) {
+        const u = mem[k];
+        const a = secB[0] + (secB[1] - secB[0]) * ((k + 0.5) / mem.length);
+        angle[u] = a;
+        px[u] = radius[u] * Math.cos(a);
+        py[u] = radius[u] * Math.sin(a);
+      }
+    }
     return { moved: P, frac, angle: pa, span: spanA };
   }
+
+  function throughParent(v) { return par2 ? par2[v] : -1; }
 
   /* Swing the whole layout so a given player sits at `target` (default: straight
    * down). Names are drawn horizontally, so a path running vertically gets the
    * most separation between consecutive labels -- far more effective than
    * nudging each label out of the way after the fact. */
-  function rotateSo(i, targets = [Math.PI / 2, -Math.PI / 2]) {
+  function rotateSo(i, targets = [Math.PI / 2, -Math.PI / 2], onlyWithinDeg = 30) {
     const cur = Math.atan2(py[i], px[i]);
     if (!isFinite(cur)) return 0;
+    /* Only worth spinning when the chain lies near the horizontal, where
+     * horizontal labels stack on top of each other. A chain that already runs
+     * steeply has plenty of vertical room, so leave the chart where the reader
+     * left it. */
+    if (Math.abs(Math.cos(cur)) < Math.cos(onlyWithinDeg * Math.PI / 180)) return 0;
     // straight down or straight up, whichever is the shorter swing -- both give
     // labels the same room, so there is no reason to spin the chart further
     // than necessary
@@ -319,7 +352,7 @@ const NET = (() => {
   function shareThrough(p) {
     const t0 = performance.now();
     const stamp = ++stampCounter;
-    dist2.fill(-1); dist2[p] = 0; order2[0] = p;
+    dist2.fill(-1); par2.fill(-1); dist2[p] = 0; order2[0] = p;
     let head = 0, tail = 1;
     while (head < tail) {
       const u = order2[head++], d = dist2[u] + 1;
@@ -329,7 +362,7 @@ const NET = (() => {
         tstamp2[ts] = stamp;
         for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) {
           const v = t_ix[j];
-          if (dist2[v] < 0) { dist2[v] = d; order2[tail++] = v; }
+          if (dist2[v] < 0) { dist2[v] = d; par2[v] = u; order2[tail++] = v; }
         }
       }
     }
@@ -385,6 +418,7 @@ const NET = (() => {
   return {
     load, bfs, layout, recentre, pathToCentre, info, maxDist,
     sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
+    throughParent,
     get P() { return P; }, get names() { return names; },
     get tables() { return tables; },
     get dist() { return dist; }, get parent() { return parent; },
