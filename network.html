@@ -267,15 +267,13 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
 .routes .qchain{margin:4px 0 0}
 #game:has(.routes){width:430px}
-/* A wide card eats into where the heading was centring, so the heading centres
-   in what is left of the canvas rather than sliding under it. Desktop only:
-   on a phone the cards are a sheet along the bottom, and these rules -- which
-   outrank the phone ones on specificity, media query or not -- were squeezing
-   the heading to nothing and wrapping it down five lines. */
-@media(min-width:821px){
-  #stage:has(#game:not([hidden])) #title{right:456px}
-  #stage:has(#panel:not([hidden])) #title{right:320px}
-}
+/* The heading does not move for anything. An earlier version re-centred it
+   whenever a card opened, to avoid a wide card clipping it -- but that meant
+   the heading slid left every time you pressed Play, which is far more
+   noticeable than the clipping it was avoiding. It only ever overlapped with
+   the wide two-route card on a narrow desktop, and by about 30px. The card
+   sits above it in any case, so it is the card that covers the heading rather
+   than the heading breaking. */
 /* the shortest route, shown beside yours: quieter, so the eye reads your own
    attempt first and the answer second */
 .qchain.best{opacity:.72}
