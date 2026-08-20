@@ -149,12 +149,18 @@ const GAME = (() => {
   /* Hang the chart off one end of the puzzle, so the chain you are building
      grows out of the middle instead of across a tree rooted on somebody with
      nothing to do with it. */
-  function centreOn(i) {
+  function centreOn(i, towards) {
     VIEW.captureFrom();
     NET.recentre(i);
     VIEW.centre = i;
     VIEW.setCentreImage(null);
     VIEW.path = []; VIEW.selected = -1;
+    /* And swing the far end onto the vertical. Picking a player does this, so
+       a chain always runs down the screen; without it a revealed route came
+       out at whatever angle the layout happened to put it, which is a
+       different-looking thing every time and hard to follow. The 180 forces
+       it -- the default only rotates a chain already near the horizontal. */
+    if (towards != null) NET.rotateSo(towards, [Math.PI / 2, -Math.PI / 2], 180);
     VIEW.beginMorph(800);
     if (onCentred) onCentred(i);           // the heading names the centre
   }
@@ -164,7 +170,9 @@ const GAME = (() => {
       a, b, chain: [a], done: false, clues: 0, clueLevel: 0, clue: null,
       par: opts.par ?? null, best: null, revealed: false,
     };
-    L.best = NET.route(a, b).degrees;
+    const first = NET.route(a, b);
+    L.best = first.degrees;
+    const answer = first.path.slice().reverse();
     L.links = () => L.chain.length - 1;
     L.score = () => L.revealed ? GIVE_UP : L.links() + L.clues;
 
@@ -188,6 +196,8 @@ const GAME = (() => {
     L.nextClue = function () {
       const last = L.chain[L.chain.length - 1];
       const r = NET.route(last, b);
+      NET.rotateSo(b, [Math.PI / 2, -Math.PI / 2], 180);   // route() undid it
+      VIEW.invalidate();
       const next = r.path[r.path.length - 2];
       if (next == null) { L.clue = 'No route left from here.'; return; }
       const sh = NET.sharedTeamSeasons(last, next);
@@ -207,26 +217,39 @@ const GAME = (() => {
       L.clue = 'Someone who ' + bits.join(', ') + '.';
     };
 
-    L.reveal = function () {
-      L.chain = NET.route(a, b).path.slice().reverse();
-      L.done = true; L.revealed = true;
-    };
+    /* Giving up used to replace your chain with the answer, which lost what
+       you had actually tried. The answer is shown alongside instead -- and it
+       is the copy taken up front, because NET.route puts the layout back when
+       it finishes and that discards the rotation the puzzle was swung into. */
+    L.bestPath = () => answer;
+    L.reveal = function () { L.done = true; L.revealed = true; };
 
     L.draw = function () {
       VIEW.selected = -1;
-      VIEW.path = L.chain.length > 1 ? L.chain.slice() : [];
+      // give up and the chart shows the answer; otherwise it shows your attempt
+      const shown = L.revealed ? L.bestPath() : L.chain;
+      VIEW.path = shown.length > 1 ? shown.slice() : [];
     };
     return L;
   }
 
   // ------------------------------------------------------------ rendering --
+  function via(u, v) {
+    const sh = NET.sharedTeamSeasons(u, v);
+    if (!sh.length) return '';
+    const f = sh[0], more = sh.length > 1 ? ` +${sh.length - 1}` : '';
+    return `<li class="qstep via"><span class="chip">${f.team}</span> ${f.season}${more}</li>`;
+  }
+
+  function routeHtml(nodes, cls = '') {
+    const rows = nodes.map((n, k) =>
+      `<li class="qstep ${k === 0 || k === nodes.length - 1 ? 'fix' : ''}">` +
+      `<span class="dot"></span>${NET.names[n]}</li>` +
+      (k < nodes.length - 1 ? via(n, nodes[k + 1]) : '')).join('');
+    return `<ul class="qchain ${cls}">${rows}</ul>`;
+  }
+
   function chainHtml(L, showInput) {
-    const via = (u, v) => {
-      const sh = NET.sharedTeamSeasons(u, v);
-      if (!sh.length) return '';
-      const f = sh[0], more = sh.length > 1 ? ` +${sh.length - 1}` : '';
-      return `<li class="qstep via"><span class="chip">${f.team}</span> ${f.season}${more}</li>`;
-    };
     const rows = L.chain.map((n, k) =>
       `<li class="qstep ${k === 0 ? 'fix' : ''}"><span class="dot"></span>${NET.names[n]}</li>`
       + (k < L.chain.length - 1 ? via(n, L.chain[k + 1]) : '')).join('');
@@ -284,7 +307,7 @@ const GAME = (() => {
       }),
     };
     state.leg = leg(state.holes[0].a, state.holes[0].b, { par: HOLES[0].par });
-    centreOn(state.holes[0].a);
+    centreOn(state.holes[0].a, state.holes[0].b);
     render();
   }
 
@@ -305,7 +328,7 @@ const GAME = (() => {
     state.hole++;
     const nx = state.holes[state.hole];
     state.leg = leg(nx.a, nx.b, { par: nx.par });
-    centreOn(nx.a);
+    centreOn(nx.a, nx.b);
     render();
   }
 
@@ -321,8 +344,26 @@ const GAME = (() => {
       diff > 0 ? '+' + diff : diff})\n\n${rows}\n\nEvery NFL player since 1920.`;
   }
 
+  /* Wordle-style: the shape of the result, not the answer. Nobody wants the
+     linking players spoiled for them by a friend's share. */
+  function dailyShareText() {
+    const L = state.leg, links = L.links();
+    const head = `11 Degrees — daily #${state.day}`;
+    if (L.revealed) return `${head}\n❌ didn't get it\n\nsportalytic.co.uk`;
+    const par = L.best;
+    const blocks = '🟩'.repeat(Math.min(par, links)) +
+                   '🟨'.repeat(Math.max(0, links - par)) +
+                   (L.clues ? ' ' + '💡'.repeat(L.clues) : '');
+    const verdict = links === par ? ' — shortest possible' : ` (best ${par})`;
+    return `${head}\n${links} link${links === 1 ? '' : 's'}${verdict}\n${blocks}\n\nsportalytic.co.uk`;
+  }
+
+  async function shareTextOf() {
+    return state.mode === 'daily' ? dailyShareText() : shareText();
+  }
+
   async function share() {
-    const text = shareText();
+    const text = await shareTextOf();
     try {
       if (navigator.share) { await navigator.share({ text }); return 'Shared'; }
       await navigator.clipboard.writeText(text);
@@ -354,7 +395,7 @@ const GAME = (() => {
       state.leg.done = true;
       state.replay = true;
     }
-    centreOn(a);
+    centreOn(a, b);
     render();
   }
 
@@ -457,21 +498,33 @@ const GAME = (() => {
          <div class="lead">Par <b>${L.par}</b>. Join
            <b>${NET.names[L.a]}</b> to <b>${NET.names[L.b]}</b>.</div>`;
 
-    let verdict = '';
+    let verdict = '', best = '';
     if (L.done) {
-      const s = L.score();
+      const links = L.links();
+      const shortest = L.bestPath();
+      const matched = !L.revealed && links === L.best;
       if (daily) {
-        const win = !L.revealed && s < state.target;
-        verdict = `<div class="qdone"><b>${s}</b> link${s === 1 ? '' : 's'}${
-          L.clues ? ` (${L.clues} from clues)` : ''}. ${
-          L.revealed ? 'That is the shortest route.'
-            : win ? `Under ${state.target} — that is a win.`
-                  : `Over ${state.target} today.`}</div>`;
+        verdict = L.revealed
+          ? `<div class="qdone"><b>Not this time.</b> You did not solve
+               puzzle #${state.day}. There is a new one tomorrow.</div>`
+          : `<div class="qdone"><b>Solved in ${links}</b>${
+               L.clues ? `, and ${L.clues} clue${L.clues === 1 ? '' : 's'}` : ''}. ${
+               matched ? 'Nobody links them in fewer.'
+                       : `The shortest way there is ${L.best}.`}</div>`;
       } else {
-        const over = s - L.par;
-        verdict = `<div class="qdone"><b>${s}</b> against a par of ${L.par}${
-          over === 0 ? ' — the shortest there is.'
-                     : `, ${over} over.`}</div>`;
+        const sc = L.score();
+        verdict = L.revealed
+          ? `<div class="qdone"><b>${sc}</b> for giving up on this one, against
+               a par of ${L.par}.</div>`
+          : `<div class="qdone"><b>${sc}</b> against a par of ${L.par}${
+               matched ? ' — the shortest there is.' : `, ${sc - L.par} over.`}</div>`;
+      }
+      /* Show the shortest route beside theirs whenever it differs. Being told
+         you took six is not much use without seeing what three looked like. */
+      if (!matched && shortest.length) {
+        best = `<div class="gmeta">${L.revealed ? 'The shortest route'
+                  : `The shortest route — ${L.best} link${L.best === 1 ? '' : 's'}`}</div>`
+             + routeHtml(shortest, 'best');
       }
     }
 
@@ -483,7 +536,10 @@ const GAME = (() => {
       chart = distribution(scores, L.score(), 3, 10, 'Your dailies');
     }
     const t = state.mode === 'round' ? roundTotals() : null;
-    host.innerHTML = exitBtn() + head + chainHtml(L, true) + verdict + chart +
+    host.innerHTML = exitBtn() + head +
+      (L.done && best ? `<div class="gmeta">Your route — ${L.links()} link${
+        L.links() === 1 ? '' : 's'}</div>` : '') +
+      chainHtml(L, true) + best + verdict + chart +
       `<div class="gmeta">${L.links()} link${L.links() === 1 ? '' : 's'}${
         L.clues ? ` · ${L.clues} clue${L.clues === 1 ? '' : 's'}` : ''}${
         t && t.played ? ` · round so far ${t.shot} (par ${t.par})` : ''}</div>` +
@@ -491,7 +547,8 @@ const GAME = (() => {
         ? (state.mode === 'round'
             ? `<button class="btn" id="gnexth">${
                 state.hole === 4 ? 'See the card' : 'Next hole'}</button>`
-            : `<button class="btn ghost" id="gagain">Back to the chart</button>`)
+            : `<button class="btn" id="gshare">Share your result</button>
+               <button class="btn ghost" id="gagain">Back to the chart</button>`)
         : `<button class="btn ghost" id="gclue">${
               L.clueLevel ? 'Another clue' : 'Clue'} (+1)</button>
            <button class="btn ghost" id="ggive">Give up on this one</button>`);
@@ -502,9 +559,12 @@ const GAME = (() => {
       $('#ggive').onclick = () => { L.reveal(); if (daily) saveDaily(); render(); };
     } else {
       const nx = $('#gnexth'); if (nx) nx.onclick = nextHole;
+      const sh = $('#gshare');
+      if (sh) sh.onclick = async () => { const m = await share(); if (m) flash(m); };
       const ag = $('#gagain'); if (ag) ag.onclick = () => onExit();
     }
     $('#gclose').onclick = () => onExit();
+    host.scrollTop = 0;          // a long result should not open half-read
     L.draw();
   }
 

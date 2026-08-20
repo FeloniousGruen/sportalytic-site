@@ -181,18 +181,28 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
                  should not compete with the three live games above it
    Border and title carry the colour; the fill is the same hue at a tenth. */
 .gmenu.m-round{--c:#2DD4BF} .gmenu.m-daily{--c:#FBC247}
-.gmenu.m-expedition{--c:#E879F9} .gmenu.m-archive{--c:#94A3B8}
+.gmenu.m-expedition{--c:#E879F9} .gmenu.m-archive{--c:#E2E8F0}
 .gmenu[class*="m-"]{border:1px solid var(--c);
   background:color-mix(in srgb,var(--c) 10%,transparent)}
 .gmenu[class*="m-"] b{color:var(--c)}
 .gmenu[class*="m-"] span{color:#AEBAC6}
-.gmenu[class*="m-"]:hover{background:color-mix(in srgb,var(--c) 20%,transparent);
-  box-shadow:0 0 0 1px var(--c) inset}
-/* the archive steps back: a thinner edge and a fainter fill than the games */
-.gmenu.m-archive{border-color:color-mix(in srgb,var(--c) 55%,transparent);
+.gmenu[class*="m-"]{transition:background .15s,box-shadow .15s,transform .15s}
+.gmenu[class*="m-"]:hover{background:color-mix(in srgb,var(--c) 26%,transparent);
+  box-shadow:0 0 0 1px var(--c) inset, 0 0 18px color-mix(in srgb,var(--c) 28%,transparent);
+  transform:translateY(-1px)}
+.gmenu[class*="m-"]:active{transform:none}
+/* The archive is white rather than grey: it is a place to go, not a thing
+   switched off. It steps back by a lighter fill, not by looking disabled. */
+.gmenu.m-archive{border-color:color-mix(in srgb,var(--c) 40%,transparent);
   background:color-mix(in srgb,var(--c) 6%,transparent)}
-.gmenu.m-archive span{color:var(--grey)}
 .qchain.card .qstep{padding:5px 0}
+/* the shortest route, shown beside yours: quieter, so the eye reads your own
+   attempt first and the answer second */
+.qchain.best{opacity:.72}
+.qchain.best::before{background:repeating-linear-gradient(180deg,
+  var(--greyd) 0 3px,transparent 3px 7px)}
+.qchain.best .qstep .dot{background:var(--greyd)}
+.qchain.best .qstep.fix .dot{background:var(--accent)}
 /* The game's suggestion list. It had no rules at all, so it rendered as bare
    text: no hover, no pointer, and a caret that said "select me" rather than
    "click me". */
@@ -208,7 +218,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 #game.skin-round{--accent:#2DD4BF}
 #game.skin-daily{--accent:#FBC247}
 #game.skin-expedition{--accent:#E879F9}
-#game.skin-archive{--accent:#94A3B8}
+#game.skin-archive{--accent:#E2E8F0}
 #game h2{color:var(--accent)}
 #game .gbig b{color:var(--accent)}
 #game .btn{background:var(--accent)}
