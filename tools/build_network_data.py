@@ -22,13 +22,41 @@ import pandas as pd
 MAGIC = b'SPNET001'
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--nodes', required=True)
+ap.add_argument('--nodes', default=None,
+                help='optional: preferred name/position spellings')
 ap.add_argument('--rosters', required=True)
 ap.add_argument('--out', default='assets/net')
 a = ap.parse_args()
 
-nodes = pd.read_csv(a.nodes)
-mem = pd.read_csv(a.rosters, usecols=['uid', 'team', 'season'])
+mem_all = pd.read_csv(a.rosters)
+
+# The player list is derived from the memberships rather than a fixed nodes
+# file, so adding a season brings its new players in automatically. The nodes
+# CSV is still read when present, only to prefer its spelling of a name.
+prefer = {}
+if a.nodes and os.path.exists(a.nodes):
+    nf = pd.read_csv(a.nodes, usecols=['uid', 'name', 'position'])
+    prefer = {u: (n, p_) for u, n, p_ in zip(nf.uid, nf.name, nf.position)}
+
+grp = mem_all.groupby('uid')
+nodes = pd.DataFrame({
+    'uid': list(grp.groups.keys()),
+})
+first = grp.season.min()
+last = grp.season.max()
+namecol = 'full_name' if 'full_name' in mem_all.columns else 'uid'
+lastname = grp[namecol].last()
+lastpos = grp['position'].last() if 'position' in mem_all.columns else None
+nodes['name'] = [prefer.get(u, (lastname.get(u, u), None))[0] for u in nodes.uid]
+nodes['position'] = [
+    (prefer[u][1] if u in prefer and isinstance(prefer[u][1], str)
+     else (lastpos.get(u) if lastpos is not None else ''))
+    for u in nodes.uid]
+nodes['first_season'] = [int(first[u]) for u in nodes.uid]
+nodes['last_season'] = [int(last[u]) for u in nodes.uid]
+nodes = nodes.sort_values('uid').reset_index(drop=True)
+
+mem = mem_all[['uid', 'team', 'season']].copy()
 
 uids = list(nodes['uid'])
 idx = {u: i for i, u in enumerate(uids)}
@@ -42,7 +70,8 @@ mem = mem[mem.uid.isin(idx)]
 # relabelling only, and it leaves the team-season count unchanged.
 ALIAS = {'KAN': 'KC', 'GNB': 'GB', 'NWE': 'NE', 'NOR': 'NO',
          'TAM': 'TB', 'SFO': 'SF', 'LAR': 'LA',
-         'CHB': 'CHI'}          # Bears: CHB 1922-59 then CHI 1960-2025
+         'CHB': 'CHI',          # Bears: CHB 1922-59 then CHI 1960-2025
+         'AZ': 'ARI'}           # nflverse switched Arizona to AZ for 2026
 mem['team'] = mem.team.map(lambda t: ALIAS.get(t, t))
 
 ts_keys = sorted({(t, int(s)) for t, s in zip(mem.team, mem.season)})
@@ -102,6 +131,23 @@ TEAM_NAMES = {
   'CAL': 'California', 'IND_H': '', 'DEC_H': '',
 }
 
+# Codes the source reuses across genuinely different franchises. Listing one of
+# these as a single club would be wrong -- BAL is the Colts until 1977 and the
+# Ravens from 1996, which are not the same team -- so they are split into eras
+# and offered separately. Where a code IS one continuous franchise it stays a
+# single entry. Asserted from NFL history; worth a check.
+TEAM_ERAS = {
+  'BAL': [('Baltimore Colts', 1947, 1977), ('Baltimore Ravens', 1996, 2100)],
+  'HOU': [('Houston Oilers', 1960, 1977), ('Houston Texans', 2002, 2100)],
+  'CLE': [('Cleveland (early clubs)', 1920, 1931),
+          ('Cleveland Rams', 1937, 1945), ('Cleveland Browns', 1946, 2100)],
+  'STL': [('St. Louis All-Stars', 1923, 1923), ('St. Louis Gunners', 1934, 1934),
+          ('St. Louis Cardinals', 1960, 1977)],
+  'BOS': [('Boston Bulldogs', 1929, 1929), ('Boston Braves / Redskins', 1932, 1936),
+          ('Boston Yanks', 1944, 1948), ('Boston Patriots', 1960, 1970)],
+  'LA':  [('Los Angeles Buccaneers', 1926, 1926), ('Los Angeles Rams', 1950, 2100)],
+}
+
 teams = sorted({t for t, _ in ts_keys})
 team_i = {t: i for i, t in enumerate(teams)}
 positions = sorted({str(p) for p in nodes.position.fillna('')})
@@ -144,8 +190,17 @@ for ti, code in enumerate(teams):
             continue
         for j in range(t_ip[k], t_ip[k + 1]):
             members.add(int(t_ix[j]))
-    team_meta[code] = {'name': TEAM_NAMES.get(code, ''), 'from': min(seasons),
-                       'to': max(seasons), 'players': len(members)}
+    entry = {'name': TEAM_NAMES.get(code, ''), 'from': min(seasons),
+             'to': max(seasons), 'players': len(members)}
+    if code in TEAM_ERAS:
+        eras = []
+        for nm, lo, hi in TEAM_ERAS[code]:
+            yrs = [y for y in seasons if lo <= y <= hi]
+            if yrs:
+                eras.append({'name': nm, 'from': min(yrs), 'to': max(yrs)})
+        if len(eras) > 1:
+            entry['eras'] = eras
+    team_meta[code] = entry
 named = sum(1 for c in teams if TEAM_NAMES.get(c))
 print(f'team names: {named} of {len(teams)} mapped; the rest show code + era')
 

@@ -186,15 +186,23 @@ function stats(r){
   $('#loading').remove();
   const t=NET.tables;
   const club=$('#club'), season=$('#season');
-  t.teams.slice().sort((a,b)=>{
-    const ma=t.teamMeta[a]||{}, mb=t.teamMeta[b]||{};
-    if(!!ma.name!==!!mb.name) return ma.name?-1:1;         // named clubs first
-    return (ma.name||a).localeCompare(mb.name||b);
-  }).forEach(code=>{
+  // A code that covers more than one franchise (BAL is the Colts then the
+  // Ravens) is offered once per era rather than as one misleading entry.
+  const clubOpts=[];
+  t.teams.forEach(code=>{
     const m=t.teamMeta[code]||{};
-    const label=m.name?`${m.name} (${code})`:`${code} · ${m.from}\u2013${m.to}`;
-    club.add(new Option(`${label} — ${m.players||0} players`, code));
+    if(m.eras){
+      m.eras.forEach(e=>clubOpts.push({
+        label:`${e.name} (${code}, ${e.from}\u2013${e.to})`,
+        value:`${code}:${e.from}:${e.to}`, sort:e.name}));
+    }else{
+      const label=m.name?`${m.name} (${code})`:`${code} \u00b7 ${m.from}\u2013${m.to}`;
+      clubOpts.push({label:`${label} — ${m.players||0} players`, value:code,
+                     sort:m.name||('zzz'+code)});
+    }
   });
+  clubOpts.sort((a,b)=>a.sort.localeCompare(b.sort))
+          .forEach(o=>club.add(new Option(o.label,o.value)));
   for(let y=t.seasonMax;y>=t.seasonMin;y--) season.add(new Option(y,y));
 
   CENTRE=(t.notable&&t.notable['Travis Kelce'])||0;
@@ -210,8 +218,13 @@ function stats(r){
   const lower=NET.names.map(s=>s.toLowerCase());
   function rosterOf(team,yr){
     const set=new Set();
+    let lo=-Infinity, hi=Infinity;
+    if(team && team.indexOf(':')>0){                  // "CODE:from:to" era pick
+      const p=team.split(':'); team=p[0]; lo=+p[1]; hi=+p[2];
+    }
     for(let ts=0;ts<NET.tsSeason.length;ts++){
       if(team && t.teams[NET.tsTeam[ts]]!==team) continue;
+      if(NET.tsSeason[ts]<lo || NET.tsSeason[ts]>hi) continue;
       if(yr && NET.tsSeason[ts]!==+yr) continue;
       for(let j=NET.t_ip[ts];j<NET.t_ip[ts+1];j++) set.add(NET.t_ix[j]);
     }

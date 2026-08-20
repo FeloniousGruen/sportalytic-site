@@ -168,26 +168,60 @@
   "ARI": {
    "name": "Arizona Cardinals",
    "from": 1978,
-   "to": 2025,
-   "players": 1297
+   "to": 2026,
+   "players": 1334
   },
   "ATL": {
    "name": "Atlanta Falcons",
    "from": 1966,
-   "to": 2025,
-   "players": 1417
+   "to": 2026,
+   "players": 1466
   },
   "BAL": {
    "name": "Baltimore",
    "from": 1947,
-   "to": 2025,
-   "players": 1195
+   "to": 2026,
+   "players": 1242,
+   "eras": [
+    {
+     "name": "Baltimore Colts",
+     "from": 1947,
+     "to": 1977
+    },
+    {
+     "name": "Baltimore Ravens",
+     "from": 1996,
+     "to": 2026
+    }
+   ]
   },
   "BOS": {
    "name": "Boston",
    "from": 1929,
    "to": 1970,
-   "players": 403
+   "players": 403,
+   "eras": [
+    {
+     "name": "Boston Bulldogs",
+     "from": 1929,
+     "to": 1929
+    },
+    {
+     "name": "Boston Braves / Redskins",
+     "from": 1932,
+     "to": 1936
+    },
+    {
+     "name": "Boston Yanks",
+     "from": 1944,
+     "to": 1948
+    },
+    {
+     "name": "Boston Patriots",
+     "from": 1960,
+     "to": 1970
+    }
+   ]
   },
   "BRK": {
    "name": "Brooklyn",
@@ -198,8 +232,8 @@
   "BUF": {
    "name": "Buffalo Bills",
    "from": 1920,
-   "to": 2025,
-   "players": 1714
+   "to": 2026,
+   "players": 1752
   },
   "C-P": {
    "name": "Card-Pitt",
@@ -216,8 +250,8 @@
   "CAR": {
    "name": "Carolina Panthers",
    "from": 1995,
-   "to": 2025,
-   "players": 899
+   "to": 2026,
+   "players": 940
   },
   "CHC": {
    "name": "Chicago Cardinals",
@@ -234,8 +268,8 @@
   "CHI": {
    "name": "Chicago Bears",
    "from": 1922,
-   "to": 2025,
-   "players": 1793
+   "to": 2026,
+   "players": 1839
   },
   "CHR": {
    "name": "Chicago Rockets",
@@ -258,14 +292,31 @@
   "CIN": {
    "name": "Cincinnati Bengals",
    "from": 1921,
-   "to": 2025,
-   "players": 1239
+   "to": 2026,
+   "players": 1276
   },
   "CLE": {
    "name": "Cleveland",
    "from": 1920,
-   "to": 2025,
-   "players": 1994
+   "to": 2026,
+   "players": 2038,
+   "eras": [
+    {
+     "name": "Cleveland (early clubs)",
+     "from": 1920,
+     "to": 1931
+    },
+    {
+     "name": "Cleveland Rams",
+     "from": 1937,
+     "to": 1945
+    },
+    {
+     "name": "Cleveland Browns",
+     "from": 1946,
+     "to": 2026
+    }
+   ]
   },
   "COL": {
    "name": "Columbus Panhandles",
@@ -282,8 +333,8 @@
   "DAL": {
    "name": "Dallas Cowboys",
    "from": 1952,
-   "to": 2025,
-   "players": 1294
+   "to": 2026,
+   "players": 1332
   },
   "DAY": {
    "name": "Dayton Triangles",
@@ -300,14 +351,14 @@
   "DEN": {
    "name": "Denver Broncos",
    "from": 1960,
-   "to": 2025,
-   "players": 1482
+   "to": 2026,
+   "players": 1515
   },
   "DET": {
    "name": "Detroit Lions",
    "from": 1920,
-   "to": 2025,
-   "players": 2038
+   "to": 2026,
+   "players": 2076
   },
   "DON": {
    "name": "Los Angeles Dons",
@@ -336,8 +387,8 @@
   "GB": {
    "name": "Green Bay Packers",
    "from": 1921,
-   "to": 2025,
-   "players": 1883
+   "to": 2026,
+   "players": 1917
   },
   "HAM": {
    "name": "Hammond Pros",
@@ -354,26 +405,38 @@
   "HOU": {
    "name": "Houston",
    "from": 1960,
-   "to": 2025,
-   "players": 1100
+   "to": 2026,
+   "players": 1142,
+   "eras": [
+    {
+     "name": "Houston Oilers",
+     "from": 1960,
+     "to": 1977
+    },
+    {
+     "name": "Houston Texans",
+     "from": 2002,
+     "to": 2026
+    }
+   ]
   },
   "IND": {
    "name": "Indianapolis Colts",
    "from": 1978,
-   "to": 2025,
-   "players": 1293
+   "to": 2026,
+   "players": 1333
   },
   "JAX": {
    "name": "Jacksonville Jaguars",
    "from": 1995,
-   "to": 2025,
-   "players": 953
+   "to": 2026,
+   "players": 998
   },
   "KC": {
    "name": "Kansas City Chiefs",
    "from": 1924,
-   "to": 2025,
-   "players": 1387
+   "to": 2026,
+   "players": 1430
   },
   "KEN": {
    "name": "Kenosha Maroons",
@@ -384,14 +447,26 @@
   "LA": {
    "name": "Los Angeles",
    "from": 1926,
-   "to": 2025,
-   "players": 1548
+   "to": 2026,
+   "players": 1582,
+   "eras": [
+    {
+     "name": "Los Angeles Buccaneers",
+     "from": 1926,
+     "to": 1926
+    },
+    {
+     "name": "Los Angeles Rams",
+     "from": 1950,
+     "to": 2026
+    }
+   ]
   },
   "LAC": {
    "name": "Los Angeles Chargers",
    "from": 1978,
-   "to": 2025,
-   "players": 1209
+   "to": 2026,
+   "players": 1253
   },
   "LOU": {
    "name": "Louisville Colonels",
@@ -402,14 +477,14 @@
   "LV": {
    "name": "Las Vegas Raiders",
    "from": 2020,
-   "to": 2025,
-   "players": 265
+   "to": 2026,
+   "players": 309
   },
   "MIA": {
    "name": "Miami Dolphins",
    "from": 1946,
-   "to": 2025,
-   "players": 1503
+   "to": 2026,
+   "players": 1562
   },
   "MIL": {
    "name": "Milwaukee Badgers",
@@ -420,8 +495,8 @@
   "MIN": {
    "name": "Minnesota Vikings",
    "from": 1921,
-   "to": 2025,
-   "players": 1353
+   "to": 2026,
+   "players": 1393
   },
   "MUN": {
    "name": "Muncie Flyers",
@@ -432,8 +507,8 @@
   "NE": {
    "name": "New England Patriots",
    "from": 1971,
-   "to": 2025,
-   "players": 1312
+   "to": 2026,
+   "players": 1363
   },
   "NEW": {
    "name": "Newark Tornadoes",
@@ -444,8 +519,8 @@
   "NO": {
    "name": "New Orleans Saints",
    "from": 1967,
-   "to": 2025,
-   "players": 1454
+   "to": 2026,
+   "players": 1497
   },
   "NY": {
    "name": "New York",
@@ -462,14 +537,14 @@
   "NYG": {
    "name": "New York Giants",
    "from": 1927,
-   "to": 2025,
-   "players": 1694
+   "to": 2026,
+   "players": 1735
   },
   "NYJ": {
    "name": "New York Jets",
    "from": 1963,
-   "to": 2025,
-   "players": 1502
+   "to": 2026,
+   "players": 1540
   },
   "NYT": {
    "name": "New York Titans",
@@ -510,14 +585,14 @@
   "PHI": {
    "name": "Philadelphia Eagles",
    "from": 1933,
-   "to": 2025,
-   "players": 1865
+   "to": 2026,
+   "players": 1910
   },
   "PIT": {
    "name": "Pittsburgh Steelers",
    "from": 1933,
-   "to": 2025,
-   "players": 1645
+   "to": 2026,
+   "players": 1690
   },
   "POR": {
    "name": "Portsmouth Spartans",
@@ -570,14 +645,14 @@
   "SEA": {
    "name": "Seattle Seahawks",
    "from": 1976,
-   "to": 2025,
-   "players": 1202
+   "to": 2026,
+   "players": 1235
   },
   "SF": {
    "name": "San Francisco 49ers",
    "from": 1946,
-   "to": 2025,
-   "players": 1593
+   "to": 2026,
+   "players": 1630
   },
   "SI": {
    "name": "Staten Island Stapletons",
@@ -589,19 +664,36 @@
    "name": "St. Louis",
    "from": 1923,
    "to": 1977,
-   "players": 326
+   "players": 326,
+   "eras": [
+    {
+     "name": "St. Louis All-Stars",
+     "from": 1923,
+     "to": 1923
+    },
+    {
+     "name": "St. Louis Gunners",
+     "from": 1934,
+     "to": 1934
+    },
+    {
+     "name": "St. Louis Cardinals",
+     "from": 1960,
+     "to": 1977
+    }
+   ]
   },
   "TB": {
    "name": "Tampa Bay Buccaneers",
    "from": 1976,
-   "to": 2025,
-   "players": 1283
+   "to": 2026,
+   "players": 1327
   },
   "TEN": {
    "name": "Tennessee Titans",
    "from": 1978,
-   "to": 2025,
-   "players": 1158
+   "to": 2026,
+   "players": 1210
   },
   "TEX": {
    "name": "Dallas Texans",
@@ -624,19 +716,19 @@
   "WAS": {
    "name": "Washington",
    "from": 1921,
-   "to": 2025,
-   "players": 1953
+   "to": 2026,
+   "players": 1995
   }
  },
  "seasonMin": 1920,
- "seasonMax": 2025,
- "players": 28842,
- "teamSeasons": 2416,
- "memberships": 125361,
+ "seasonMax": 2026,
+ "players": 29739,
+ "teamSeasons": 2448,
+ "memberships": 128172,
  "notable": {
-  "Travis Kelce": 0,
-  "George Blanda": 22327,
-  "Matt Moore": 259,
-  "John Nesser": 28840
+  "Travis Kelce": 28106,
+  "George Blanda": 11268,
+  "Matt Moore": 20362,
+  "John Nesser": 16071
  }
 }

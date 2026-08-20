@@ -208,6 +208,7 @@ const VIEW = (() => {
         ctx.beginPath(); ctx.arc(sx(x), sy(y), 3.5, 0, 6.2832); ctx.fill();
       }
     }
+
     // ---- first-ring wedges, labelled by club ----
     if (ringSegs && !moving) {
       ctx.save();
@@ -246,6 +247,29 @@ const VIEW = (() => {
       if (cxw === cxw) {
         const d = Math.max(34, Math.min(96, cam.scale * 1.15));
         ctx.drawImage(centreImg, sx(cxw) - d / 2, sy(cyw) - d / 2, d, d);
+      }
+    }
+
+    // names last, so the centre portrait cannot clip its own label
+    if (path.length > 1 && !moving) {
+      ctx.font = 'bold 11px Arial';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      for (let k = 0; k < path.length; k++) {
+        const i = path[k];
+        const [x, y] = frameXY(i);
+        const X = sx(x), Y = sy(y);
+        if (X < -40 || Y < -20 || X > W + 40 || Y > H + 20) continue;
+        const label = NET.names[i];
+        const tw = ctx.measureText(label).width;
+        // clear the centre portrait rather than sitting under it
+        const pad = (i === centre && centreImg) ? Math.max(34, Math.min(96, cam.scale * 1.15)) / 2 + 6 : 9;
+        const right = X < W - tw - 40;
+        const bx = right ? X + pad : X - tw - pad - 6;
+        ctx.fillStyle = 'rgba(11,17,23,0.85)';
+        ctx.fillRect(bx - 3, Y - 8, tw + 8, 16);
+        ctx.fillStyle = (k === path.length - 1) ? '#fff' : NET.PATH;
+        ctx.fillText(label, bx + 1, Y);
       }
     }
     if (hover >= 0) ring(hover, '#fff');
