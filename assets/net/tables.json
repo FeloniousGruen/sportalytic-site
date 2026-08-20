@@ -37,6 +37,7 @@
   "RILB",
   "RLB",
   "ROLB",
+  "RS",
   "RT",
   "S",
   "SS",
@@ -58,6 +59,7 @@
   "ldt",
   "lg",
   "lilb",
+  "llb",
   "lolb",
   "lt",
   "mlb",
@@ -69,9 +71,11 @@
   "rdt",
   "rg",
   "rilb",
+  "rlb",
   "rolb",
   "rt",
   "s",
+  "se",
   "ss",
   "t",
   "tb",
@@ -177,7 +181,7 @@
    "name": "Arizona Cardinals",
    "from": 1978,
    "to": 2026,
-   "players": 1334,
+   "players": 1331,
    "seasons": [
     1978,
     1979,
@@ -234,7 +238,7 @@
    "name": "Atlanta Falcons",
    "from": 1966,
    "to": 2026,
-   "players": 1466,
+   "players": 1464,
    "seasons": [
     1966,
     1967,
@@ -303,7 +307,7 @@
    "name": "Baltimore",
    "from": 1947,
    "to": 2026,
-   "players": 1242,
+   "players": 1239,
    "seasons": [
     1947,
     1948,
@@ -377,7 +381,7 @@
      "name": "Baltimore Ravens",
      "from": 1996,
      "to": 2026,
-     "players": 807
+     "players": 804
     }
    ]
   },
@@ -468,7 +472,7 @@
    "name": "Buffalo Bills",
    "from": 1920,
    "to": 2026,
-   "players": 1752,
+   "players": 1743,
    "seasons": [
     1920,
     1921,
@@ -579,7 +583,7 @@
    "name": "Carolina Panthers",
    "from": 1995,
    "to": 2026,
-   "players": 940,
+   "players": 936,
    "seasons": [
     1995,
     1996,
@@ -675,7 +679,7 @@
    "name": "Chicago Bears",
    "from": 1922,
    "to": 2026,
-   "players": 1839,
+   "players": 1834,
    "seasons": [
     1922,
     1923,
@@ -818,7 +822,7 @@
    "name": "Cincinnati Bengals",
    "from": 1921,
    "to": 2026,
-   "players": 1276,
+   "players": 1270,
    "seasons": [
     1921,
     1933,
@@ -888,7 +892,7 @@
    "name": "Cleveland",
    "from": 1920,
    "to": 2026,
-   "players": 2038,
+   "players": 2033,
    "seasons": [
     1920,
     1921,
@@ -1001,7 +1005,7 @@
      "name": "Cleveland Browns",
      "from": 1946,
      "to": 2026,
-     "players": 1706
+     "players": 1701
     }
    ]
   },
@@ -1024,7 +1028,7 @@
    "name": "Dallas Cowboys",
    "from": 1952,
    "to": 2026,
-   "players": 1386,
+   "players": 1381,
    "seasons": [
     1952,
     1960,
@@ -1106,7 +1110,7 @@
      "name": "Dallas Cowboys",
      "from": 1960,
      "to": 2026,
-     "players": 1347
+     "players": 1342
     }
    ]
   },
@@ -1141,7 +1145,7 @@
    "name": "Denver Broncos",
    "from": 1960,
    "to": 2026,
-   "players": 1515,
+   "players": 1507,
    "seasons": [
     1960,
     1961,
@@ -1216,7 +1220,7 @@
    "name": "Detroit Lions",
    "from": 1920,
    "to": 2026,
-   "players": 2076,
+   "players": 2070,
    "seasons": [
     1920,
     1921,
@@ -1373,7 +1377,7 @@
    "name": "Green Bay Packers",
    "from": 1921,
    "to": 2026,
-   "players": 1917,
+   "players": 1907,
    "seasons": [
     1921,
     1922,
@@ -1511,7 +1515,7 @@
    "name": "Houston",
    "from": 1960,
    "to": 2026,
-   "players": 1142,
+   "players": 1136,
    "seasons": [
     1960,
     1961,
@@ -1568,7 +1572,7 @@
      "name": "Houston Texans",
      "from": 2002,
      "to": 2026,
-     "players": 784
+     "players": 778
     }
    ]
   },
@@ -1576,7 +1580,7 @@
    "name": "Indianapolis Colts",
    "from": 1978,
    "to": 2026,
-   "players": 1333,
+   "players": 1330,
    "seasons": [
     1978,
     1979,
@@ -1633,7 +1637,7 @@
    "name": "Jacksonville Jaguars",
    "from": 1995,
    "to": 2026,
-   "players": 998,
+   "players": 994,
    "seasons": [
     1995,
     1996,
@@ -1673,7 +1677,7 @@
    "name": "Kansas City Chiefs",
    "from": 1924,
    "to": 2026,
-   "players": 1430,
+   "players": 1426,
    "seasons": [
     1924,
     1925,
@@ -1757,7 +1761,7 @@
    "name": "Los Angeles",
    "from": 1926,
    "to": 2026,
-   "players": 1582,
+   "players": 1579,
    "seasons": [
     1926,
     1950,
@@ -1848,7 +1852,7 @@
      "name": "Los Angeles Rams",
      "from": 1950,
      "to": 2026,
-     "players": 1564
+     "players": 1561
     }
    ]
   },
@@ -1856,7 +1860,7 @@
    "name": "Los Angeles Chargers",
    "from": 1978,
    "to": 2026,
-   "players": 1253,
+   "players": 1247,
    "seasons": [
     1978,
     1979,
@@ -1940,7 +1944,7 @@
    "name": "Miami Dolphins",
    "from": 1946,
    "to": 2026,
-   "players": 1562,
+   "players": 1561,
    "seasons": [
     1946,
     1966,
@@ -2023,7 +2027,7 @@
    "name": "Minnesota Vikings",
    "from": 1921,
    "to": 2026,
-   "players": 1393,
+   "players": 1388,
    "seasons": [
     1921,
     1922,
@@ -2113,7 +2117,7 @@
    "name": "New England Patriots",
    "from": 1971,
    "to": 2026,
-   "players": 1363,
+   "players": 1361,
    "seasons": [
     1971,
     1972,
@@ -2186,7 +2190,7 @@
    "name": "New Orleans Saints",
    "from": 1967,
    "to": 2026,
-   "players": 1497,
+   "players": 1489,
    "seasons": [
     1967,
     1968,
@@ -2299,7 +2303,7 @@
    "name": "New York Giants",
    "from": 1927,
    "to": 2026,
-   "players": 1735,
+   "players": 1729,
    "seasons": [
     1927,
     1928,
@@ -2382,7 +2386,7 @@
    "name": "New York Jets",
    "from": 1963,
    "to": 2026,
-   "players": 1540,
+   "players": 1538,
    "seasons": [
     1963,
     1964,
@@ -2481,7 +2485,7 @@
    "name": "Oakland Raiders",
    "from": 1960,
    "to": 2019,
-   "players": 1220,
+   "players": 1215,
    "seasons": [
     1960,
     1961,
@@ -2678,7 +2682,7 @@
    "name": "Pittsburgh Steelers",
    "from": 1933,
    "to": 2026,
-   "players": 1690,
+   "players": 1686,
    "seasons": [
     1933,
     1934,
@@ -2895,7 +2899,7 @@
    "name": "Seattle Seahawks",
    "from": 1976,
    "to": 2026,
-   "players": 1235,
+   "players": 1229,
    "seasons": [
     1976,
     1977,
@@ -2954,7 +2958,7 @@
    "name": "San Francisco 49ers",
    "from": 1946,
    "to": 2026,
-   "players": 1630,
+   "players": 1627,
    "seasons": [
     1946,
     1947,
@@ -3103,7 +3107,7 @@
    "name": "Tampa Bay Buccaneers",
    "from": 1976,
    "to": 2026,
-   "players": 1327,
+   "players": 1324,
    "seasons": [
     1976,
     1977,
@@ -3162,7 +3166,7 @@
    "name": "Tennessee Titans",
    "from": 1978,
    "to": 2026,
-   "players": 1210,
+   "players": 1202,
    "seasons": [
     1978,
     1979,
@@ -3249,7 +3253,7 @@
    "name": "Washington",
    "from": 1921,
    "to": 2026,
-   "players": 1995,
+   "players": 1989,
    "seasons": [
     1921,
     1937,
@@ -3347,13 +3351,13 @@
  },
  "seasonMin": 1920,
  "seasonMax": 2026,
- "players": 29739,
+ "players": 29513,
  "teamSeasons": 2448,
  "memberships": 128172,
  "notable": {
-  "Travis Kelce": 28106,
-  "George Blanda": 11268,
-  "Matt Moore": 20362,
-  "John Nesser": 16071
+  "Travis Kelce": 27865,
+  "George Blanda": 10917,
+  "Matt Moore": 20080,
+  "John Nesser": 15747
  }
 }

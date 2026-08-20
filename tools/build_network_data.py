@@ -30,6 +30,24 @@ a = ap.parse_args()
 
 mem_all = pd.read_csv(a.rosters)
 
+# Rejoin careers that the source split in two. The 2017-18 PFR block keys a
+# player by their PFR id when it has no birth date for them, so e.g. Wyatt
+# Teller is one node at BUF in 2018 and a second from CLE 2019 on, with no edge
+# between the halves. tools/build_pfr_aliases.py resolves those PFR ids through
+# nflverse and writes the mapping; see it for why name matching will not do.
+alias_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pfr_aliases.csv')
+same_person, alias_name = {}, {}
+if os.path.exists(alias_path):
+    af = pd.read_csv(alias_path)
+    same_person = dict(zip(af.pfr_uid, af.uid))
+    alias_name = dict(zip(af.uid, af.name))
+    absorbed = len(set(af.uid) & set(mem_all.uid))
+    mem_all['uid'] = mem_all.uid.map(lambda u: same_person.get(u, u))
+    left = sum(1 for u in mem_all.uid.unique() if str(u).startswith('PFR:'))
+    print(f'merged {len(same_person)} split careers '
+          f'({absorbed} into an existing node, {len(same_person)-absorbed} renamed); '
+          f'{left} PFR-keyed nodes left unresolved')
+
 # The player list is derived from the memberships rather than a fixed nodes
 # file, so adding a season brings its new players in automatically. The nodes
 # CSV is still read when present, only to prefer its spelling of a name.
@@ -47,7 +65,11 @@ last = grp.season.max()
 namecol = 'full_name' if 'full_name' in mem_all.columns else 'uid'
 lastname = grp[namecol].last()
 lastpos = grp['position'].last() if 'position' in mem_all.columns else None
-nodes['name'] = [prefer.get(u, (lastname.get(u, u), None))[0] for u in nodes.uid]
+# For a merged career prefer nflverse's spelling of the name: the PFR half is
+# where the odd ones live (Gregory Howell for Buddy Howell, Nordly Capi for
+# Cap Capi), and for a rename-only node it is the only half there is.
+nodes['name'] = [prefer[u][0] if u in prefer else alias_name.get(u, lastname.get(u, u))
+                 for u in nodes.uid]
 nodes['position'] = [
     (prefer[u][1] if u in prefer and isinstance(prefer[u][1], str)
      else (lastpos.get(u) if lastpos is not None else ''))

@@ -55,6 +55,9 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 .note b{color:#F38A1C;font-size:12px}
 .muted2{color:var(--grey);display:block;margin-top:5px;font-size:10px}
 .btn{display:inline-block;margin-top:12px;background:var(--amber);color:#0B1117;border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:bold;font-size:13px;cursor:pointer;width:100%}
+/* an undo sits beside a primary action, so it reads quieter than one */
+.btn.ghost{background:transparent;color:var(--amber);border:1px solid rgba(251,194,71,.45);margin-top:8px}
+.btn.ghost:hover{background:rgba(251,194,71,.1)}
 #tools{position:absolute;right:16px;bottom:16px;display:flex;gap:8px;align-items:stretch;
   background:rgba(11,17,23,.72);backdrop-filter:blur(10px);padding:8px;border-radius:12px;
   border:1px solid rgba(255,255,255,.10)}
@@ -106,7 +109,7 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
   </div>
   <div id="results" hidden></div>
   <div id="tools">
-    <button class="tbtn" id="ring" title="Show the centre's direct team-mates grouped by club">First ring</button>
+    <button class="tbtn" id="ring" title="Show only the players who shared a squad with the centre, grouped by club">Direct team-mates</button>
     <button class="tbtn zoom" id="zin" title="Zoom in">+</button>
     <button class="tbtn zoom" id="zout" title="Zoom out">&minus;</button>
     <button class="tbtn" id="zfit" title="Fit to screen">Fit</button>
@@ -162,7 +165,10 @@ function renderPanel(i){
       $('#shareOut').innerHTML=
         `<div class="shareBox"><b>0%</b> of the network reaches
           ${NET.names[CENTRE]} through ${d.name}. Every route to him is at least
-          as short without ${d.name} — nobody sits behind him.</div>`;
+          as short without ${d.name} — nobody sits behind him.</div>
+         <button class="btn ghost" id="unshare">Back to the full chart</button>`;
+      $('#share').hidden=true;
+      $('#unshare').onclick=clearShare;
       return;
     }
     $('#shareOut').innerHTML=
@@ -175,7 +181,10 @@ function renderPanel(i){
         (${r.exclusivePct.toFixed(1)}%) actually get further away without him.
         That is why these dots also belong to other players, and why they move
         when you ask a different one.</div>
-        ${DEBUG?`<span class="muted2">two extra passes, ${r.ms.toFixed(0)} ms</span>`:''}</div>`;
+        ${DEBUG?`<span class="muted2">two extra passes, ${r.ms.toFixed(0)} ms</span>`:''}</div>
+       <button class="btn ghost" id="unshare">Back to the full chart</button>`;
+    $('#share').hidden=true;
+    $('#unshare').onclick=clearShare;
   };
   if(VIEW.hasThrough){            // leaving a share view: put the layout back
     VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
@@ -190,6 +199,18 @@ function renderPanel(i){
     if(NET.rotateSo(i)) VIEW.beginMorph(650);
   }
   VIEW.selected=i; VIEW.path=i===CENTRE?[]:p;
+}
+
+/* Undo a share view: drop the highlight and slide everyone back to where the
+ * normal layout puts them. Selecting anyone else does this too, but you should
+ * not have to pick a different player just to get the chart back. */
+function clearShare(){
+  if(VIEW.hasThrough){
+    VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
+  }
+  VIEW.setThrough(null);
+  $('#shareOut').innerHTML='';
+  const b=$('#share'); if(b) b.hidden=false;
 }
 
 const FACES={};   // player id -> portrait; only Kelce for now

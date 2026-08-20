@@ -33,6 +33,13 @@ ap.add_argument('--workers', type=int, default=16)
 a = ap.parse_args()
 
 mem = pd.read_csv(a.rosters)
+# Same career merge the graph build applies, so indices line up.
+alias_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pfr_aliases.csv')
+if os.path.exists(alias_path):
+    af = pd.read_csv(alias_path)
+    same = dict(zip(af.pfr_uid, af.uid))
+    mem['uid'] = mem.uid.map(lambda u: same.get(u, u))
+
 grp = mem.groupby('uid')
 uids = sorted(grp.groups.keys())                 # same order as the graph build
 idx = {u: i for i, u in enumerate(uids)}
@@ -99,6 +106,16 @@ def one(u):
 
 with ThreadPoolExecutor(max_workers=a.workers) as ex:
     list(ex.map(one, todo))
+
+# Record the owner of each file. Node indices shift whenever the player list
+# changes, and without this the only way to renumber the directory would be to
+# download all of it again; tools/remap_faces.py renames in place instead.
+with open(os.path.join(a.out, 'owners.csv'), 'w') as f:
+    f.write('index,uid\n')
+    for u in uids:
+        if os.path.exists(os.path.join(a.out, f'{idx[u]}.webp')):
+            f.write(f'{idx[u]},{u}\n')
+
 total = sum(os.path.getsize(os.path.join(a.out, f)) for f in os.listdir(a.out) if f.endswith('.webp'))
 print(f"done: {stat['ok']} saved, {stat['placeholder']} placeholders skipped, "
       f"{stat['fail']} failed, {stat['skip']} already present", flush=True)

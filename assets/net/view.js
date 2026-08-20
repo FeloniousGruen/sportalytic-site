@@ -28,6 +28,7 @@ const VIEW = (() => {
   const FACES = {};       // node index -> portrait, loaded on demand
   let hasFace = null;     // one flag per player, so we never chase a 404
   let growFrom = 0, growWho = -1;   // a picked dot swelling into its picture
+  const faceR = new Map();          // node -> radius its portrait took this frame
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -289,6 +290,9 @@ const VIEW = (() => {
     }
 
     // ---- portraits: the centre always, and a picked player growing in ----
+    // Each one records the radius it took so the highlight below can ring the
+    // picture instead of the dot buried underneath it.
+    faceR.clear();
     if (!moving) {
       const cIm = ready(centreImg) ? centreImg : faceFor(centre);
       if (ready(cIm)) {
@@ -296,6 +300,7 @@ const VIEW = (() => {
         if (cxw === cxw) {
           const d = Math.max(34, Math.min(96, cam.scale * 1.15));
           ctx.drawImage(cIm, sx(cxw) - d / 2, sy(cyw) - d / 2, d, d);
+          faceR.set(centre, d / 2);
         }
       }
       if (selected >= 0 && selected !== centre) {
@@ -310,6 +315,7 @@ const VIEW = (() => {
             const full = Math.max(30, Math.min(72, cam.scale * 0.85));
             const d = Math.max(6, (6 + (full - 6) * k));
             ctx.drawImage(sIm, sx(x) - d / 2, sy(y) - d / 2, d, d);
+            faceR.set(selected, d / 2);
             if (e < 1) dirty = true;
           }
         }
@@ -384,10 +390,17 @@ const VIEW = (() => {
     perf.frames++;
   }
 
+  /* Ring the portrait when there is one -- a 7px circle inside a 60px face
+     reads as a stray dot rather than a highlight. The radius comes from what
+     was actually drawn this frame, so the ring swells with the picture. */
   function ring(i, colour) {
     const [x, y] = frameXY(i);
-    ctx.strokeStyle = colour; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.arc(sx(x), sy(y), 7, 0, 6.2832); ctx.stroke();
+    const fr = faceR.get(i);
+    ctx.strokeStyle = colour;
+    ctx.lineWidth = fr ? Math.max(2, Math.min(4, fr * 0.09)) : 2;
+    ctx.beginPath();
+    ctx.arc(sx(x), sy(y), fr ? fr + ctx.lineWidth / 2 : 7, 0, 6.2832);
+    ctx.stroke();
   }
 
   // capture where everyone is now, recentre, then beginMorph() to slide there
