@@ -308,6 +308,21 @@ const NET = (() => {
     return { degrees: d, path: out };          // path runs b -> ... -> a
   }
 
+  /* Everyone who ever shared a squad with this player.
+   *
+   * Expedition lights these up a step at a time, so it wants the set rather
+   * than a traversal. A long career reaches a few thousand people; building the
+   * set costs about a millisecond and the caller can keep it. */
+  function neighbours(i) {
+    const out = new Set();
+    for (let k = p_ip[i], ke = p_ip[i + 1]; k < ke; k++) {
+      const ts = p_ix[k];
+      for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) out.add(t_ix[j]);
+    }
+    out.delete(i);
+    return out;
+  }
+
   /* Which team-season(s) actually connect two players. The bipartite index
    * already holds this, so a link can say "KAN 2013" rather than just existing.
    * Both lists are short (a career is a handful of team-seasons), so the nested
@@ -443,6 +458,7 @@ const NET = (() => {
 
   return {
     load, inflate, bfs, layout, recentre, pathToCentre, route, info, maxDist,
+    neighbours,
     sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
     throughParent,
     get P() { return P; }, get names() { return names; },

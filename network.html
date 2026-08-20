@@ -153,6 +153,23 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 /* While a round is running the quiz owns the right-hand corner, so a player
    card opened by clicking a dot moves along rather than landing on top of it. */
 #panel.aside{right:320px}
+#game{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
+  border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px;z-index:7;
+  max-height:calc(100vh - 140px);overflow:auto}
+#game h2{font-family:var(--display);font-size:17px;margin:0 0 8px;text-transform:uppercase;
+  padding-right:30px}
+#game .lead{color:var(--grey);font-size:12px;line-height:1.5;margin-bottom:10px}
+.gmeta{color:var(--grey);font-size:11px;margin-top:8px}
+.gbig{margin:6px 0 10px}
+.gbig b{font-family:var(--display);font-size:30px;color:var(--amber);display:block;line-height:1}
+.gbig span{color:var(--grey);font-size:11.5px}
+.gmenu{display:block;width:100%;text-align:left;background:#1d2833;color:var(--ink);
+  border:1px solid var(--greyd);border-radius:9px;padding:11px 12px;margin-top:8px;
+  font:inherit;font-size:13px;cursor:pointer}
+.gmenu:hover{border-color:var(--amber)}
+.gmenu b{display:block;font-size:13.5px;margin-bottom:2px}
+.gmenu span{color:var(--grey);font-size:11.5px;line-height:1.4}
+.qchain.card .qstep{padding:5px 0}
 /* Test your knowledge. Sits where the player panel does, and takes over from
    it while a round is running. */
 #quiz{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
@@ -206,7 +223,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   #topbar{top:6px;left:8px;right:8px;gap:6px}
   #title{top:var(--titleTop,50px);left:8px;right:8px;text-align:left;font-size:15px}
   /* the round is the screen on a phone; the chart above it is context */
-  #quiz{max-height:72vh}
+  #quiz,#game{max-height:72vh}
+  #game{right:8px;left:8px;top:auto;bottom:56px;width:auto;padding:13px}
   #quiz .lead{font-size:11.5px;margin-bottom:9px}
   #badge b{font-size:34px}
   .hud{flex-wrap:wrap;gap:6px}
@@ -271,7 +289,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   </div>
   <h1 id="title"></h1>
   <div id="tools">
-    <button class="tbtn" id="quizBtn" title="Link two players yourself, in as few steps as possible">Test your knowledge</button>
+    <button class="tbtn" id="playBtn" title="Games played on the network">Play</button>
+    <button class="tbtn" id="quizBtn" title="Link two players yourself, in as few steps as possible">Free play</button>
     <button class="tbtn" id="ring" title="Show only the players who shared a squad with the centre, grouped by club">Direct teammates</button>
     <button class="tbtn zoom" id="zin" title="Zoom in">+</button>
     <button class="tbtn zoom" id="zout" title="Zoom out">&minus;</button>
@@ -279,11 +298,13 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   </div>
   <div id="panel" hidden></div>
   <div id="quiz" hidden></div>
+  <div id="game" hidden></div>
   <div id="stats"></div>
 </div>
 
 <script src="assets/net/app.js"></script>
 <script src="assets/net/view.js"></script>
+<script src="assets/net/game.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 let CENTRE=0;
@@ -476,8 +497,9 @@ function setRing(on){
    without threading a call through each of them. */
 const STAGE=document.getElementById('stage');
 function syncSheet(){
-  const p=document.getElementById('panel'), q=document.getElementById('quiz');
-  const card = !q.hidden ? q : (!p.hidden ? p : null);
+  const p=document.getElementById('panel'), q=document.getElementById('quiz'),
+        g=document.getElementById('game');
+  const card = !g.hidden ? g : !q.hidden ? q : (!p.hidden ? p : null);
   STAGE.classList.toggle('sheet', !!card);
   // Measured rather than guessed at: reserving a flat 48vh leaves a dead band
   // under a short card and clips the chart under a tall one.
@@ -488,8 +510,8 @@ function syncSheet(){
   STAGE.style.setProperty('--top', (tb + ti + 20) + 'px');
 }
 const watch = new ResizeObserver(syncSheet);
-['panel','quiz','topbar','title'].forEach(id => watch.observe(document.getElementById(id)));
-['panel','quiz'].forEach(id =>
+['panel','quiz','game','topbar','title'].forEach(id => watch.observe(document.getElementById(id)));
+['panel','quiz','game'].forEach(id =>
   new MutationObserver(syncSheet).observe(document.getElementById(id),
     {attributes:true,attributeFilter:['hidden']}));
 addEventListener('resize', syncSheet);
@@ -864,6 +886,57 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   }
 
   document.getElementById('quizBtn').onclick=()=>QUIZ.on?quizClose():quizOpen();
+
+  /* ------------------------------------------------------- the game menu ----
+   * The modes live in game.js; this only opens and closes the card and hands
+   * the chart back afterwards. */
+  const gameEl=document.getElementById('game');
+  // leaving a mode goes back to the menu; the menu's own x leaves the game
+  GAME.init(gameEl, ()=>gameMenu());
+
+  function closeGame(){
+    GAME.stop();
+    gameEl.hidden=true;
+    VIEW.labels=true; VIEW.path=[]; VIEW.selected=-1; VIEW.lit=null;
+    if(NET.dist[CENTRE]!==0){ recentreQuiet(CENTRE); }
+    VIEW.invalidate();
+  }
+
+  async function openGame(){
+    quizClose();
+    $('#panel').hidden=true; $('#results').hidden=true;
+    clearShare();
+    gameEl.hidden=false;
+    gameEl.innerHTML='<div class="lead">Loading the puzzles…</div>';
+    try{ await GAME.load('assets/net'); }
+    catch(e){ gameEl.innerHTML='<div class="qerr">Could not load the puzzles.</div>'; return; }
+    gameMenu();
+  }
+
+  function gameMenu(){
+    GAME.stop();
+    VIEW.labels=!onPhone();
+    gameEl.innerHTML=
+      `<button class="xclose" id="gmclose" title="Back to the chart">&times;</button>
+       <h2>Play</h2>
+       <div class="lead">Every link is checked against the record: two players
+         only join if they shared a squad in the same season.</div>
+       <button class="gmenu" id="gm1"><b>The round</b>
+         <span>Five holes, par 2·3·3·3·4. Fifteen is the best there is.
+           Clues cost a stroke.</span></button>
+       <button class="gmenu" id="gm2"><b>The daily</b>
+         <span>One pair a day, the same for everyone. Join them in under 10.</span></button>
+       <button class="gmenu" id="gm3"><b>Expedition</b>
+         <span>Start anywhere. Name a player, their teammates light up, and you
+           see how much of the network you can uncover.</span></button>`;
+    $('#gmclose').onclick=closeGame;
+    $('#gm1').onclick=()=>{ VIEW.labels=!onPhone(); GAME.startRound(); };
+    $('#gm2').onclick=()=>{ VIEW.labels=!onPhone(); GAME.startDaily(); };
+    $('#gm3').onclick=()=>{ VIEW.labels=false; GAME.startExpedition(CENTRE); };
+  }
+
+  document.getElementById('playBtn').onclick=()=>
+    gameEl.hidden?openGame():closeGame();
   document.getElementById('ring').onclick=()=>setRing(!VIEW.ringMode);
   document.getElementById('zin').onclick=()=>VIEW.zoomBy(1.35);
   document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);

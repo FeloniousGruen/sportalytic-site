@@ -30,6 +30,7 @@ const VIEW = (() => {
   let growFrom = 0, growWho = -1;   // a picked dot swelling into its picture
   const faceR = new Map();          // node -> radius its portrait took this frame
   let showLabels = true;            // off while the quiz owns a phone screen
+  let litMask = null;               // Expedition: 0 dark, 1 lit, 2 unlocked
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -238,6 +239,7 @@ const VIEW = (() => {
       ctx.fillStyle = dim;
       for (let bi = 0; bi < bucket.length; bi++) {
         const i = bucket[bi];
+        if (litMask) continue;                         // drawn by state, below
         if (throughMask && throughMask[i]) continue;   // drawn hot, below
         let x = px[i], y = py[i];
         if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
@@ -247,6 +249,28 @@ const VIEW = (() => {
         ctx.fillRect(X - r, Y - r, d2, d2);
       }
     }
+    /* Expedition draws by what you have found rather than by degree: the dark
+       is everything still out there, and the point of the game is to see less
+       of it. Three passes so the colour changes three times, not 29,000. */
+    if (litMask) {
+      const STATE = [['rgba(58,68,82,0.55)', r],          // dark
+                     ['#9CC2DC', r * 1.15],               // lit by a teammate
+                     ['#FBC247', r * 1.7]];               // named by you
+      for (let st = 0; st < 3; st++) {
+        ctx.fillStyle = STATE[st][0];
+        const rr = STATE[st][1], dd = rr * 2;
+        for (let i = 0; i < n; i++) {
+          if (litMask[i] !== st) continue;
+          let x = px[i], y = py[i];
+          if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
+          if (!(x === x)) continue;
+          const X = sx(x), Y = sy(y);
+          if (X < -8 || Y < -8 || X > W + 8 || Y > H + 8) continue;
+          ctx.fillRect(X - rr, Y - rr, dd, dd);
+        }
+      }
+    }
+
     if (throughMask) {                 // everyone routing through the pick
       ctx.fillStyle = '#F38A1C';
       const rr = r * 1.25, dd = rr * 2;
@@ -591,6 +615,7 @@ const VIEW = (() => {
     get faceFlagCount(){ return hasFace ? hasFace.reduce((a,b)=>a+b,0) : -1; },
     hasPortrait(i){ return !!(hasFace && hasFace[i]); },
     set labels(v){ showLabels = !!v; dirty = true; }, get labels(){ return showLabels; },
+    set lit(m){ litMask = m; dirty = true; }, get lit(){ return litMask; },
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,
