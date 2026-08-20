@@ -37,16 +37,26 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 #panel h2{font-family:var(--display);font-size:19px;margin:0 0 2px;text-transform:uppercase;line-height:1.1}
 #panel .meta{color:var(--grey);font-size:13px;margin-bottom:12px}
 #panel .deg{color:var(--amber);font-weight:bold}
-.chain{margin:10px 0 0;padding:0;list-style:none;max-height:34vh;overflow:auto}
-.chain li{padding:4px 0;font-size:13px;border-left:2px solid var(--greyd);padding-left:10px;margin-left:3px}
-.chain li.end{border-left-color:var(--amber)}
+.chain{margin:10px 0 0;list-style:none;max-height:34vh;overflow:auto}
+.shareBox{margin:9px 0 2px;padding:9px 10px;background:#1d2833;border-left:3px solid #F38A1C;
+  border-radius:6px;font-size:12px;line-height:1.5}
+.shareBox b{color:#F38A1C;font-size:17px}
+.muted2{color:var(--grey);display:block;margin-top:3px;font-size:10px}
 .btn{display:inline-block;margin-top:12px;background:var(--amber);color:#0B1117;border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:bold;font-size:13px;cursor:pointer;width:100%}
 #tools{position:absolute;right:12px;bottom:12px;display:flex;gap:6px}
 .tbtn{background:var(--panel);color:var(--ink);border:1px solid var(--greyd);border-radius:8px;
   padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;min-width:40px}
 .tbtn:hover{border-color:var(--amber);color:var(--amber)}
 .tbtn.on{background:var(--amber);color:#0B1117;border-color:var(--amber);font-weight:bold}
-.via{color:var(--grey);font-size:11px;margin:1px 0 3px 13px;display:flex;align-items:center;gap:5px}
+.chain{position:relative;padding-left:18px}
+.chain::before{content:'';position:absolute;left:5px;top:9px;bottom:9px;width:2px;background:var(--greyd)}
+.node{position:relative;padding:2px 0;font-size:13px}
+.node .dot{position:absolute;left:-17px;top:7px;width:9px;height:9px;border-radius:50%;
+  background:var(--grey);border:2px solid var(--panel)}
+.node.end .dot{background:var(--amber)}
+.via{position:relative;color:var(--grey);font-size:11px;padding:1px 0 1px 0;display:flex;
+  align-items:center;gap:5px}
+.via::before{content:'';position:absolute;left:-13px;top:50%;width:9px;height:2px;background:var(--greyd)}
 .chip{display:inline-block;background:#1d2833;border:1px solid var(--greyd);border-radius:4px;
   padding:1px 5px;font-size:10px;letter-spacing:.04em;color:#9CC2DC;font-weight:bold}
 #stats{position:absolute;left:12px;bottom:12px;color:var(--grey);font-size:12px;line-height:1.5;font-variant-numeric:tabular-nums}
@@ -98,20 +108,33 @@ function renderPanel(i){
      <div class="meta">${d.position||'—'} · ${d.first}–${d.last}</div>
      ${i===CENTRE?`<div class="deg">This is the centre</div>`
        :`<div><span class="deg">${d.degree}°</span> from ${c.name}</div>
-          <ul class="chain">${p.map((n,k)=>{
-            let row=`<li class="${k===p.length-1?'end':''}">${NET.names[n]}</li>`;
+          <div class="chain">${p.map((n,k)=>{
+            let row=`<div class="node ${k===p.length-1?'end':''}"><span class="dot"></span>${NET.names[n]}</div>`;
             if(k<p.length-1){
-              // how these two are actually linked: the club and year they shared
+              // the link itself: which club and year actually joins these two
               const sh=NET.sharedTeamSeasons(n,p[k+1]);
               if(sh.length){
-                const f=sh[0], more=sh.length>1?` +${sh.length-1} more`:'';
+                const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
                 const full=sh.map(x=>`${x.team} ${x.season}`).join(', ');
-                row+=`<div class="via" title="${full}">↳ <span class="chip">${f.team}</span> ${f.season}${more}</div>`;
+                const nm=(NET.tables.teamMeta[f.team]||{}).name||f.team;
+                row+=`<div class="via" title="${nm} — ${full}"><span class="chip">${f.team}</span> ${f.season}${more}</div>`;
               }
             }
-            return row;}).join('')}</ul>`}
+            return row;}).join('')}</div>`}
+     <button class="btn" id="share">Share of connections</button>
+     <div id="shareOut"></div>
      <button class="btn" id="rec">Centre the chart on ${d.name}</button>`;
   $('#rec').onclick=()=>recentre(i);
+  $('#share').onclick=()=>{
+    const r=NET.shareThrough(i);
+    VIEW.setThrough(r.mask);
+    $('#shareOut').innerHTML=
+      `<div class="shareBox"><b>${r.pct.toFixed(1)}%</b> of the network
+        (${r.count.toLocaleString()} of ${r.total.toLocaleString()}) reaches
+        ${NET.names[CENTRE]} by a shortest route through ${d.name}.
+        <span class="muted2">computed in ${r.ms.toFixed(0)} ms</span></div>`;
+  };
+  VIEW.setThrough(null);
   VIEW.selected=i; VIEW.path=i===CENTRE?[]:p;
 }
 

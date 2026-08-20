@@ -25,6 +25,7 @@ const NET = (() => {
   // scratch reused across traversals so a recentre allocates nothing
   let dist, parent, order, leaves, radius, angle, px, py, tstamp;
   let wA0, wSpan, wAcc;
+  let dist2, order2, tstamp2, through;   // second traversal, for share-of-connections
   let stampCounter = 0;
 
   async function loadGz(url) {
@@ -77,6 +78,10 @@ const NET = (() => {
     wA0 = new Float32Array(P);
     wSpan = new Float32Array(P);
     wAcc = new Float32Array(P);
+    dist2 = new Int16Array(P);
+    order2 = new Int32Array(P);
+    tstamp2 = new Int32Array(T).fill(-1);
+    through = new Uint8Array(P);
     return { ms: performance.now() - t0, players: P, teamSeasons: T };
   }
 
@@ -215,6 +220,43 @@ const NET = (() => {
     return segs;
   }
 
+  /* Share of connections: how much of the network reaches the current centre
+   * by a shortest route that passes through this player.
+   *
+   *   v routes through p  <=>  dist(centre, v) === dist(centre, p) + dist(p, v)
+   *
+   * so one extra traversal from p answers it for every player at once -- the
+   * same measure behind the "60% through Matt Moore" beat in the reel. */
+  function shareThrough(p) {
+    const t0 = performance.now();
+    const stamp = ++stampCounter;
+    dist2.fill(-1); dist2[p] = 0; order2[0] = p;
+    let head = 0, tail = 1;
+    while (head < tail) {
+      const u = order2[head++], d = dist2[u] + 1;
+      for (let i = p_ip[u], ie = p_ip[u + 1]; i < ie; i++) {
+        const ts = p_ix[i];
+        if (tstamp2[ts] === stamp) continue;
+        tstamp2[ts] = stamp;
+        for (let j = t_ip[ts], je = t_ip[ts + 1]; j < je; j++) {
+          const v = t_ix[j];
+          if (dist2[v] < 0) { dist2[v] = d; order2[tail++] = v; }
+        }
+      }
+    }
+    const base = dist[p];
+    through.fill(0);
+    let count = 0, downstream = 0;
+    for (let v = 0; v < P; v++) {
+      if (v === p || dist[v] < 0 || dist2[v] < 0) continue;
+      if (dist[v] > base) downstream++;          // further out than p
+      if (dist[v] === base + dist2[v]) { through[v] = 1; count++; }
+    }
+    return { count, downstream, total: P - 1,
+             pct: 100 * count / (P - 1),
+             ms: performance.now() - t0, mask: through };
+  }
+
   function info(i) {
     return {
       id: i, name: names[i], position: tables.positions[posIdx[i]] || '',
@@ -224,7 +266,7 @@ const NET = (() => {
 
   return {
     load, bfs, layout, recentre, pathToCentre, info, maxDist,
-    sharedTeamSeasons, teamLabel, ringLayout,
+    sharedTeamSeasons, teamLabel, ringLayout, shareThrough,
     get P() { return P; }, get names() { return names; },
     get tables() { return tables; },
     get dist() { return dist; }, get parent() { return parent; },

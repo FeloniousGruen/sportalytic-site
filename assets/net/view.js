@@ -21,6 +21,7 @@ const VIEW = (() => {
   let onPick = () => {};
   let centreImg = null;         // portrait drawn on the centre, when we have one
   let ringSegs = null;          // first-ring mode: wedge per club, or null
+  let throughMask = null;       // share-of-connections highlight
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -164,15 +165,30 @@ const VIEW = (() => {
       if (ringSegs && deg > 1) break;          // first-ring view: centre + ring 1
       const bucket = buckets[deg];
       if (!bucket || !bucket.length) continue;
-      ctx.fillStyle = NET.DEG_COLOUR[deg];
+      const dim = throughMask ? 'rgba(70,80,95,0.5)' : NET.DEG_COLOUR[deg];
+      ctx.fillStyle = dim;
       for (let bi = 0; bi < bucket.length; bi++) {
         const i = bucket[bi];
+        if (throughMask && throughMask[i]) continue;   // drawn hot, below
         let x = px[i], y = py[i];
         if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
         if (!(x === x)) continue;
         const X = sx(x), Y = sy(y);
         if (X < -8 || Y < -8 || X > W + 8 || Y > H + 8) continue;
         ctx.fillRect(X - r, Y - r, d2, d2);
+      }
+    }
+    if (throughMask) {                 // everyone routing through the pick
+      ctx.fillStyle = '#F38A1C';
+      const rr = r * 1.25, dd = rr * 2;
+      for (let i = 0; i < n; i++) {
+        if (!throughMask[i]) continue;
+        let x = px[i], y = py[i];
+        if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
+        if (!(x === x)) continue;
+        const X = sx(x), Y = sy(y);
+        if (X < -8 || Y < -8 || X > W + 8 || Y > H + 8) continue;
+        ctx.fillRect(X - rr, Y - rr, dd, dd);
       }
     }
     perf.nodes = performance.now() - tn;
@@ -268,6 +284,8 @@ const VIEW = (() => {
 
   function setRingSegments(segs) { ringSegs = segs; dirty = true; }
 
+  function setThrough(mask) { throughMask = mask; dirty = true; }
+
   function zoomBy(k) {
     cam.scale = Math.max(6, Math.min(900, cam.scale * k));
     dirty = true;
@@ -301,7 +319,8 @@ const VIEW = (() => {
 
   return {
     init, draw, tick, fit, fitScale, buildGrid, captureFrom, beginMorph, perf, cam,
-    setCentreImage, setRingSegments, zoomBy,
+    setCentreImage, setRingSegments, setThrough, zoomBy,
+    get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,
     set path(p) { path = p; dirty = true; }, get path() { return path; },

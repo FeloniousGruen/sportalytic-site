@@ -89,7 +89,6 @@
   "C-P",
   "CAN",
   "CAR",
-  "CHB",
   "CHC",
   "CHH",
   "CHI",
@@ -179,7 +178,7 @@
    "players": 1417
   },
   "BAL": {
-   "name": "Baltimore Ravens",
+   "name": "Baltimore",
    "from": 1947,
    "to": 2025,
    "players": 1195
@@ -203,7 +202,7 @@
    "players": 1714
   },
   "C-P": {
-   "name": "Card-Pitt (1944)",
+   "name": "Card-Pitt",
    "from": 1944,
    "to": 1944,
    "players": 26
@@ -220,12 +219,6 @@
    "to": 2025,
    "players": 899
   },
-  "CHB": {
-   "name": "",
-   "from": 1922,
-   "to": 1959,
-   "players": 412
-  },
   "CHC": {
    "name": "Chicago Cardinals",
    "from": 1920,
@@ -233,31 +226,31 @@
    "players": 601
   },
   "CHH": {
-   "name": "",
+   "name": "Chicago Hornets",
    "from": 1949,
    "to": 1949,
    "players": 36
   },
   "CHI": {
    "name": "Chicago Bears",
-   "from": 1960,
+   "from": 1922,
    "to": 2025,
-   "players": 1409
+   "players": 1793
   },
   "CHR": {
-   "name": "",
+   "name": "Chicago Rockets",
    "from": 1946,
    "to": 1960,
    "players": 133
   },
   "CHS": {
-   "name": "",
+   "name": "Chicago Staleys",
    "from": 1921,
    "to": 1921,
    "players": 17
   },
   "CHT": {
-   "name": "",
+   "name": "Chicago Tigers",
    "from": 1920,
    "to": 1920,
    "players": 22
@@ -269,19 +262,19 @@
    "players": 1239
   },
   "CLE": {
-   "name": "Cleveland Browns",
+   "name": "Cleveland",
    "from": 1920,
    "to": 2025,
    "players": 1994
   },
   "COL": {
-   "name": "",
+   "name": "Columbus Panhandles",
    "from": 1920,
    "to": 1926,
    "players": 84
   },
   "COW": {
-   "name": "",
+   "name": "Dallas Cowboys",
    "from": 1960,
    "to": 1962,
    "players": 80
@@ -317,7 +310,7 @@
    "players": 2038
   },
   "DON": {
-   "name": "",
+   "name": "Los Angeles Dons",
    "from": 1946,
    "to": 1949,
    "players": 94
@@ -329,7 +322,7 @@
    "players": 53
   },
   "ECG": {
-   "name": "",
+   "name": "Evansville Crimson Giants",
    "from": 1921,
    "to": 1922,
    "players": 34
@@ -353,13 +346,13 @@
    "players": 73
   },
   "HAR": {
-   "name": "",
+   "name": "Hartford Blues",
    "from": 1926,
    "to": 1926,
    "players": 30
   },
   "HOU": {
-   "name": "Houston Texans",
+   "name": "Houston",
    "from": 1960,
    "to": 2025,
    "players": 1100
@@ -383,13 +376,13 @@
    "players": 1387
   },
   "KEN": {
-   "name": "",
+   "name": "Kenosha Maroons",
    "from": 1924,
    "to": 1924,
    "players": 17
   },
   "LA": {
-   "name": "Los Angeles Rams",
+   "name": "Los Angeles",
    "from": 1926,
    "to": 2025,
    "players": 1548
@@ -401,7 +394,7 @@
    "players": 1209
   },
   "LOU": {
-   "name": "",
+   "name": "Louisville Colonels",
    "from": 1921,
    "to": 1926,
    "players": 65
@@ -431,7 +424,7 @@
    "players": 1353
   },
   "MUN": {
-   "name": "",
+   "name": "Muncie Flyers",
    "from": 1920,
    "to": 1921,
    "players": 18
@@ -443,7 +436,7 @@
    "players": 1312
   },
   "NEW": {
-   "name": "",
+   "name": "Newark Tornadoes",
    "from": 1930,
    "to": 1930,
    "players": 39
@@ -461,7 +454,7 @@
    "players": 401
   },
   "NYB": {
-   "name": "",
+   "name": "New York Bulldogs",
    "from": 1949,
    "to": 1949,
    "players": 35
@@ -479,13 +472,13 @@
    "players": 1502
   },
   "NYT": {
-   "name": "",
+   "name": "New York Titans",
    "from": 1960,
    "to": 1962,
    "players": 88
   },
   "NYY": {
-   "name": "",
+   "name": "New York Yankees",
    "from": 1927,
    "to": 1951,
    "players": 169
@@ -497,19 +490,19 @@
    "players": 1220
   },
   "OOR": {
-   "name": "",
+   "name": "Oorang Indians",
    "from": 1922,
    "to": 1923,
    "players": 27
   },
   "ORG": {
-   "name": "",
+   "name": "Orange Tornadoes",
    "from": 1929,
    "to": 1929,
    "players": 29
   },
   "P-P": {
-   "name": "Phil-Pitt Steagles (1943)",
+   "name": "Phil-Pitt Steagles",
    "from": 1943,
    "to": 1943,
    "players": 29
@@ -527,7 +520,7 @@
    "players": 1645
   },
   "POR": {
-   "name": "",
+   "name": "Portsmouth Spartans",
    "from": 1930,
    "to": 1933,
    "players": 70
@@ -557,7 +550,7 @@
    "players": 110
   },
   "RI": {
-   "name": "",
+   "name": "Rock Island Independents",
    "from": 1920,
    "to": 1925,
    "players": 85
@@ -587,13 +580,13 @@
    "players": 1593
   },
   "SI": {
-   "name": "",
+   "name": "Staten Island Stapletons",
    "from": 1929,
    "to": 1932,
    "players": 81
   },
   "STL": {
-   "name": "St. Louis Rams",
+   "name": "St. Louis",
    "from": 1923,
    "to": 1977,
    "players": 326
@@ -611,7 +604,7 @@
    "players": 1158
   },
   "TEX": {
-   "name": "",
+   "name": "Dallas Texans",
    "from": 1960,
    "to": 1962,
    "players": 72
@@ -623,7 +616,7 @@
    "players": 39
   },
   "TON": {
-   "name": "",
+   "name": "Tonawanda Kardex",
    "from": 1921,
    "to": 1921,
    "players": 12

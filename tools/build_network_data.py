@@ -41,7 +41,8 @@ mem = mem[mem.uid.isin(idx)]
 # no roster is split across two codes and no edges are missing -- this is a
 # relabelling only, and it leaves the team-season count unchanged.
 ALIAS = {'KAN': 'KC', 'GNB': 'GB', 'NWE': 'NE', 'NOR': 'NO',
-         'TAM': 'TB', 'SFO': 'SF', 'LAR': 'LA'}
+         'TAM': 'TB', 'SFO': 'SF', 'LAR': 'LA',
+         'CHB': 'CHI'}          # Bears: CHB 1922-59 then CHI 1960-2025
 mem['team'] = mem.team.map(lambda t: ALIAS.get(t, t))
 
 ts_keys = sorted({(t, int(s)) for t, s in zip(mem.team, mem.season)})
@@ -67,27 +68,38 @@ t_ip, t_ix = csr(tk, pl, T)      # team-season -> players
 # at -- those keep the code, and the page shows the era and squad size beside it
 # so the dropdown is still legible. Fill any of these in as you like.
 TEAM_NAMES = {
-  'ARI': 'Arizona Cardinals', 'ATL': 'Atlanta Falcons', 'BAL': 'Baltimore Ravens',
-  'BUF': 'Buffalo Bills', 'CAR': 'Carolina Panthers', 'CHI': 'Chicago Bears',
-  'CIN': 'Cincinnati Bengals', 'CLE': 'Cleveland Browns', 'DAL': 'Dallas Cowboys',
-  'DEN': 'Denver Broncos', 'DET': 'Detroit Lions', 'GB': 'Green Bay Packers',
-  'GNB': 'Green Bay Packers', 'HOU': 'Houston Texans', 'IND': 'Indianapolis Colts',
-  'JAX': 'Jacksonville Jaguars', 'KC': 'Kansas City Chiefs', 'KAN': 'Kansas City Chiefs',
-  'LV': 'Las Vegas Raiders', 'OAK': 'Oakland Raiders', 'LAC': 'Los Angeles Chargers',
-  'SD': 'San Diego Chargers', 'LAR': 'Los Angeles Rams', 'LA': 'Los Angeles Rams',
-  'RAM': 'Los Angeles Rams', 'STL': 'St. Louis Rams', 'MIA': 'Miami Dolphins',
-  'MIN': 'Minnesota Vikings', 'NE': 'New England Patriots', 'NWE': 'New England Patriots',
-  'NO': 'New Orleans Saints', 'NOR': 'New Orleans Saints', 'NYG': 'New York Giants',
-  'NYJ': 'New York Jets', 'PHI': 'Philadelphia Eagles', 'PIT': 'Pittsburgh Steelers',
-  'SEA': 'Seattle Seahawks', 'SF': 'San Francisco 49ers', 'SFO': 'San Francisco 49ers',
-  'TB': 'Tampa Bay Buccaneers', 'TAM': 'Tampa Bay Buccaneers', 'TEN': 'Tennessee Titans',
-  'WAS': 'Washington', 'AKR': 'Akron Pros', 'CAN': 'Canton Bulldogs',
-  'DAY': 'Dayton Triangles', 'DEC': 'Decatur Staleys', 'CHC': 'Chicago Cardinals',
-  'ROC': 'Rochester Jeffersons', 'RAC': 'Racine Cardinals', 'MIL': 'Milwaukee Badgers',
-  'BOS': 'Boston', 'BRK': 'Brooklyn', 'NY': 'New York', 'HAM': 'Hammond Pros',
-  'TOL': 'Toledo Maroons', 'DUL': 'Duluth Eskimos', 'PRO': 'Providence Steam Roller',
+  # current franchises
+  'ARI': 'Arizona Cardinals', 'ATL': 'Atlanta Falcons', 'BUF': 'Buffalo Bills',
+  'CAR': 'Carolina Panthers', 'CHI': 'Chicago Bears', 'CIN': 'Cincinnati Bengals',
+  'DAL': 'Dallas Cowboys', 'DEN': 'Denver Broncos', 'DET': 'Detroit Lions',
+  'GB': 'Green Bay Packers', 'IND': 'Indianapolis Colts', 'JAX': 'Jacksonville Jaguars',
+  'KC': 'Kansas City Chiefs', 'LV': 'Las Vegas Raiders', 'OAK': 'Oakland Raiders',
+  'LAC': 'Los Angeles Chargers', 'SD': 'San Diego Chargers', 'MIA': 'Miami Dolphins',
+  'MIN': 'Minnesota Vikings', 'NE': 'New England Patriots', 'NO': 'New Orleans Saints',
+  'NYG': 'New York Giants', 'NYJ': 'New York Jets', 'PHI': 'Philadelphia Eagles',
+  'PIT': 'Pittsburgh Steelers', 'SEA': 'Seattle Seahawks', 'SF': 'San Francisco 49ers',
+  'TB': 'Tampa Bay Buccaneers', 'TEN': 'Tennessee Titans',
+  # codes that span more than one franchise in this data, so city-level only
+  'BAL': 'Baltimore', 'CLE': 'Cleveland', 'HOU': 'Houston', 'LA': 'Los Angeles',
+  'STL': 'St. Louis', 'BOS': 'Boston', 'NY': 'New York', 'WAS': 'Washington',
+  'BRK': 'Brooklyn', 'CHC': 'Chicago Cardinals', 'RAM': 'Los Angeles Rams',
+  # defunct and early-era clubs
+  'AKR': 'Akron Pros', 'CAN': 'Canton Bulldogs', 'DAY': 'Dayton Triangles',
+  'DEC': 'Decatur Staleys', 'ROC': 'Rochester Jeffersons', 'RAC': 'Racine Cardinals',
+  'MIL': 'Milwaukee Badgers', 'HAM': 'Hammond Pros', 'TOL': 'Toledo Maroons',
+  'DUL': 'Duluth Eskimos', 'PRO': 'Providence Steam Roller',
   'POT': 'Pottsville Maroons', 'FYJ': 'Frankford Yellow Jackets',
-  'CHI_H': 'Chicago', 'C-P': 'Card-Pitt (1944)', 'P-P': 'Phil-Pitt Steagles (1943)',
+  'CHH': 'Chicago Hornets', 'CHR': 'Chicago Rockets', 'CHS': 'Chicago Staleys',
+  'CHT': 'Chicago Tigers', 'COL': 'Columbus Panhandles', 'COW': 'Dallas Cowboys',
+  'DON': 'Los Angeles Dons', 'ECG': 'Evansville Crimson Giants',
+  'HAR': 'Hartford Blues', 'KEN': 'Kenosha Maroons', 'LOU': 'Louisville Colonels',
+  'MUN': 'Muncie Flyers', 'NEW': 'Newark Tornadoes', 'NYB': 'New York Bulldogs',
+  'NYT': 'New York Titans', 'NYY': 'New York Yankees', 'OOR': 'Oorang Indians',
+  'ORG': 'Orange Tornadoes', 'POR': 'Portsmouth Spartans',
+  'RI': 'Rock Island Independents', 'SI': 'Staten Island Stapletons',
+  'TEX': 'Dallas Texans', 'TON': 'Tonawanda Kardex',
+  'C-P': 'Card-Pitt', 'P-P': 'Phil-Pitt Steagles',
+  'CAL': 'California', 'IND_H': '', 'DEC_H': '',
 }
 
 teams = sorted({t for t, _ in ts_keys})
