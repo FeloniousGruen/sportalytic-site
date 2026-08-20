@@ -98,12 +98,14 @@ const GAME = (() => {
      server, so this is also the only record of a distribution to compare a new
      score against. */
   const history = {
-    dailies() { return store.get('dailies', {}); },
+    // v2: an earlier build replaced your chain with the answer when you gave
+    // up, so those records claim you found a route you never found
+    dailies() { return store.get('dailies2', {}); },
     rounds() { return store.get('rounds', []); },
     saveDaily(day, rec) {
       const all = history.dailies();
       all[day] = rec;
-      store.set('dailies', all);
+      store.set('dailies2', all);
     },
     saveRound(rec) {
       const all = history.rounds();
@@ -527,12 +529,18 @@ const GAME = (() => {
           : `<div class="qdone"><b>${sc}</b> against a par of ${L.par}${
                matched ? ' — the shortest there is.' : `, ${sc - L.par} over.`}</div>`;
       }
-      /* Show the shortest route beside theirs whenever it differs. Being told
+      /* Show the answer beside what you did whenever they differ. Being told
          you took six is not much use without seeing what three looked like. */
       if (!matched && shortest.length) {
-        best = `<div class="gmeta">${L.revealed ? 'The shortest route'
-                  : `The shortest route — ${L.best} link${L.best === 1 ? '' : 's'}`}</div>`
-             + routeHtml(shortest, 'best');
+        const yourLabel = L.revealed
+          ? (links ? `How far you got — ${links} link${links === 1 ? '' : 's'}`
+                   : 'You did not get started')
+          : `Your route — ${links} link${links === 1 ? '' : 's'}`;
+        best = `<div class="routes">
+                  <div><div class="rhead">${yourLabel}</div>${chainHtml(L, false)}</div>
+                  <div><div class="rhead">${L.revealed ? 'The answer'
+                        : `The shortest — ${L.best}`}</div>${routeHtml(shortest, 'best')}</div>
+                </div>`;
       }
     }
 
@@ -545,9 +553,7 @@ const GAME = (() => {
     }
     const t = state.mode === 'round' ? roundTotals() : null;
     host.innerHTML = exitBtn() + head +
-      (L.done && best ? `<div class="gmeta">Your route — ${L.links()} link${
-        L.links() === 1 ? '' : 's'}</div>` : '') +
-      chainHtml(L, true) + best + verdict + chart +
+      (best ? '' : chainHtml(L, true)) + verdict + best + chart +
       `<div class="gmeta">${L.links()} link${L.links() === 1 ? '' : 's'}${
         L.clues ? ` · ${L.clues} clue${L.clues === 1 ? '' : 's'}` : ''}${
         t && t.played ? ` · round so far ${t.shot} (par ${t.par})` : ''}</div>` +

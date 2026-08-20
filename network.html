@@ -259,6 +259,18 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .gmenu.m-archive{border-color:color-mix(in srgb,var(--c) 40%,transparent);
   background:color-mix(in srgb,var(--c) 6%,transparent)}
 .qchain.card .qstep{padding:5px 0}
+/* Two routes read side by side; the card widens to hold them. A subheading
+   here is doing real work -- which of these is yours -- so it is a heading and
+   not a caption. */
+.rhead{font-family:var(--display);font-size:11.5px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--ink);margin:2px 0 2px}
+.routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.routes .qchain{margin:4px 0 0}
+#game:has(.routes){width:430px}
+/* a wide card eats into where the heading was centring, so the heading centres
+   in what is left of the canvas rather than sliding under it */
+#stage:has(#game:not([hidden])) #title{right:456px}
+#stage:has(#panel:not([hidden])) #title{right:320px}
 /* the shortest route, shown beside yours: quieter, so the eye reads your own
    attempt first and the answer second */
 .qchain.best{opacity:.72}
@@ -364,6 +376,9 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   #title{top:var(--titleTop,50px);left:8px;right:8px;margin:0;width:auto;text-align:left;font-size:15px}
   /* the round is the screen on a phone; the chart above it is context */
   #quiz,#game{max-height:72vh}
+  /* no room to sit them side by side on a phone */
+  #game:has(.routes){width:auto}
+  .routes{grid-template-columns:1fr;gap:8px}
   #game{right:8px;left:8px;top:auto;bottom:56px;width:auto;padding:13px}
   #quiz .lead{font-size:11.5px;margin-bottom:9px}
   #badge b{font-size:34px}
@@ -1148,6 +1163,9 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
 
   document.getElementById('playBtn').onclick=()=>
     gameEl.hidden?openGame():closeGame();
+
+  // the games are the point of the page now, so lead with them
+  openGame();
   document.getElementById('ring').onclick=()=>setRing(!VIEW.ringMode);
   document.getElementById('zin').onclick=()=>VIEW.zoomBy(1.35);
   document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);
