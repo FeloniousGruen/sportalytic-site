@@ -56,9 +56,17 @@ header{
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
 .brand img{width:30px;height:30px}
 .brand span{font-family:var(--display);font-size:17px;letter-spacing:.02em;text-transform:uppercase}
+nav{display:flex;flex-wrap:nowrap;white-space:nowrap}
 nav a{
   text-decoration:none;font-size:13px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--grey);margin-left:21px;transition:color .2s;font-weight:bold;
+}
+/* six items plus the button is a tight fit; give back the letter-spacing
+   before anything wraps onto a second line */
+@media(max-width:1320px){
+  nav a{font-size:12px;letter-spacing:.08em;margin-left:15px}
+  .nav-cta{margin-left:16px;padding:10px 14px;font-size:12px}
+  .bar{gap:18px}
 }
 nav a:hover{color:var(--ink)}
 .btn{
@@ -225,8 +233,14 @@ footer a:hover{color:var(--ink)}
 @media(max-width:1000px){
   .team{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:none}
   .person h3{font-size:13.5px;margin-top:14px}
-  .hero-grid{grid-template-columns:1fr;gap:44px}
-  .marquee{height:420px}
+  /* Stacked hero: headline, then the reels, then the rest of the copy — so the
+     scrolling work is in the first screen instead of below it. */
+  .hero-grid{grid-template-columns:1fr;gap:32px}
+  .hero-copy{display:contents}
+  .hero-head{order:1}
+  .marquee{order:2;height:min(46vh,420px)}
+  .hero-body{order:3}
+  .hero h1{margin-bottom:0}
   .grid{grid-template-columns:repeat(3,1fr)}
   .cards,.plans,.aud{grid-template-columns:1fr}
   .steps{grid-template-columns:repeat(2,1fr)}
@@ -241,7 +255,7 @@ footer a:hover{color:var(--ink)}
   section{padding:72px 0}
   .grid{grid-template-columns:repeat(2,1fr)}
   .row2{grid-template-columns:1fr}
-  .hero{padding:52px 0 56px}
+  .hero{padding:34px 0 56px}
   .bar{height:62px;gap:12px}
   .nav-cta{margin-left:0;padding:10px 14px;font-size:11px;letter-spacing:.04em;white-space:nowrap}
   .brand span{font-size:15px}
@@ -252,7 +266,8 @@ footer a:hover{color:var(--ink)}
   .mcols{grid-template-columns:repeat(2,1fr);gap:10px}
   .mcol:nth-child(3){display:none}
   .mtrack{gap:10px}
-  .marquee{height:380px}
+  .marquee{height:min(44vh,380px)}
+  .hero-grid{gap:26px}
   .fact b{font-size:27px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -268,6 +283,7 @@ footer a:hover{color:var(--ink)}
     <a class="brand" href="#top"><img src="assets/logo.png" alt=""><span>Sportalytic</span></a>
     <nav>
       <a href="#/reels" data-route>Our work</a>
+      <a href="#/graphics" data-route>Graphics</a>
       <a href="#services">What we do</a>
       <a href="#audience">Who we work with</a>
       <a href="#process">How it works</a>
@@ -282,16 +298,19 @@ footer a:hover{color:var(--ink)}
 <div id="top" class="hero">
   <div class="glow"></div>
   <div class="wrap hero-grid">
-    <div>
-      <p class="eyebrow">Sport, in numbers</p>
-      <h1>Compelling visuals,<br>told through <span class="amber">data</span>.</h1>
-      <p class="lede">We help people bring their stories to life through data. We publish our own reels,
-        carousels and stills about sport — some have gone past a million views — and we make them for
-        other people to publish too. You don't need to bring a dataset, just a subject you care
-        about.</p>
-      <div class="hero-cta">
-        <a class="btn" href="#contact">Say hello</a>
-        <a class="btn ghost" href="#/reels" data-route>Our work</a>
+    <div class="hero-copy">
+      <div class="hero-head">
+        <p class="eyebrow">Sport, in numbers</p>
+        <h1>Compelling visuals,<br>told through <span class="amber">data</span>.</h1>
+      </div>
+      <div class="hero-body">
+        <p class="lede">We help people bring their stories to life through data. We publish our own reels,
+          carousels and stills about sport, and we make them for other people to publish too. You don't
+          need to bring a dataset, just a subject you care about.</p>
+        <div class="hero-cta">
+          <a class="btn" href="#contact">Say hello</a>
+          <a class="btn ghost" href="#/reels" data-route>Our work</a>
+        </div>
       </div>
     </div>
     <div class="marquee" id="marquee">
@@ -475,6 +494,27 @@ footer a:hover{color:var(--ink)}
 
 </main>
 
+<main id="page-graphics" hidden>
+  <section style="padding-top:76px">
+    <div class="wrap">
+      <p class="eyebrow">Graphics</p>
+      <h2 class="sec rev">Interactive</h2>
+      <p class="sec-lede rev">Pieces you can play with rather than watch. They run entirely in the
+        browser — nothing is computed on a server — so they stay quick however far you dig.</p>
+      <div class="cards rev" style="grid-template-columns:repeat(2,1fr)">
+        <a class="card" href="network.html" style="text-decoration:none;display:block">
+          <div class="num">01</div>
+          <h3>The NFL teammate network</h3>
+          <p>Every player since 1920, joined wherever two of them shared a squad. Click anyone to
+             see their route to the centre, or make them the centre and watch the whole thing
+             rebuild around them. 29,513 players, 2.2 million connections.</p>
+          <p style="color:var(--amber);margin-bottom:0">Open it &rarr;</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
 <main id="page-reels" hidden>
   <section style="padding-top:76px">
     <div class="wrap">
@@ -617,14 +657,23 @@ if('IntersectionObserver' in window){
   hio.observe(document.getElementById('marquee'));
 }
 
-/* ---- two pages, one file: #/reels shows the work, anything else is home ---- */
-const HOME=document.getElementById('page-home'), REELS=document.getElementById('page-reels');
+/* ---- three views, one file: #/reels and #/graphics, anything else is home ---- */
+const HOME=document.getElementById('page-home'), REELS=document.getElementById('page-reels'),
+      GFX=document.getElementById('page-graphics');
 function route(){
   const h=location.hash;
-  const onReels = h.indexOf('/reels')===1;
-  HOME.hidden=onReels; REELS.hidden=!onReels;
-  document.querySelectorAll('nav a[data-route]').forEach(a=>a.style.color=onReels?'#fff':'');
-  if(onReels){window.scrollTo(0,0);return}
+  const onReels = h.indexOf('/reels')===1, onGfx = h.indexOf('/graphics')===1;
+  HOME.hidden=onReels||onGfx; REELS.hidden=!onReels; GFX.hidden=!onGfx;
+  document.querySelectorAll('nav a[data-route]').forEach(a=>{
+    const hit=a.getAttribute('href')===h;
+    a.style.color=hit?'#fff':'';
+  });
+  if(onReels||onGfx){
+    // A view that was hidden at load has zero-size children, so the reveal
+    // observer never saw them; show them outright when the view opens.
+    (onReels?REELS:GFX).querySelectorAll('.rev').forEach(el=>el.classList.add('in'));
+    window.scrollTo(0,0);return;
+  }
   const id=h.slice(1);
   if(id && document.getElementById(id)){
     requestAnimationFrame(()=>document.getElementById(id).scrollIntoView({behavior:'smooth'}));

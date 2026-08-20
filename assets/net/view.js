@@ -35,12 +35,13 @@ const VIEW = (() => {
     onPick = pickHandler || onPick;
     resize();
     addEventListener('resize', () => { resize(); fit(); });
-    // ...and refit once it does get one, for the same reason.
+    // ...and refit whenever it changes, which on a phone is every time the
+    // bottom sheet opens or closes and hands the canvas its space back.
     if (typeof ResizeObserver === 'function') {
-      let had = W > 0 && H > 0;
+      let pw = W, ph = H;
       new ResizeObserver(() => {
         resize();
-        if (!had && W > 0 && H > 0) { had = true; fit(); }
+        if (W && H && (W !== pw || H !== ph)) { pw = W; ph = H; fit(); }
       }).observe(cv);
     }
     cv.addEventListener('pointermove', e => {
@@ -61,10 +62,47 @@ const VIEW = (() => {
       cam.scale = Math.max(12, Math.min(600, cam.scale * k));
       dirty = true;
     }, { passive: false });
+    /* Drag to pan, two fingers to pinch. Without the pinch there is no way to
+       zoom on a phone at all -- the wheel handler never fires and the +/- keys
+       are a tool bar away. Pointer events give us both from one set of
+       handlers, so long as we track the live ones ourselves. */
     let drag = null;
-    cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY }; });
-    addEventListener('pointerup', () => { drag = null; });
+    const touches = new Map();
+    const spread = () => {
+      const [a, b] = [...touches.values()];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    };
+    let pinchFrom = 0, pinchScale = 0;
+
+    cv.addEventListener('pointerdown', e => {
+      touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (touches.size === 2) {
+        drag = null;                       // a second finger ends the pan
+        pinchFrom = spread(); pinchScale = cam.scale;
+      } else if (touches.size === 1) {
+        drag = { x: e.clientX, y: e.clientY };
+      }
+    });
+    const endTouch = e => {
+      touches.delete(e.pointerId);
+      drag = null;
+      if (touches.size === 1) {            // one finger left: resume panning
+        const t = [...touches.values()][0];
+        drag = { x: t.x, y: t.y };
+      }
+    };
+    addEventListener('pointerup', endTouch);
+    addEventListener('pointercancel', endTouch);
     addEventListener('pointermove', e => {
+      if (touches.has(e.pointerId)) touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (touches.size === 2) {
+        const now = spread();
+        if (pinchFrom > 8 && now > 8) {
+          cam.scale = Math.max(6, Math.min(900, pinchScale * (now / pinchFrom)));
+          dirty = true;
+        }
+        return;
+      }
       if (!drag) return;
       cam.x -= (e.clientX - drag.x) / cam.scale;
       cam.y -= (e.clientY - drag.y) / cam.scale;

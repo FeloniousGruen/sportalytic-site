@@ -30,8 +30,20 @@ nav a:hover{color:var(--ink);border-bottom-color:var(--amber)}
   letter-spacing:.09em;text-transform:uppercase;padding:9px 15px;border-radius:8px;white-space:nowrap}
 .cta:hover{filter:brightness(1.08)}
 #stage{position:fixed;inset:60px 0 0 0}
-canvas{width:100%;height:100%;display:block;touch-action:none}
-.hud{position:absolute;top:12px;left:12px;right:330px;display:flex;gap:8px;align-items:center}
+/* Explicit 100%, never auto: a canvas is a replaced element, so width:auto
+   makes it size from its width attribute -- which resize() sets from the
+   element's own size, and the two feed each other until it is 4800px wide. */
+canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch-action:none}
+/* One column: title, controls, results. Absolute as a block so it floats over
+   the canvas, but laid out normally inside, so a two-line name pushes the
+   search box down rather than sitting on top of it. */
+#topbar{position:absolute;top:8px;left:12px;right:330px;z-index:5;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none}
+#topbar>*{pointer-events:auto}
+#title{margin:0 0 0 2px;font-family:var(--display);
+  font-size:22px;text-transform:uppercase;line-height:1.15;pointer-events:none}
+#title b{color:var(--amber);font-weight:inherit}
+.hud{display:flex;gap:8px;align-items:center}
 .hud .spacer{flex:1}
 .hud input,.hud select{background:var(--panel);color:var(--ink);border:1px solid var(--greyd);border-radius:8px;padding:9px 11px;font:inherit;font-size:14px}
 .hud optgroup{background:#0B1117;color:var(--amber);font-style:normal;font-weight:bold}
@@ -39,10 +51,10 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 .hud input{width:200px;flex:0 0 auto}
 #club{flex:0 1 300px;min-width:0}
 #season{flex:0 0 auto;min-width:120px}
-#results{position:absolute;top:56px;left:12px;background:var(--panel);border:1px solid var(--greyd);border-radius:10px;max-height:46vh;overflow:auto;min-width:260px;z-index:5}
+#results{align-self:flex-start;min-width:260px;background:var(--panel);border:1px solid var(--greyd);border-radius:10px;max-height:46vh;overflow:auto;min-width:260px;z-index:5}
 #results div{padding:8px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
 #results div:hover{background:#1d2833}
-#panel{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px}
+#panel{position:absolute;right:12px;top:12px;width:296px;transition:right .18s;background:var(--panel);border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px}
 #panel h2{font-family:var(--display);font-size:19px;margin:0 0 2px;text-transform:uppercase;line-height:1.1}
 #panel .meta{color:var(--grey);font-size:13px;margin-bottom:12px}
 #panel .deg{color:var(--amber);font-weight:bold}
@@ -79,6 +91,28 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 .chip{display:inline-block;background:#1d2833;border:1px solid var(--greyd);border-radius:4px;
   padding:1px 5px;font-size:10px;letter-spacing:.04em;color:#9CC2DC;font-weight:bold}
 #stats{position:absolute;left:12px;bottom:12px;color:var(--grey);font-size:12px;line-height:1.5;font-variant-numeric:tabular-nums}
+#stats a{color:var(--grey);text-decoration:underline;cursor:pointer}
+#stats a:hover{color:var(--amber)}
+/* Photo credits. The CC portraits are free to use but nearly all of them ask
+   to be credited, so the list has to be reachable from the page itself. */
+#credits{position:absolute;inset:0;background:rgba(11,17,23,.9);backdrop-filter:blur(6px);
+  z-index:70;display:flex;align-items:center;justify-content:center;padding:24px}
+.credbox{background:var(--panel);border:1px solid var(--greyd);border-radius:12px;
+  max-width:760px;width:100%;max-height:100%;display:flex;flex-direction:column;padding:20px}
+.credbox h2{font-family:var(--display);font-size:19px;margin:0 0 8px;text-transform:uppercase}
+.credbox p{margin:0 0 12px;color:var(--grey);font-size:12.5px;line-height:1.6}
+.credbox p a{color:var(--amber)}
+.credlist{overflow:auto;border-top:1px solid var(--greyd);font-size:12px}
+.credlist div{display:grid;grid-template-columns:150px 1fr 110px;gap:10px;padding:6px 2px;
+  border-bottom:1px solid rgba(255,255,255,.05);align-items:baseline}
+.credlist b{font-weight:normal;color:var(--ink)}
+.credlist a{color:#9CC2DC}
+.credlist span{color:var(--grey);text-align:right}
+@media(max-width:620px){.credlist div{grid-template-columns:1fr;gap:1px}
+  .credlist span{text-align:left}}
+/* While a round is running the quiz owns the right-hand corner, so a player
+   card opened by clicking a dot moves along rather than landing on top of it. */
+#panel.aside{right:320px}
 /* Test your knowledge. Sits where the player panel does, and takes over from
    it while a round is running. */
 #quiz{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
@@ -117,11 +151,55 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
   border-radius:6px;font-size:12px;line-height:1.5}
 .qdone b{color:var(--amber);font-size:16px}
 #loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--grey);font-size:15px}
+/* Phones. No room for a right-hand column, so the cards become a sheet across
+   the bottom; the tool bar is pinned below them in a single row that scrolls
+   sideways rather than wrapping into three, and the chart keeps everything in
+   between. */
 @media(max-width:820px){
-  #panel{right:8px;left:8px;top:auto;bottom:8px;width:auto}
-  .hud{right:8px;flex-wrap:wrap}
+  .bar{height:52px;gap:10px;padding:0 12px}
+  .brand span{font-size:13px}
+  .brand img{width:22px;height:22px}
+  nav{display:none}                       /* the logo already goes home */
+  .cta{padding:7px 11px;font-size:11px}
+  #stage{inset:52px 0 0 0}
+
+  #topbar{top:6px;left:8px;right:8px;gap:6px}
+  #title{font-size:15px}
+  .hud{flex-wrap:wrap;gap:6px}
   .hud input{width:auto;flex:1 1 100%}
+  #club,#season{flex:1 1 calc(50% - 3px);min-width:0;font-size:13px;padding:8px 9px}
   .hud .spacer{display:none}
+  #results{align-self:stretch;min-width:0;max-height:30vh}
+  /* the chart gets the room the sheet is not using, so it is centred in what
+     you can actually see rather than half-hidden behind a card */
+  /* the chart takes what the controls and the card are not using */
+  canvas{top:var(--top,0px);height:calc(100% - var(--top,0px) - var(--sheet,0px))}
+
+  /* one sheet at a time, sitting on top of the tool bar */
+  #panel,#quiz{right:8px;left:8px;top:auto;bottom:56px;width:auto;
+    max-height:48vh;overflow:auto;padding:13px;font-size:13.5px}
+  #panel.aside{right:8px}                 /* nowhere sideways to go */
+  #panel h2{font-size:17px}
+  #quiz h2{font-size:15px}
+  .chain,.qchain{max-height:none}
+  .btn{padding:11px 13px}                 /* thumbs, not cursors */
+
+  #tools{left:0;right:0;bottom:0;top:auto;border-radius:0;border-left:0;border-right:0;
+    border-bottom:0;gap:6px;padding:7px 8px;overflow-x:auto;flex-wrap:nowrap;
+    justify-content:flex-start;-webkit-overflow-scrolling:touch}
+  .tbtn{padding:9px 12px;font-size:12.5px;min-width:0;flex:0 0 auto}
+  .tbtn.zoom{padding:8px 14px;font-size:16px}
+  #stats{display:none}                    /* the title says the same thing */
+  #credits{padding:8px}
+  .credbox{padding:14px}
+  .credbox h2{font-size:16px}
+  .credlist div{grid-template-columns:1fr;gap:1px;padding:8px 2px}
+  .credlist span{text-align:left}
+}
+/* a short landscape phone has no vertical room to give away */
+@media(max-width:820px) and (max-height:520px){
+  #panel,#quiz{max-height:64vh}
+  #results{bottom:calc(64vh + 60px);max-height:24vh}
 }
 </style>
 </head>
@@ -138,6 +216,8 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 <div id="stage">
   <canvas id="cv"></canvas>
   <div id="loading">Loading the network…</div>
+  <div id="topbar">
+  <h1 id="title"></h1>
   <div class="hud">
     <input id="q" placeholder="Search a player…" autocomplete="off">
     <select id="club"><option value="">Any club</option></select>
@@ -145,6 +225,7 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
     <select id="season"><option value="">Any season</option></select>
   </div>
   <div id="results" hidden></div>
+  </div>
   <div id="tools">
     <button class="tbtn" id="quizBtn" title="Link two players yourself, in as few steps as possible">Test your knowledge</button>
     <button class="tbtn" id="ring" title="Show only the players who shared a squad with the centre, grouped by club">Direct teammates</button>
@@ -167,6 +248,7 @@ function renderPanel(i){
   const d=NET.info(i), p=NET.pathToCentre(i);
   const c=NET.info(CENTRE);
   $('#panel').hidden=false;
+  $('#panel').classList.toggle('aside', !$('#quiz').hidden);
   $('#panel').innerHTML=
     `<h2>${d.name}</h2>
      <div class="meta">${d.position||'—'} · ${d.first}–${d.last}</div>
@@ -296,16 +378,75 @@ function setRing(on){
   }
 }
 
+/* On a phone the panel and the quiz are a sheet across the bottom, and the
+   canvas hands over that space so the chart stays centred in what is visible.
+   Watching the two elements' hidden flag catches every route in and out
+   without threading a call through each of them. */
+const STAGE=document.getElementById('stage');
+function syncSheet(){
+  const p=document.getElementById('panel'), q=document.getElementById('quiz');
+  const card = !q.hidden ? q : (!p.hidden ? p : null);
+  STAGE.classList.toggle('sheet', !!card);
+  // Measured rather than guessed at: reserving a flat 48vh leaves a dead band
+  // under a short card and clips the chart under a tall one.
+  STAGE.style.setProperty('--sheet', card ? (card.offsetHeight + 64) + 'px' : '0px');
+  STAGE.style.setProperty('--top',
+    (document.getElementById('topbar').offsetHeight + 14) + 'px');
+}
+const watch = new ResizeObserver(syncSheet);
+['panel','quiz','topbar'].forEach(id => watch.observe(document.getElementById(id)));
+['panel','quiz'].forEach(id =>
+  new MutationObserver(syncSheet).observe(document.getElementById(id),
+    {attributes:true,attributeFilter:['hidden']}));
+addEventListener('resize', syncSheet);
+
 // ?debug in the URL brings back the timing readout used while building this
 const DEBUG=location.search.indexOf('debug')>=0;
 function stats(r){
+  // "The 11 degrees of Travis Kelce" -- both halves change with the centre
+  $('#title').innerHTML=`The <b>${r.ecc}</b> degrees of <b>${NET.names[CENTRE]}</b>`;
   $('#stats').innerHTML=
     `${NET.P.toLocaleString()} players · centred on ${NET.names[CENTRE]} · `+
-    `${r.ecc} degrees deep`+
+    `${r.ecc} degrees deep · <a id="credLink">Photo credits</a>`+
     (DEBUG?`<br>recentre ${(r.bfsMs+r.layoutMs).toFixed(1)} ms `+
       `(bfs ${r.bfsMs.toFixed(1)} + layout ${r.layoutMs.toFixed(1)}) · `+
       `<span id="fps"></span>`:'');
 }
+
+/* Photo credits. Every Commons portrait on this page is freely licensed, but
+   82 of them are CC and ask to be credited, so the list has to be somewhere a
+   visitor can actually get to. Loaded on demand -- it is 20 KB nobody needs
+   unless they open it. */
+let CREDITS=null;
+async function showCredits(){
+  const box=document.createElement('div');
+  box.id='credits';
+  box.innerHTML=`<div class="credbox"><h2>Photo credits</h2>
+    <div class="credlist">Loading…</div></div>`;
+  box.onclick=e=>{ if(e.target===box) box.remove(); };
+  document.getElementById('stage').appendChild(box);
+  if(!CREDITS){
+    try{ CREDITS=await fetch('assets/net/faces/credits.json').then(r=>r.json()); }
+    catch(e){ box.querySelector('.credlist').textContent='Could not load the credits file.'; return; }
+  }
+  const cc=CREDITS.filter(r=>r.l!=='Public domain'&&r.l!=='CC0').length;
+  const url=f=>'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(f);
+  box.querySelector('.credbox').innerHTML=
+    `<h2>Photo credits</h2>
+     <p>Current players are shown with their NFL roster headshot. The other
+       ${CREDITS.length} portraits come from
+       <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia
+       Commons</a> — ${CREDITS.length-cc} in the public domain, ${cc} under a
+       Creative Commons licence and credited below. Each name links to the file
+       and its full licence terms. Club marks are the trademarks of their clubs.</p>
+     <div class="credlist">${CREDITS.map(r=>
+       `<div><b>${r.n}</b><a href="${url(r.f)}" target="_blank" rel="noopener noreferrer">${r.f}</a>`+
+       `<span>${r.l}${r.a?' · '+r.a:(r.l==='Public domain'||r.l==='CC0'?'':' · author not stated')}</span></div>`
+     ).join('')}</div>
+     <button class="btn ghost" style="flex:0 0 auto" id="credClose">Close</button>`;
+  box.querySelector('#credClose').onclick=()=>box.remove();
+}
+document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(); });
 
 (async()=>{
   const meta=await NET.load('assets/net');
@@ -446,6 +587,7 @@ function stats(r){
   }
   function quizClose(){
     QUIZ.on=false; $('#quiz').hidden=true;
+    $('#panel').classList.remove('aside');
     VIEW.path=[]; VIEW.selected=-1;
     renderPanel(CENTRE);
   }
