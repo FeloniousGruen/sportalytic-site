@@ -1,0 +1,649 @@
+{
+ "positions": [
+  "",
+  "C",
+  "CB",
+  "DB",
+  "DE",
+  "DL",
+  "DT",
+  "FB",
+  "FS",
+  "K",
+  "KR",
+  "LB",
+  "LCB",
+  "LDE",
+  "LDT",
+  "LG",
+  "LILB",
+  "LLB",
+  "LOLB",
+  "LS",
+  "LT",
+  "MLB",
+  "NT",
+  "OG",
+  "OL",
+  "OT",
+  "P",
+  "PR",
+  "QB",
+  "RB",
+  "RCB",
+  "RDE",
+  "RDT",
+  "RG",
+  "RILB",
+  "RLB",
+  "ROLB",
+  "RT",
+  "S",
+  "SS",
+  "T",
+  "TE",
+  "UTIL",
+  "WR",
+  "c",
+  "cb",
+  "db",
+  "de",
+  "dt",
+  "fb",
+  "fs",
+  "g",
+  "lb",
+  "lcb",
+  "lde",
+  "ldt",
+  "lg",
+  "lilb",
+  "lolb",
+  "lt",
+  "mlb",
+  "nt",
+  "qb",
+  "rb",
+  "rcb",
+  "rde",
+  "rdt",
+  "rg",
+  "rilb",
+  "rolb",
+  "rt",
+  "s",
+  "ss",
+  "t",
+  "tb",
+  "te",
+  "wr"
+ ],
+ "teams": [
+  "AKR",
+  "ARI",
+  "ATL",
+  "BAL",
+  "BOS",
+  "BRK",
+  "BUF",
+  "C-P",
+  "CAN",
+  "CAR",
+  "CHB",
+  "CHC",
+  "CHH",
+  "CHI",
+  "CHR",
+  "CHS",
+  "CHT",
+  "CIN",
+  "CLE",
+  "COL",
+  "COW",
+  "DAL",
+  "DAY",
+  "DEC",
+  "DEN",
+  "DET",
+  "DON",
+  "DUL",
+  "ECG",
+  "FYJ",
+  "GB",
+  "HAM",
+  "HAR",
+  "HOU",
+  "IND",
+  "JAX",
+  "KC",
+  "KEN",
+  "LA",
+  "LAC",
+  "LOU",
+  "LV",
+  "MIA",
+  "MIL",
+  "MIN",
+  "MUN",
+  "NE",
+  "NEW",
+  "NO",
+  "NY",
+  "NYB",
+  "NYG",
+  "NYJ",
+  "NYT",
+  "NYY",
+  "OAK",
+  "OOR",
+  "ORG",
+  "P-P",
+  "PHI",
+  "PIT",
+  "POR",
+  "POT",
+  "PRO",
+  "RAC",
+  "RAM",
+  "RI",
+  "ROC",
+  "SD",
+  "SEA",
+  "SF",
+  "SI",
+  "STL",
+  "TB",
+  "TEN",
+  "TEX",
+  "TOL",
+  "TON",
+  "WAS"
+ ],
+ "teamMeta": {
+  "AKR": {
+   "name": "Akron Pros",
+   "from": 1920,
+   "to": 1926,
+   "players": 84
+  },
+  "ARI": {
+   "name": "Arizona Cardinals",
+   "from": 1978,
+   "to": 2025,
+   "players": 1297
+  },
+  "ATL": {
+   "name": "Atlanta Falcons",
+   "from": 1966,
+   "to": 2025,
+   "players": 1417
+  },
+  "BAL": {
+   "name": "Baltimore Ravens",
+   "from": 1947,
+   "to": 2025,
+   "players": 1195
+  },
+  "BOS": {
+   "name": "Boston",
+   "from": 1929,
+   "to": 1970,
+   "players": 403
+  },
+  "BRK": {
+   "name": "Brooklyn",
+   "from": 1926,
+   "to": 1948,
+   "players": 409
+  },
+  "BUF": {
+   "name": "Buffalo Bills",
+   "from": 1920,
+   "to": 2025,
+   "players": 1714
+  },
+  "C-P": {
+   "name": "Card-Pitt (1944)",
+   "from": 1944,
+   "to": 1944,
+   "players": 26
+  },
+  "CAN": {
+   "name": "Canton Bulldogs",
+   "from": 1920,
+   "to": 1926,
+   "players": 88
+  },
+  "CAR": {
+   "name": "Carolina Panthers",
+   "from": 1995,
+   "to": 2025,
+   "players": 899
+  },
+  "CHB": {
+   "name": "",
+   "from": 1922,
+   "to": 1959,
+   "players": 412
+  },
+  "CHC": {
+   "name": "Chicago Cardinals",
+   "from": 1920,
+   "to": 1959,
+   "players": 601
+  },
+  "CHH": {
+   "name": "",
+   "from": 1949,
+   "to": 1949,
+   "players": 36
+  },
+  "CHI": {
+   "name": "Chicago Bears",
+   "from": 1960,
+   "to": 2025,
+   "players": 1409
+  },
+  "CHR": {
+   "name": "",
+   "from": 1946,
+   "to": 1960,
+   "players": 133
+  },
+  "CHS": {
+   "name": "",
+   "from": 1921,
+   "to": 1921,
+   "players": 17
+  },
+  "CHT": {
+   "name": "",
+   "from": 1920,
+   "to": 1920,
+   "players": 22
+  },
+  "CIN": {
+   "name": "Cincinnati Bengals",
+   "from": 1921,
+   "to": 2025,
+   "players": 1239
+  },
+  "CLE": {
+   "name": "Cleveland Browns",
+   "from": 1920,
+   "to": 2025,
+   "players": 1994
+  },
+  "COL": {
+   "name": "",
+   "from": 1920,
+   "to": 1926,
+   "players": 84
+  },
+  "COW": {
+   "name": "",
+   "from": 1960,
+   "to": 1962,
+   "players": 80
+  },
+  "DAL": {
+   "name": "Dallas Cowboys",
+   "from": 1952,
+   "to": 2025,
+   "players": 1294
+  },
+  "DAY": {
+   "name": "Dayton Triangles",
+   "from": 1920,
+   "to": 1929,
+   "players": 100
+  },
+  "DEC": {
+   "name": "Decatur Staleys",
+   "from": 1920,
+   "to": 1920,
+   "players": 25
+  },
+  "DEN": {
+   "name": "Denver Broncos",
+   "from": 1960,
+   "to": 2025,
+   "players": 1482
+  },
+  "DET": {
+   "name": "Detroit Lions",
+   "from": 1920,
+   "to": 2025,
+   "players": 2038
+  },
+  "DON": {
+   "name": "",
+   "from": 1946,
+   "to": 1949,
+   "players": 94
+  },
+  "DUL": {
+   "name": "Duluth Eskimos",
+   "from": 1923,
+   "to": 1927,
+   "players": 53
+  },
+  "ECG": {
+   "name": "",
+   "from": 1921,
+   "to": 1922,
+   "players": 34
+  },
+  "FYJ": {
+   "name": "Frankford Yellow Jackets",
+   "from": 1924,
+   "to": 1931,
+   "players": 130
+  },
+  "GB": {
+   "name": "Green Bay Packers",
+   "from": 1921,
+   "to": 2025,
+   "players": 1883
+  },
+  "HAM": {
+   "name": "Hammond Pros",
+   "from": 1920,
+   "to": 1926,
+   "players": 73
+  },
+  "HAR": {
+   "name": "",
+   "from": 1926,
+   "to": 1926,
+   "players": 30
+  },
+  "HOU": {
+   "name": "Houston Texans",
+   "from": 1960,
+   "to": 2025,
+   "players": 1100
+  },
+  "IND": {
+   "name": "Indianapolis Colts",
+   "from": 1978,
+   "to": 2025,
+   "players": 1293
+  },
+  "JAX": {
+   "name": "Jacksonville Jaguars",
+   "from": 1995,
+   "to": 2025,
+   "players": 953
+  },
+  "KC": {
+   "name": "Kansas City Chiefs",
+   "from": 1924,
+   "to": 2025,
+   "players": 1387
+  },
+  "KEN": {
+   "name": "",
+   "from": 1924,
+   "to": 1924,
+   "players": 17
+  },
+  "LA": {
+   "name": "Los Angeles Rams",
+   "from": 1926,
+   "to": 2025,
+   "players": 1548
+  },
+  "LAC": {
+   "name": "Los Angeles Chargers",
+   "from": 1978,
+   "to": 2025,
+   "players": 1209
+  },
+  "LOU": {
+   "name": "",
+   "from": 1921,
+   "to": 1926,
+   "players": 65
+  },
+  "LV": {
+   "name": "Las Vegas Raiders",
+   "from": 2020,
+   "to": 2025,
+   "players": 265
+  },
+  "MIA": {
+   "name": "Miami Dolphins",
+   "from": 1946,
+   "to": 2025,
+   "players": 1503
+  },
+  "MIL": {
+   "name": "Milwaukee Badgers",
+   "from": 1922,
+   "to": 1926,
+   "players": 88
+  },
+  "MIN": {
+   "name": "Minnesota Vikings",
+   "from": 1921,
+   "to": 2025,
+   "players": 1353
+  },
+  "MUN": {
+   "name": "",
+   "from": 1920,
+   "to": 1921,
+   "players": 18
+  },
+  "NE": {
+   "name": "New England Patriots",
+   "from": 1971,
+   "to": 2025,
+   "players": 1312
+  },
+  "NEW": {
+   "name": "",
+   "from": 1930,
+   "to": 1930,
+   "players": 39
+  },
+  "NO": {
+   "name": "New Orleans Saints",
+   "from": 1967,
+   "to": 2025,
+   "players": 1454
+  },
+  "NY": {
+   "name": "New York",
+   "from": 1921,
+   "to": 1959,
+   "players": 401
+  },
+  "NYB": {
+   "name": "",
+   "from": 1949,
+   "to": 1949,
+   "players": 35
+  },
+  "NYG": {
+   "name": "New York Giants",
+   "from": 1927,
+   "to": 2025,
+   "players": 1694
+  },
+  "NYJ": {
+   "name": "New York Jets",
+   "from": 1963,
+   "to": 2025,
+   "players": 1502
+  },
+  "NYT": {
+   "name": "",
+   "from": 1960,
+   "to": 1962,
+   "players": 88
+  },
+  "NYY": {
+   "name": "",
+   "from": 1927,
+   "to": 1951,
+   "players": 169
+  },
+  "OAK": {
+   "name": "Oakland Raiders",
+   "from": 1960,
+   "to": 2019,
+   "players": 1220
+  },
+  "OOR": {
+   "name": "",
+   "from": 1922,
+   "to": 1923,
+   "players": 27
+  },
+  "ORG": {
+   "name": "",
+   "from": 1929,
+   "to": 1929,
+   "players": 29
+  },
+  "P-P": {
+   "name": "Phil-Pitt Steagles (1943)",
+   "from": 1943,
+   "to": 1943,
+   "players": 29
+  },
+  "PHI": {
+   "name": "Philadelphia Eagles",
+   "from": 1933,
+   "to": 2025,
+   "players": 1865
+  },
+  "PIT": {
+   "name": "Pittsburgh Steelers",
+   "from": 1933,
+   "to": 2025,
+   "players": 1645
+  },
+  "POR": {
+   "name": "",
+   "from": 1930,
+   "to": 1933,
+   "players": 70
+  },
+  "POT": {
+   "name": "Pottsville Maroons",
+   "from": 1925,
+   "to": 1928,
+   "players": 53
+  },
+  "PRO": {
+   "name": "Providence Steam Roller",
+   "from": 1925,
+   "to": 1931,
+   "players": 100
+  },
+  "RAC": {
+   "name": "Racine Cardinals",
+   "from": 1922,
+   "to": 1926,
+   "players": 62
+  },
+  "RAM": {
+   "name": "Los Angeles Rams",
+   "from": 1946,
+   "to": 1960,
+   "players": 110
+  },
+  "RI": {
+   "name": "",
+   "from": 1920,
+   "to": 1925,
+   "players": 85
+  },
+  "ROC": {
+   "name": "Rochester Jeffersons",
+   "from": 1920,
+   "to": 1925,
+   "players": 79
+  },
+  "SD": {
+   "name": "San Diego Chargers",
+   "from": 1961,
+   "to": 1977,
+   "players": 326
+  },
+  "SEA": {
+   "name": "Seattle Seahawks",
+   "from": 1976,
+   "to": 2025,
+   "players": 1202
+  },
+  "SF": {
+   "name": "San Francisco 49ers",
+   "from": 1946,
+   "to": 2025,
+   "players": 1593
+  },
+  "SI": {
+   "name": "",
+   "from": 1929,
+   "to": 1932,
+   "players": 81
+  },
+  "STL": {
+   "name": "St. Louis Rams",
+   "from": 1923,
+   "to": 1977,
+   "players": 326
+  },
+  "TB": {
+   "name": "Tampa Bay Buccaneers",
+   "from": 1976,
+   "to": 2025,
+   "players": 1283
+  },
+  "TEN": {
+   "name": "Tennessee Titans",
+   "from": 1978,
+   "to": 2025,
+   "players": 1158
+  },
+  "TEX": {
+   "name": "",
+   "from": 1960,
+   "to": 1962,
+   "players": 72
+  },
+  "TOL": {
+   "name": "Toledo Maroons",
+   "from": 1922,
+   "to": 1923,
+   "players": 39
+  },
+  "TON": {
+   "name": "",
+   "from": 1921,
+   "to": 1921,
+   "players": 12
+  },
+  "WAS": {
+   "name": "Washington",
+   "from": 1921,
+   "to": 2025,
+   "players": 1953
+  }
+ },
+ "seasonMin": 1920,
+ "seasonMax": 2025,
+ "players": 28842,
+ "teamSeasons": 2416,
+ "memberships": 125361,
+ "notable": {
+  "Travis Kelce": 0,
+  "George Blanda": 22327,
+  "Matt Moore": 259,
+  "John Nesser": 28840
+ }
+}
