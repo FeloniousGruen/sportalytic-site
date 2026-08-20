@@ -173,17 +173,25 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .gmenu:hover{border-color:var(--amber)}
 .gmenu b{display:block;font-size:13.5px;margin-bottom:2px}
 .gmenu span{color:var(--grey);font-size:11.5px;line-height:1.4}
-/* Bright enough to read as something you press, faint enough in the fill to
-   leave the panel dark. Border and title carry the colour; the fill is the
-   same hue at a tenth. */
-.gmenu.m-round{--c:#4ADE80} .gmenu.m-daily{--c:#60A5FA}
-.gmenu.m-expedition{--c:#FB923C} .gmenu.m-archive{--c:#FBBF24}
+/* Colour by what the mode is for, not just to tell them apart.
+     daily       the brand yellow -- the one thing to come back for each day
+     round       teal, cool and focused, a set task with a number at the end
+     expedition  magenta, the deep end: open-ended and the hardest to finish
+     archive     slate, because it is a record of play rather than play, and
+                 should not compete with the three live games above it
+   Border and title carry the colour; the fill is the same hue at a tenth. */
+.gmenu.m-round{--c:#2DD4BF} .gmenu.m-daily{--c:#FBC247}
+.gmenu.m-expedition{--c:#E879F9} .gmenu.m-archive{--c:#94A3B8}
 .gmenu[class*="m-"]{border:1px solid var(--c);
   background:color-mix(in srgb,var(--c) 10%,transparent)}
 .gmenu[class*="m-"] b{color:var(--c)}
 .gmenu[class*="m-"] span{color:#AEBAC6}
 .gmenu[class*="m-"]:hover{background:color-mix(in srgb,var(--c) 20%,transparent);
   box-shadow:0 0 0 1px var(--c) inset}
+/* the archive steps back: a thinner edge and a fainter fill than the games */
+.gmenu.m-archive{border-color:color-mix(in srgb,var(--c) 55%,transparent);
+  background:color-mix(in srgb,var(--c) 6%,transparent)}
+.gmenu.m-archive span{color:var(--grey)}
 .qchain.card .qstep{padding:5px 0}
 /* The game's suggestion list. It had no rules at all, so it rendered as bare
    text: no hover, no pointer, and a caret that said "select me" rather than
@@ -197,10 +205,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 #results div,#quizRes div{user-select:none}
 /* One accent per mode, so which game you are in is obvious without reading. */
 #game{--accent:var(--amber)}
-#game.skin-round{--accent:#4ADE80}
-#game.skin-daily{--accent:#60A5FA}
-#game.skin-expedition{--accent:#FB923C}
-#game.skin-archive{--accent:#FBBF24}
+#game.skin-round{--accent:#2DD4BF}
+#game.skin-daily{--accent:#FBC247}
+#game.skin-expedition{--accent:#E879F9}
+#game.skin-archive{--accent:#94A3B8}
 #game h2{color:var(--accent)}
 #game .gbig b{color:var(--accent)}
 #game .btn{background:var(--accent)}
