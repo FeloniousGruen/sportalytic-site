@@ -24,6 +24,7 @@ const VIEW = (() => {
   let throughMask = null;       // share-of-connections highlight
   const LOGOS = {};             // club code -> Image, loaded on demand
   let logoCodes = null;
+  let logoColours = {};   // club -> primary, for the wedge wash
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -233,7 +234,9 @@ const VIEW = (() => {
         ctx.arc(sx(0), sy(0), rOut * cam.scale, sg.a0, sg.a1);
         ctx.arc(sx(0), sy(0), rIn * cam.scale, sg.a1, sg.a0, true);
         ctx.closePath();
-        ctx.fillStyle = 'rgba(255,255,255,0.035)';
+        // the club's own colour, taken from its badge, so the band and the
+        // mark on it always agree
+        ctx.fillStyle = hexRgba(logoColours[sg.team], 0.20);
         ctx.fill();
         const lg = logoFor(sg.team);
         if (lg && lg.complete && lg.naturalWidth) {
@@ -246,7 +249,7 @@ const VIEW = (() => {
           ctx.drawImage(lg, sx(lr * Math.cos(mid)) - d / 2, sy(lr * Math.sin(mid)) - d / 2, d, d);
           ctx.restore();
         }
-        ctx.strokeStyle = 'rgba(251,194,71,0.16)'; ctx.lineWidth = 1;
+        ctx.strokeStyle = hexRgba(logoColours[sg.team], 0.45) ; ctx.lineWidth = 1;
         for (const edge of [sg.a0, sg.a1]) {
           ctx.beginPath();
           ctx.moveTo(sx(sg.rIn * 0.86 * Math.cos(edge)), sy(sg.rIn * 0.86 * Math.sin(edge)));
@@ -406,6 +409,15 @@ const VIEW = (() => {
   async function loadLogoIndex(base = 'assets/net') {
     try { logoCodes = await fetch(`${base}/logos/index.json`).then(r => r.json()); }
     catch (e) { logoCodes = []; }
+    try { logoColours = await fetch(`${base}/logos/colours.json`).then(r => r.json()); }
+    catch (e) { logoColours = {}; }
+  }
+
+  function hexRgba(hex, a) {
+    const h = (hex || '').replace('#', '');
+    if (h.length !== 6) return `rgba(255,255,255,${a})`;
+    return `rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},`
+         + `${parseInt(h.slice(4,6),16)},${a})`;
   }
 
   function setThrough(mask) { throughMask = mask; dirty = true; }

@@ -237,7 +237,7 @@ const NET = (() => {
    * down). Names are drawn horizontally, so a path running vertically gets the
    * most separation between consecutive labels -- far more effective than
    * nudging each label out of the way after the fact. */
-  function rotateSo(i, targets = [Math.PI / 2, -Math.PI / 2], onlyWithinDeg = 30) {
+  function rotateSo(i, targets = [Math.PI / 2, -Math.PI / 2], onlyWithinDeg = 40) {
     const cur = Math.atan2(py[i], px[i]);
     if (!isFinite(cur)) return 0;
     /* Only worth spinning when the chain lies near the horizontal, where
