@@ -25,7 +25,7 @@ const GAME = (() => {
      the 1950s and nobody finishes those. */
   const HOLES = [
     { par: 2, pool: 'r2' }, { par: 3, pool: 'r3' }, { par: 3, pool: 'r3' },
-    { par: 3, pool: 'm3' }, { par: 4, pool: 'm4' },
+    { par: 3, pool: 'g3' }, { par: 4, pool: 'g4' },
   ];
   const PAR_TOTAL = HOLES.reduce((n, h) => n + h.par, 0);
   const DAILY_TARGET = 10;                 // beat this on the daily
@@ -33,6 +33,7 @@ const GAME = (() => {
      then scoring it as if you had found it made surrender the best play on any
      hole you could not see -- you would card a par for pressing a button. */
   const GIVE_UP = 10;
+  const MIN_QUERY = 5;                     // letters before a name is offered
   const EPOCH = Date.UTC(2026, 0, 1);
 
   let puzzles = null;                      // pairs by distance, built offline
@@ -46,7 +47,8 @@ const GAME = (() => {
     return puzzles;
   }
 
-  function init(el, exit) { host = el; onExit = exit; }
+  let onCentred = null;                    // let the page retitle the chart
+  function init(el, exit, centred) { host = el; onExit = exit; onCentred = centred; }
 
   // each mode gets its own accent, so you can tell at a glance which you are in
   function setSkin(name) {
@@ -70,6 +72,8 @@ const GAME = (() => {
 
   function pick(bucket, rng) {
     const rows = puzzles.buckets[bucket];
+    // a renamed bucket used to fail here silently and leave the mode half-built
+    if (!rows || !rows.length) throw new Error(`puzzles.json has no "${bucket}" pool`);
     return rows[Math.floor(rng() * rows.length)];
   }
 
@@ -152,6 +156,7 @@ const GAME = (() => {
     VIEW.setCentreImage(null);
     VIEW.path = []; VIEW.selected = -1;
     VIEW.beginMorph(800);
+    if (onCentred) onCentred(i);           // the heading names the centre
   }
 
   function leg(a, b, opts = {}) {
@@ -240,7 +245,9 @@ const GAME = (() => {
     inp.oninput = () => {
       const q = inp.value.trim().toLowerCase();
       const box = $('#gres');
-      if (q.length < 2) { box.hidden = true; return; }
+      /* Five characters before anything is offered. At two you could type "a"
+         and read the answer off a list, which is not the game. */
+      if (q.length < MIN_QUERY) { box.hidden = true; return; }
       const L2 = lower(), out = [];
       for (let i = 0; i < NET.P && out.length < 25; i++)
         if (L2[i].indexOf(q) >= 0) out.push(i);

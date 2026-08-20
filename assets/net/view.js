@@ -32,6 +32,11 @@ const VIEW = (() => {
   let showLabels = true;            // off while the quiz owns a phone screen
   let litMask = null;               // Expedition: 0 dark, 1 lit, 2 unlocked
   let interactive = true;           // off while a game owns the chart
+  /* Page furniture labels must not cross. Held as a function rather than a
+     list: the heading changes with the centre, cards open and close, and a
+     stale set of rectangles is worse than none -- it moves labels away from
+     clear space and leaves them on top of the thing that did move. */
+  let keepOut = () => [];
 
   function init(canvas, pickHandler) {
     cv = canvas; ctx = cv.getContext('2d', { alpha: false });
@@ -415,6 +420,10 @@ const VIEW = (() => {
       ctx.textAlign = 'left';
       const BOX = 16, GAP = 3;
       const placed = [];
+      /* The heading, the controls and whichever card is open are all drawn
+         over this canvas by the page, so a label placed under them is either
+         illegible or invisible. They go in as obstacles the same way. */
+      for (const r of keepOut()) placed.push(r);
       /* Portraits are obstacles for every label, not just their own. Seeding
          them here is what stops a neighbour's name landing across a face --
          each one blocks the square its circle sits in. */
@@ -629,6 +638,10 @@ const VIEW = (() => {
     set lit(m){ litMask = m; dirty = true; }, get lit(){ return litMask; },
     /* A game in progress owns the chart: clicking through it would hand over
        the very links you are being asked to name. */
+    setKeepOut(fn) {
+      keepOut = typeof fn === 'function' ? fn : () => (fn || []);
+      dirty = true;
+    },
     set interactive(v){ interactive = !!v; if (!v) { hover = prevHover = -1; dirty = true; } },
     get interactive(){ return interactive; },
     get hasThrough() { return !!throughMask; },
