@@ -66,6 +66,29 @@
 :root[data-theme="light"] .aday{background:#F1F5F9;color:#64748B;border-color:#E2E8F0}
 :root[data-theme="light"] .qstep.gap input{background:#fff}
 :root[data-theme="light"] .gmenu{background:#F8FAFC;border-color:#E2E8F0;color:#1A202C}
+/* The mode colours are picked for a near-black panel and go pale and weak on
+   white -- and the archive, being near-white, disappears entirely. Light mode
+   takes each one several steps darker and puts more of it in the fill. */
+:root[data-theme="light"] .gmenu.m-round{--c:#0D9488}
+:root[data-theme="light"] .gmenu.m-daily{--c:#B45309}
+:root[data-theme="light"] .gmenu.m-expedition{--c:#A21CAF}
+:root[data-theme="light"] .gmenu.m-archive{--c:#475569}
+:root[data-theme="light"] .gmenu[class*="m-"]{
+  background:color-mix(in srgb,var(--c) 13%,#FFFFFF);
+  border-color:color-mix(in srgb,var(--c) 55%,#FFFFFF)}
+:root[data-theme="light"] .gmenu[class*="m-"] span{color:#334155}
+:root[data-theme="light"] .gmenu[class*="m-"]:hover{
+  background:color-mix(in srgb,var(--c) 22%,#FFFFFF);
+  border-color:var(--c);
+  box-shadow:0 0 0 1px var(--c) inset,0 2px 10px rgba(16,24,40,.10)}
+:root[data-theme="light"] .gmenu[class*="m-"]:hover b{color:var(--c)}
+/* and the same for the card once you are inside a mode */
+:root[data-theme="light"] #game.skin-round{--accent:#0D9488}
+:root[data-theme="light"] #game.skin-daily{--accent:#B45309}
+:root[data-theme="light"] #game.skin-expedition{--accent:#A21CAF}
+:root[data-theme="light"] #game.skin-archive{--accent:#475569}
+:root[data-theme="light"] #game .btn{color:#FFFFFF}
+:root[data-theme="light"] .dbar.me{color:#FFFFFF}
 :root[data-theme="light"] .qchain::before,:root[data-theme="light"] .chain::before{
   background:#E2E8F0}
 :root[data-theme="light"] .node .dot,:root[data-theme="light"] .qstep .dot{
