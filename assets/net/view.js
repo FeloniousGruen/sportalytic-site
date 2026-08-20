@@ -574,7 +574,11 @@ const VIEW = (() => {
     const n = NET.P, rs = [];
     for (let i = 0; i < n; i++) { const x = NET.px[i]; if (x === x) rs.push(Math.hypot(x, NET.py[i])); }
     rs.sort((a, b) => a - b);
-    const r = rs[Math.floor(rs.length * 0.995)] || rs[rs.length - 1] || 1;
+    // A percentile rather than the plain maximum, so one freak outlier cannot
+    // shrink the whole chart -- but 99.5 was cutting the outermost 148 dots
+    // off the bottom edge. At 99.9 the tail costs about 8% of the zoom and
+    // everything that is out there stays on screen.
+    const r = rs[Math.floor(rs.length * 0.999)] || rs[rs.length - 1] || 1;
     return Math.min(W, H) / (2 * r) * 0.94;
   }
 
