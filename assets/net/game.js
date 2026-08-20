@@ -43,7 +43,7 @@ const GAME = (() => {
 
   async function load(base = 'assets/net') {
     if (puzzles) return puzzles;
-    puzzles = await fetch(`${base}/puzzles.json`).then(r => r.json());
+    puzzles = await fetch(`${base}/puzzles.json${NET.V()}`).then(r => r.json());
     return puzzles;
   }
 

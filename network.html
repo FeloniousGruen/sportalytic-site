@@ -480,11 +480,33 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   <div id="stats"></div>
 </div>
 
-<script src="assets/net/app.js"></script>
-<script src="assets/net/view.js"></script>
-<script src="assets/net/game.js"></script>
+<!-- Versioned URLs, and they have to stay versioned.
+     /assets/* was served `immutable, max-age=31536000` until August 2026, so
+     every browser that visited before then has app.js and view.js pinned for a
+     year. The HTML is never cached, so those browsers load this page against
+     year-old scripts, and it dies on the first call to something that did not
+     exist yet -- no chart, and nothing happens when you press Play. The header
+     is fixed for future fetches but a stored immutable entry is never
+     revalidated, so the only way past it is a URL the cache has not seen.
+     Bump ASSET_V whenever anything under assets/net/ changes. -->
+<script>window.ASSET_V='20260820a';</script>
+<script src="assets/net/app.js?v=20260820a"></script>
+<script src="assets/net/view.js?v=20260820a"></script>
+<script src="assets/net/game.js?v=20260820a"></script>
 <script>
 const $=s=>document.querySelector(s);
+/* A dead page tells whoever is looking at it nothing. Anything thrown before
+   or during setup gets said out loud, which is how the stale-cache failure
+   above should have announced itself instead of just not working. */
+addEventListener('error', e => {
+  const el = document.getElementById('loading');
+  if (!el) return;
+  el.innerHTML = `<div style="max-width:32em;text-align:center;line-height:1.6">
+      <b style="color:var(--amber)">Something went wrong loading this page.</b><br>
+      ${String((e && e.message) || e).replace(/</g, '&lt;')}
+      <div style="margin-top:12px;font-size:13px;color:var(--grey)">
+        A hard refresh usually clears it.</div></div>`;
+});
 let CENTRE=0;
 /* Where the chart sits when nothing is being played. A game re-roots it, and
    leaving one should not strand you on somebody else's puzzle. */

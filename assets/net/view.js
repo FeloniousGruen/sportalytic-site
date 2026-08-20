@@ -551,7 +551,7 @@ const VIEW = (() => {
   async function loadFaceFlags(base = 'assets/net') {
     // NET.inflate copes with the file arriving already decoded; see it for why
     try {
-      const res = await fetch(`${base}/faces.bin.gz`);
+      const res = await fetch(`${base}/faces.bin.gz${NET.V()}`);
       hasFace = new Uint8Array(await NET.inflate(await res.arrayBuffer(), 'faces.bin.gz'));
     } catch (e) { hasFace = null; }
   }
@@ -565,7 +565,7 @@ const VIEW = (() => {
     const im = new Image();
     im.onload = () => { dirty = true; };
     im.onerror = () => { FACES[i] = null; };
-    im.src = `assets/net/faces/${i}.webp`;
+    im.src = `assets/net/faces/${i}.webp${NET.V()}`;   // indices moved; see the note in network.html
     FACES[i] = im;
     return im;
   }
@@ -596,7 +596,7 @@ const VIEW = (() => {
     const im = new Image();
     im.onload = () => { dirty = true; };
     im.onerror = () => { LOGOS[code] = null; };
-    im.src = `assets/net/logos/${code}.png`;
+    im.src = `assets/net/logos/${code}.png${NET.V()}`;
     LOGOS[code] = im;
     return im;
   }

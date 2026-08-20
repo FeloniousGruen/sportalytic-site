@@ -87,8 +87,12 @@ const NET = (() => {
     return new Response(stream).arrayBuffer();
   }
 
+  // see the note by the script tags: old browsers have these pinned for a year
+  const V = () => (typeof window !== 'undefined' && window.ASSET_V)
+    ? `?v=${window.ASSET_V}` : '';
+
   async function loadGz(url) {
-    const res = await fetch(url);
+    const res = await fetch(url + V());
     if (!res.ok) throw new Error(`${url}: ${res.status}`);
     return inflate(await res.arrayBuffer(), url);
   }
@@ -98,7 +102,7 @@ const NET = (() => {
     const [gbuf, nbuf, tbl] = await Promise.all([
       loadGz(`${base}/graph.bin.gz`),
       loadGz(`${base}/names.txt.gz`),
-      fetch(`${base}/tables.json`).then(r => r.json()),
+      fetch(`${base}/tables.json${V()}`).then(r => r.json()),
     ]);
     tables = tbl;
     names = new TextDecoder().decode(nbuf).split('\n');
@@ -503,7 +507,7 @@ const NET = (() => {
     get p_ip() { return p_ip; }, get p_ix() { return p_ix; },
     get t_ip() { return t_ip; }, get t_ix() { return t_ix; },
     get tsTeam() { return tsTeam; }, get tsSeason() { return tsSeason; },
-    dim, lift, setTheme,
+    dim, lift, setTheme, V,
     get DEG_COLOUR() { return DEG_COLOUR; },
     get EDGE() { return EDGE; },
     get BG() { return BG; },
