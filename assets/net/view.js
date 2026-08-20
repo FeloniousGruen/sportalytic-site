@@ -159,8 +159,8 @@ const VIEW = (() => {
     const wx = (mx - W / 2) / cam.scale + cam.x, wy = (my - H / 2) / cam.scale + cam.y;
     // a player wearing a portrait should be grabbable by the portrait, not by
     // the small dot hiding behind it
-    const centreR = Math.max(34, Math.min(96, cam.scale * 1.15)) / 2;
-    const pickedR = Math.max(30, Math.min(72, cam.scale * 0.85)) / 2;
+    const centreR = Math.max(58, Math.min(104, cam.scale * 1.15)) / 2;
+    const pickedR = Math.max(45, Math.min(108, cam.scale * 1.275)) / 2;
     const rad = Math.max(9, centreR) / cam.scale;
     const c0 = ((wx - rad - gridMinX) / gridCell) | 0, c1 = ((wx + rad - gridMinX) / gridCell) | 0;
     const r0 = ((wy - rad - gridMinY) / gridCell) | 0, r1 = ((wy + rad - gridMinY) / gridCell) | 0;
@@ -344,7 +344,7 @@ const VIEW = (() => {
       if (ready(cIm)) {
         const [cxw, cyw] = frameXY(centre);
         if (cxw === cxw) {
-          const d = Math.max(34, Math.min(96, cam.scale * 1.15));
+          const d = Math.max(58, Math.min(104, cam.scale * 1.15));
           ctx.drawImage(cIm, sx(cxw) - d / 2, sy(cyw) - d / 2, d, d);
           faceR.set(centre, d / 2);
         }
@@ -358,7 +358,7 @@ const VIEW = (() => {
             const e = growWho === selected
               ? Math.min(1, (performance.now() - growFrom) / 320) : 1;
             const k = 0.5 - 0.5 * Math.cos(Math.PI * e);
-            const full = Math.max(30, Math.min(72, cam.scale * 0.85));
+            const full = Math.max(45, Math.min(108, cam.scale * 1.275));
             const d = Math.max(6, (6 + (full - 6) * k));
             ctx.drawImage(sIm, sx(x) - d / 2, sy(y) - d / 2, d, d);
             faceR.set(selected, d / 2);

@@ -120,7 +120,7 @@ const NET = (() => {
   /* Radial tree layout: each subtree gets a wedge proportional to its leaf
    * count, radius by depth. Same rule that generated the original stills, so a
    * recentred chart looks like the ones in the reels. */
-  const RING_GAP = 0.75;    // extra room between the centre and ring 1
+  const RING_GAP = 1.6;     // room for the centre portrait, which is now much bigger
 
   function layout(reached) {
     // leaf counts: reverse BFS order visits every child before its parent

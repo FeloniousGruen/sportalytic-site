@@ -65,7 +65,7 @@ nav a{
    before anything wraps onto a second line */
 @media(max-width:1320px){
   nav a{font-size:12px;letter-spacing:.08em;margin-left:15px}
-  .nav-cta{margin-left:16px;padding:10px 14px;font-size:12px}
+  .nav-cta{margin-left:16px;padding:10px 15px;font-size:11.5px}
   .bar{gap:18px}
 }
 nav a:hover{color:var(--ink)}
@@ -77,7 +77,10 @@ nav a:hover{color:var(--ink)}
 .btn:hover{background:#ffd268;transform:translateY(-2px)}
 .btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
 .btn.ghost:hover{background:rgba(255,255,255,.07)}
-.nav-cta{margin-left:26px;padding:11px 18px}
+/* Never allowed to wrap: two lines of it throws the whole bar out. */
+.nav-cta{margin-left:26px;padding:12px 20px;white-space:nowrap;border-radius:6px;
+  font-size:12px;letter-spacing:.08em;box-shadow:0 1px 10px rgba(251,194,71,.16)}
+.nav-cta:hover{box-shadow:0 3px 16px rgba(251,194,71,.28)}
 .burger{display:none;background:none;border:0;color:var(--ink);font-size:22px;cursor:pointer}
 
 /* ---------- hero ---------- */
@@ -257,7 +260,7 @@ footer a:hover{color:var(--ink)}
   .row2{grid-template-columns:1fr}
   .hero{padding:34px 0 56px}
   .bar{height:62px;gap:12px}
-  .nav-cta{margin-left:0;padding:10px 14px;font-size:11px;letter-spacing:.04em;white-space:nowrap}
+  .nav-cta{margin-left:0;padding:10px 14px;font-size:11px;letter-spacing:.04em}
   .brand span{font-size:15px}
   .team{grid-template-columns:1fr;gap:24px}
   .person{display:flex;gap:16px;align-items:flex-start}
@@ -286,7 +289,6 @@ footer a:hover{color:var(--ink)}
       <a href="#/graphics" data-route>Graphics</a>
       <a href="#services">What we do</a>
       <a href="#audience">Who we work with</a>
-      <a href="#process">How it works</a>
       <a href="#team">Who we are</a>
     </nav>
     <a class="btn nav-cta" href="#contact">Get in touch</a>
@@ -499,12 +501,10 @@ footer a:hover{color:var(--ink)}
     <div class="wrap">
       <p class="eyebrow">Graphics</p>
       <h2 class="sec rev">Interactive</h2>
-      <p class="sec-lede rev">Pieces you can play with rather than watch. They run entirely in the
-        browser — nothing is computed on a server — so they stay quick however far you dig.</p>
       <div class="cards rev" style="grid-template-columns:repeat(2,1fr)">
         <a class="card" href="network.html" style="text-decoration:none;display:block">
           <div class="num">01</div>
-          <h3>The NFL teammate network</h3>
+          <h3>11 Degrees of Travis Kelce</h3>
           <p>Every player since 1920, joined wherever two of them shared a squad. Click anyone to
              see their route to the centre, or make them the centre and watch the whole thing
              rebuild around them. 29,513 players, 2.2 million connections.</p>
