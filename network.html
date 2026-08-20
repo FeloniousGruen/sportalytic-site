@@ -40,8 +40,11 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 #topbar{position:absolute;top:8px;left:12px;right:330px;z-index:5;
   display:flex;flex-direction:column;gap:8px;pointer-events:none}
 #topbar>*{pointer-events:auto}
-#title{margin:2px 0 0 2px;font-family:var(--display);
-  font-size:22px;text-transform:uppercase;line-height:1.15;pointer-events:none}
+/* Centred on the canvas, which is where the chart's middle is, and tucked up
+   under the controls rather than a line below them. */
+#title{position:absolute;top:50px;left:0;right:0;margin:0;text-align:center;
+  font-family:var(--display);font-size:22px;text-transform:uppercase;
+  line-height:1.15;pointer-events:none;z-index:4}
 #title b{color:var(--amber);font-weight:inherit}
 .hud{display:flex;gap:8px;align-items:center}
 .hud .spacer{flex:1}
@@ -164,7 +167,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   #stage{inset:52px 0 0 0}
 
   #topbar{top:6px;left:8px;right:8px;gap:6px}
-  #title{font-size:15px}
+  #title{top:var(--titleTop,50px);left:8px;right:8px;text-align:left;font-size:15px}
   .hud{flex-wrap:wrap;gap:6px}
   .hud input{width:auto;flex:1 1 100%}
   #club,#season{flex:1 1 calc(50% - 3px);min-width:0;font-size:13px;padding:8px 9px}
@@ -224,8 +227,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
     <select id="season"><option value="">Any season</option></select>
   </div>
   <div id="results" hidden></div>
-  <h1 id="title"></h1>
   </div>
+  <h1 id="title"></h1>
   <div id="tools">
     <button class="tbtn" id="quizBtn" title="Link two players yourself, in as few steps as possible">Test your knowledge</button>
     <button class="tbtn" id="ring" title="Show only the players who shared a squad with the centre, grouped by club">Direct teammates</button>
@@ -390,11 +393,13 @@ function syncSheet(){
   // Measured rather than guessed at: reserving a flat 48vh leaves a dead band
   // under a short card and clips the chart under a tall one.
   STAGE.style.setProperty('--sheet', card ? (card.offsetHeight + 64) + 'px' : '0px');
-  STAGE.style.setProperty('--top',
-    (document.getElementById('topbar').offsetHeight + 14) + 'px');
+  const tb = document.getElementById('topbar').offsetHeight;
+  const ti = document.getElementById('title').offsetHeight;
+  STAGE.style.setProperty('--titleTop', (tb + 4) + 'px');
+  STAGE.style.setProperty('--top', (tb + ti + 12) + 'px');
 }
 const watch = new ResizeObserver(syncSheet);
-['panel','quiz','topbar'].forEach(id => watch.observe(document.getElementById(id)));
+['panel','quiz','topbar','title'].forEach(id => watch.observe(document.getElementById(id)));
 ['panel','quiz'].forEach(id =>
   new MutationObserver(syncSheet).observe(document.getElementById(id),
     {attributes:true,attributeFilter:['hidden']}));

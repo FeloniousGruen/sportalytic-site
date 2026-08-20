@@ -383,6 +383,14 @@ const VIEW = (() => {
       ctx.textAlign = 'left';
       const BOX = 16, GAP = 3;
       const placed = [];
+      /* Portraits are obstacles for every label, not just their own. Seeding
+         them here is what stops a neighbour's name landing across a face --
+         each one blocks the square its circle sits in. */
+      for (const [pi, pr] of faceR) {
+        const [fx, fy] = frameXY(pi);
+        if (fx !== fx) continue;
+        placed.push({ x: sx(fx) - pr, y: sy(fy) - pr, w: pr * 2, h: pr * 2 });
+      }
       const hits = r => placed.some(q =>
         !(r.x + r.w + GAP < q.x || q.x + q.w + GAP < r.x ||
           r.y + r.h + GAP < q.y || q.y + q.h + GAP < r.y));
