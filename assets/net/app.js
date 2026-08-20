@@ -10,11 +10,44 @@
 
 const NET = (() => {
 
-  // ---------- palette: degree from the centre, matching the reels ----------
-  const DEG_COLOUR = ['#2e2e2e', '#f4b400', '#6a5acd', '#23b5d3', '#ff7f50',
-                      '#ff4fa3', '#7cc943', '#2ec4b6', '#c77dff', '#ff9f1c',
-                      '#00a8ff', '#7a7a7a'];
-  const EDGE = 'rgba(150,168,194,0.20)';
+  /* Palette: degree from the centre, matching the reels.
+     The neons are built for a near-black background and wash out on a light
+     one, so light mode gets deeper, more saturated versions of the same hues
+     rather than the same colours dimmed -- the ring order has to stay
+     readable either way. */
+  const DARK_DEG = ['#2e2e2e', '#f4b400', '#6a5acd', '#23b5d3', '#ff7f50',
+                    '#ff4fa3', '#7cc943', '#2ec4b6', '#c77dff', '#ff9f1c',
+                    '#00a8ff', '#7a7a7a'];
+  const LIGHT_DEG = ['#8a8a8a', '#b07500', '#4334a8', '#0f7f96', '#c2461c',
+                     '#c2185b', '#3f7d16', '#12786d', '#7a35b8', '#b06a05',
+                     '#0a67a3', '#6a6a6a'];
+  let DEG_COLOUR = DARK_DEG.slice();
+  let EDGE = 'rgba(150,168,194,0.20)';
+  let BG = '#0B1117';
+  let theme = 'dark';
+
+  function setTheme(name) {
+    theme = name === 'light' ? 'light' : 'dark';
+    const light = theme === 'light';
+    DEG_COLOUR.length = 0;
+    DEG_COLOUR.push(...(light ? LIGHT_DEG : DARK_DEG));
+    EDGE = light ? 'rgba(70,84,104,0.28)' : 'rgba(150,168,194,0.20)';
+    BG = light ? '#F4F6F8' : '#0B1117';
+    return theme;
+  }
+
+  /* Two ways to shift a palette colour without leaving its hue: down into the
+     background for something not yet found, and up towards white for something
+     you have. Used by Expedition so a dot brightens in its own colour rather
+     than being repainted in a highlight. */
+  function mixHex(h, target, amount) {
+    const n = parseInt(h.slice(1), 16);
+    const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    const out = c.map((v, k) => Math.round(v + (target[k] - v) * amount));
+    return `rgb(${out[0]},${out[1]},${out[2]})`;
+  }
+  const dim = h => mixHex(h, theme === 'light' ? [244, 246, 248] : [11, 17, 23], 0.74);
+  const lift = h => mixHex(h, theme === 'light' ? [0, 0, 0] : [255, 255, 255], 0.34);
   const PATH = '#FBC247';   // rings and labels
   const LINK = '#FFFFFF';   // the chain itself, which reads better plain
 
@@ -470,6 +503,11 @@ const NET = (() => {
     get p_ip() { return p_ip; }, get p_ix() { return p_ix; },
     get t_ip() { return t_ip; }, get t_ix() { return t_ix; },
     get tsTeam() { return tsTeam; }, get tsSeason() { return tsSeason; },
-    DEG_COLOUR, EDGE, PATH, LINK,
+    dim, lift, setTheme,
+    get DEG_COLOUR() { return DEG_COLOUR; },
+    get EDGE() { return EDGE; },
+    get BG() { return BG; },
+    get PATH() { return theme === 'light' ? '#B45309' : PATH; },
+    get LINK() { return theme === 'light' ? '#1A202C' : LINK; },
   };
 })();

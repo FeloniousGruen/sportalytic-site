@@ -340,22 +340,28 @@ const GAME = (() => {
       const mark = h.gave ? '❌' : over === 0 ? '🟢' : over <= 2 ? '🟡' : '🔴';
       return `${mark} par ${h.par} — ${NET.names[h.a]} → ${NET.names[h.b]}: ${h.score}`;
     }).join('\n');
-    return `11 Degrees — The Round\n${t.shot} strokes (${diff === 0 ? 'level par' :
-      diff > 0 ? '+' + diff : diff})\n\n${rows}\n\nEvery NFL player since 1920.`;
+    return `11 Degrees — The Round\n${t.shot} strokes, par ${t.par} (${
+      diff === 0 ? 'level' : '+' + diff})\n\n${rows}\n\nHave a go:\n${SHARE_URL}`;
   }
 
   /* Wordle-style: the shape of the result, not the answer. Nobody wants the
      linking players spoiled for them by a friend's share. */
+  const SHARE_URL = 'https://sportalytic.co.uk/network.html';
+
   function dailyShareText() {
-    const L = state.leg, links = L.links();
-    const head = `11 Degrees — daily #${state.day}`;
-    if (L.revealed) return `${head}\n❌ didn't get it\n\nsportalytic.co.uk`;
-    const par = L.best;
+    const L = state.leg, links = L.links(), par = L.best;
+    const who = `${NET.names[L.a]} → ${NET.names[L.b]}`;
+    const head = `11 Degrees — daily #${state.day}\n${who}`;
+    if (L.revealed) {
+      return `${head}\n❌ Beat me today. See if you can do better.\n${SHARE_URL}`;
+    }
     const blocks = '🟩'.repeat(Math.min(par, links)) +
                    '🟨'.repeat(Math.max(0, links - par)) +
                    (L.clues ? ' ' + '💡'.repeat(L.clues) : '');
-    const verdict = links === par ? ' — shortest possible' : ` (best ${par})`;
-    return `${head}\n${links} link${links === 1 ? '' : 's'}${verdict}\n${blocks}\n\nsportalytic.co.uk`;
+    const line = links === par
+      ? `✅ ${links} links — the shortest there is. Have a go:`
+      : `✅ ${links} links (${par} is possible). Have a go:`;
+    return `${head}\n${blocks}\n${line}\n${SHARE_URL}`;
   }
 
   async function shareTextOf() {
@@ -389,6 +395,7 @@ const GAME = (() => {
               today: day === dayNumber() };
     state.leg = leg(a, b, { par: 3 });
     if (saved && saved.chain) {
+      // what you actually played, which after giving up is however far you got
       state.leg.chain = saved.chain;
       state.leg.clues = saved.clues || 0;
       state.leg.revealed = !!saved.revealed;
@@ -508,7 +515,8 @@ const GAME = (() => {
           ? `<div class="qdone"><b>Not this time.</b> You did not solve
                puzzle #${state.day}. There is a new one tomorrow.</div>`
           : `<div class="qdone"><b>Solved in ${links}</b>${
-               L.clues ? `, and ${L.clues} clue${L.clues === 1 ? '' : 's'}` : ''}. ${
+               L.clues ? ` link${links === 1 ? '' : 's'} plus ${L.clues} clue${
+                 L.clues === 1 ? '' : 's'} — <b>${L.score()}</b> in all` : ''}. ${
                matched ? 'Nobody links them in fewer.'
                        : `The shortest way there is ${L.best}.`}</div>`;
       } else {
@@ -548,7 +556,7 @@ const GAME = (() => {
             ? `<button class="btn" id="gnexth">${
                 state.hole === 4 ? 'See the card' : 'Next hole'}</button>`
             : `<button class="btn" id="gshare">Share your result</button>
-               <button class="btn ghost" id="gagain">Back to the chart</button>`)
+               <button class="btn ghost" id="gagain">Back</button>`)
         : `<button class="btn ghost" id="gclue">${
               L.clueLevel ? 'Another clue' : 'Clue'} (+1)</button>
            <button class="btn ghost" id="ggive">Give up on this one</button>`);

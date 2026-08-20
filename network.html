@@ -34,6 +34,42 @@
   --display:"Archivo Black","Arial Black",Arial,sans-serif;
   --body:Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
+/* Light mode. Not white but a cool off-white, text a deep slate rather than
+   black, and the amber darkened for text -- the brand yellow is built for a
+   near-black background and has nothing like enough contrast on a pale one.
+   The button keeps the bright yellow, with dark text inside it. */
+:root[data-theme="light"]{
+  --bg:#F4F6F8;--panel:#FFFFFF;--ink:#1A202C;--amber:#D97706;--blue:#2C5F86;
+  --grey:#64748B;--greyd:#E2E8F0;
+  --shadow:0 4px 14px rgba(16,24,40,.07),0 1px 3px rgba(16,24,40,.06);
+}
+:root[data-theme="light"] header{background:rgba(255,255,255,.86);
+  border-bottom-color:#E2E8F0}
+:root[data-theme="light"] .cta{background:#FBC247;color:#1A202C}
+:root[data-theme="light"] #panel,:root[data-theme="light"] #quiz,
+:root[data-theme="light"] #game,:root[data-theme="light"] #results,
+:root[data-theme="light"] #tools,:root[data-theme="light"] #gres,
+:root[data-theme="light"] #quizRes{box-shadow:var(--shadow);border-color:#E2E8F0}
+:root[data-theme="light"] #tools{background:rgba(255,255,255,.86)}
+:root[data-theme="light"] .tbtn{background:#fff;border-color:#D8E0E8;color:#1A202C}
+:root[data-theme="light"] .tbtn:hover{background:#F4F6F8}
+:root[data-theme="light"] .tbtn.on{background:#FBC247;color:#1A202C;border-color:#FBC247}
+:root[data-theme="light"] .hud input,:root[data-theme="light"] .hud select{
+  background:#fff;border-color:#D8E0E8}
+:root[data-theme="light"] .btn{color:#1A202C}
+:root[data-theme="light"] .chip{background:#EEF2F6;color:#2C5F86}
+:root[data-theme="light"] .shareBox,:root[data-theme="light"] .qdone,
+:root[data-theme="light"] .qclue,:root[data-theme="light"] #gres div:hover,
+:root[data-theme="light"] #results div:hover,
+:root[data-theme="light"] #quizRes div:hover{background:#F1F5F9}
+:root[data-theme="light"] .dbar{background:#E2E8F0;color:#1A202C}
+:root[data-theme="light"] .aday{background:#F1F5F9;color:#64748B;border-color:#E2E8F0}
+:root[data-theme="light"] .qstep.gap input{background:#fff}
+:root[data-theme="light"] .gmenu{background:#F8FAFC;border-color:#E2E8F0;color:#1A202C}
+:root[data-theme="light"] .qchain::before,:root[data-theme="light"] .chain::before{
+  background:#E2E8F0}
+:root[data-theme="light"] .node .dot,:root[data-theme="light"] .qstep .dot{
+  border-color:#fff}
 *{box-sizing:border-box}[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;overflow:hidden}
 a{color:inherit}
@@ -170,7 +206,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .gmenu{display:block;width:100%;text-align:left;background:#1d2833;color:var(--ink);
   border:1px solid var(--greyd);border-radius:9px;padding:11px 12px;margin-top:8px;
   font:inherit;font-size:13px;cursor:pointer}
-.gmenu:hover{border-color:var(--amber)}
+.gmenu:hover{border-color:var(--grey)}   /* only the plain ones */
 .gmenu b{display:block;font-size:13.5px;margin-bottom:2px}
 .gmenu span{color:var(--grey);font-size:11.5px;line-height:1.4}
 /* Colour by what the mode is for, not just to tell them apart.
@@ -187,9 +223,13 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .gmenu[class*="m-"] b{color:var(--c)}
 .gmenu[class*="m-"] span{color:#AEBAC6}
 .gmenu[class*="m-"]{transition:background .15s,box-shadow .15s,transform .15s}
+/* hover lightens the mode's own colour; nothing here turns amber */
 .gmenu[class*="m-"]:hover{background:color-mix(in srgb,var(--c) 26%,transparent);
-  box-shadow:0 0 0 1px var(--c) inset, 0 0 18px color-mix(in srgb,var(--c) 28%,transparent);
+  border-color:color-mix(in srgb,var(--c) 70%,white);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 70%,white) inset,
+             0 0 18px color-mix(in srgb,var(--c) 28%,transparent);
   transform:translateY(-1px)}
+.gmenu[class*="m-"]:hover b{color:color-mix(in srgb,var(--c) 70%,white)}
 .gmenu[class*="m-"]:active{transform:none}
 /* The archive is white rather than grey: it is a place to go, not a thing
    switched off. It steps back by a lighter fill, not by looking disabled. */
@@ -229,7 +269,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 #game .qdone{border-left-color:var(--accent)}
 #game .qdone b{color:var(--accent)}
 #game .qstep.gap input{border-color:var(--accent)}
-#game .gmenu:hover{border-color:var(--accent)}
+
 /* the distribution, Wordle-fashion: one bar a score, yours picked out */
 .dist{margin:12px 0 4px}
 .dhead{color:var(--grey);font-size:11px;margin-bottom:5px}
@@ -372,6 +412,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
     <button class="tbtn zoom" id="zin" title="Zoom in">+</button>
     <button class="tbtn zoom" id="zout" title="Zoom out">&minus;</button>
     <button class="tbtn" id="zfit" title="Fit to screen">Fit</button>
+    <button class="tbtn" id="theme" title="Light or dark">☾</button>
   </div>
   <div id="panel" hidden></div>
   <div id="quiz" hidden></div>
@@ -452,7 +493,7 @@ function renderPanel(i){
         (small?'':`<div class="shareBox"><b>0%</b> of the network reaches
           ${NET.names[CENTRE]} through ${d.name}. Every route to him is at least
           as short without ${d.name} — nobody sits behind him.</div>`)+
-         `<button class="btn ghost" id="unshare">Back to the full chart</button>`;
+         `<button class="btn ghost" id="unshare">Back</button>`;
       $('#share').hidden=true;
       $('#unshare').onclick=clearShare;
       return;
@@ -460,7 +501,7 @@ function renderPanel(i){
     if(small){
       showBadge(r.pct.toFixed(1)+'%',
         `of the network reaches ${NET.names[CENTRE]} through ${d.name}`);
-      $('#shareOut').innerHTML=`<button class="btn ghost" id="unshare">Back to the full chart</button>`;
+      $('#shareOut').innerHTML=`<button class="btn ghost" id="unshare">Back</button>`;
       $('#share').hidden=true;
       $('#unshare').onclick=clearShare;
       return;
@@ -476,7 +517,7 @@ function renderPanel(i){
         That is why these dots also belong to other players, and why they move
         when you ask a different one.</div>
         ${DEBUG?`<span class="muted2">two extra passes, ${r.ms.toFixed(0)} ms</span>`:''}</div>
-       <button class="btn ghost" id="unshare">Back to the full chart</button>`;
+       <button class="btn ghost" id="unshare">Back</button>`;
     $('#share').hidden=true;
     $('#unshare').onclick=clearShare;
   };
@@ -617,6 +658,28 @@ const watch = new ResizeObserver(syncSheet);
   new MutationObserver(syncSheet).observe(document.getElementById(id),
     {attributes:true,attributeFilter:['hidden']}));
 addEventListener('resize', syncSheet);
+
+/* Light or dark, remembered, and honouring the system setting the first time.
+   NET owns the canvas colours because the chart is not CSS. */
+const THEME_KEY='sp.theme';
+function applyTheme(name){
+  document.documentElement.dataset.theme = name;
+  /* `const NET = ...` at the top of a classic script is a lexical binding, not
+     a property of window -- so testing window.NET is always false and the
+     canvas kept its dark palette while the page went light. */
+  if(typeof NET !== 'undefined' && NET.setTheme) NET.setTheme(name);
+  if(typeof VIEW !== 'undefined' && VIEW.invalidate) VIEW.invalidate();
+  const b=document.getElementById('theme');
+  if(b){ b.textContent = name==='light' ? '☀' : '☾';
+         b.title = name==='light' ? 'Switch to dark' : 'Switch to light'; }
+  try{ localStorage.setItem(THEME_KEY,name); }catch(e){}
+}
+(function initTheme(){
+  let saved=null;
+  try{ saved=localStorage.getItem(THEME_KEY); }catch(e){}
+  // dark is the house style; light is a choice you make, not one made for you
+  document.documentElement.dataset.theme = saved || 'dark';
+})();
 
 // ?debug in the URL brings back the timing readout used while building this
 const DEBUG=location.search.indexOf('debug')>=0;
@@ -1066,6 +1129,9 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   document.getElementById('zin').onclick=()=>VIEW.zoomBy(1.35);
   document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);
   document.getElementById('zfit').onclick=()=>VIEW.fit();
+  applyTheme(document.documentElement.dataset.theme || 'dark');
+  document.getElementById('theme').onclick=()=>
+    applyTheme(document.documentElement.dataset.theme==='light'?'dark':'light');
   $('#q').addEventListener('input',search);
   club.addEventListener('change',()=>{ fillSeasons(club.value); search(); });
   season.addEventListener('change',search);

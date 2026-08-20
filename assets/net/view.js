@@ -224,7 +224,7 @@ const VIEW = (() => {
 
   function draw() {
     const t0 = performance.now();
-    ctx.fillStyle = '#0B1117';
+    ctx.fillStyle = NET.BG;
     ctx.fillRect(0, 0, W, H);
     const moving = morph < 1;
     const px = NET.px, py = NET.py, par = NET.parent, dist = NET.dist, n = NET.P;
@@ -283,21 +283,29 @@ const VIEW = (() => {
     /* Expedition draws by what you have found rather than by degree: the dark
        is everything still out there, and the point of the game is to see less
        of it. Three passes so the colour changes three times, not 29,000. */
+    /* A dot lights up in its own colour, brighter, rather than being repainted
+       in one highlight -- the ring a player sits in is the whole shape of the
+       thing, and recolouring threw it away. Still three passes per degree
+       rather than one per dot: unfound, found, named. */
     if (litMask) {
-      const STATE = [['rgba(58,68,82,0.55)', r],          // dark
-                     ['#9CC2DC', r * 1.15],               // lit by a teammate
-                     ['#FBC247', r * 1.7]];               // named by you
-      for (let st = 0; st < 3; st++) {
-        ctx.fillStyle = STATE[st][0];
-        const rr = STATE[st][1], dd = rr * 2;
-        for (let i = 0; i < n; i++) {
-          if (litMask[i] !== st) continue;
-          let x = px[i], y = py[i];
-          if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
-          if (!(x === x)) continue;
-          const X = sx(x), Y = sy(y);
-          if (X < -8 || Y < -8 || X > W + 8 || Y > H + 8) continue;
-          ctx.fillRect(X - rr, Y - rr, dd, dd);
+      for (let deg = 0; deg < buckets.length; deg++) {
+        const bucket = buckets[deg];
+        if (!bucket || !bucket.length) continue;
+        const base = NET.DEG_COLOUR[deg];
+        for (let st = 0; st < 3; st++) {
+          ctx.fillStyle = st === 0 ? NET.dim(base) : st === 1 ? base : NET.lift(base);
+          const rr = st === 0 ? r * 0.85 : st === 1 ? r * 1.1 : r * 1.75;
+          const dd = rr * 2;
+          for (let bi = 0; bi < bucket.length; bi++) {
+            const i = bucket[bi];
+            if (litMask[i] !== st) continue;
+            let x = px[i], y = py[i];
+            if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
+            if (!(x === x)) continue;
+            const X = sx(x), Y = sy(y);
+            if (X < -8 || Y < -8 || X > W + 8 || Y > H + 8) continue;
+            ctx.fillRect(X - rr, Y - rr, dd, dd);
+          }
         }
       }
     }
@@ -494,7 +502,7 @@ const VIEW = (() => {
           ctx.lineTo(d.side > 0 ? d.r.x : d.r.x + d.r.w, d.r.y + BOX / 2);
           ctx.stroke();
         }
-        ctx.fillStyle = 'rgba(11,17,23,0.85)';
+        ctx.fillStyle = NET.BG === '#0B1117' ? 'rgba(11,17,23,0.85)' : 'rgba(255,255,255,0.88)';
         ctx.fillRect(d.r.x, d.r.y, d.r.w, BOX);
         ctx.fillStyle = NET.LINK;      // labels match the chain they belong to
         ctx.fillText(d.label, d.r.x + 4, d.r.y + BOX / 2);
@@ -503,10 +511,11 @@ const VIEW = (() => {
     /* The centre wears a white ring whatever it is showing -- around the
        portrait when there is one, around the dot when there is not -- so the
        player the whole chart is hung on is never ambiguous. */
-    if (!moving) ring(centre, '#fff');
+    if (!moving) ring(centre, NET.BG === '#0B1117' ? '#fff' : '#1A202C');
     // the white ring is also the "you are about to pick this" cue, so it is not
     // wanted on a dot that already carries the gold one
-    if (hover >= 0 && hover !== selected && hover !== centre) ring(hover, '#fff');
+    if (hover >= 0 && hover !== selected && hover !== centre)
+      ring(hover, NET.BG === '#0B1117' ? '#fff' : '#1A202C');
     if (selected >= 0) ring(selected, NET.PATH);
     perf.draw = performance.now() - t0;
     perf.frames++;
