@@ -10,7 +10,32 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# ...but the network page's code and data are NOT content-addressed -- app.js
+# is always app.js, and a portrait is named by the player's index, which shifts
+# whenever the roster changes. Cached immutable, a fix would never reach anyone
+# who had already visited. They revalidate instead: unchanged files come back
+# 304 with no body, so it costs a header round trip and nothing else.
+[[headers]]
+  for = "/assets/net/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# The network data is gzipped on disk. Saying so lets the browser inflate it
+# itself, which matters on iOS: every browser there is WebKit, and WebKit only
+# got DecompressionStream in Safari 16.4 -- anything older cannot unpack these
+# in script and used to sit on the loading line for ever.
+[[headers]]
+  for = "/assets/net/*.gz"
+  [headers.values]
+    Content-Encoding = "gzip"
+
 [[headers]]
   for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# network.html is HTML too, and must not be cached hard either.
+[[headers]]
+  for = "/network.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"

@@ -31,14 +31,33 @@ const NET = (() => {
   let par2;                              // parent in the traversal from the pick
   let stampCounter = 0;
 
+  /* These files are gzipped on disk so the transfer size does not depend on the
+     host's compression rules. Two ways they arrive:
+
+     - the host sends Content-Encoding: gzip (netlify.toml asks it to), and the
+       browser has already inflated them by the time we look;
+     - it does not, and we get the gzip bytes raw.
+
+     Sniffing the magic number tells the two apart, which matters because
+     DecompressionStream is not everywhere: on iOS every browser is WebKit, and
+     WebKit only got it in Safari 16.4. Anything older used to hang on the
+     loading line for ever. */
+  async function inflate(buf, url) {
+    const head = new Uint8Array(buf, 0, Math.min(2, buf.byteLength));
+    if (!(head[0] === 0x1f && head[1] === 0x8b)) return buf;   // already plain
+    if (typeof DecompressionStream !== 'function') {
+      throw new Error(`${url} arrived compressed and this browser cannot ` +
+                      `decompress it. Update the browser, or set ` +
+                      `Content-Encoding: gzip on the host.`);
+    }
+    const stream = new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Response(stream).arrayBuffer();
+  }
+
   async function loadGz(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`${url}: ${res.status}`);
-    // Pre-gzipped on disk so the transfer size does not depend on the host's
-    // content-type compression rules. DecompressionStream is in every current
-    // browser; if it ever is not, ship the plain file alongside.
-    const stream = res.body.pipeThrough(new DecompressionStream('gzip'));
-    return new Response(stream).arrayBuffer();
+    return inflate(await res.arrayBuffer(), url);
   }
 
   async function load(base = 'assets/net') {
@@ -423,7 +442,7 @@ const NET = (() => {
   }
 
   return {
-    load, bfs, layout, recentre, pathToCentre, route, info, maxDist,
+    load, inflate, bfs, layout, recentre, pathToCentre, route, info, maxDist,
     sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
     throughParent,
     get P() { return P; }, get names() { return names; },

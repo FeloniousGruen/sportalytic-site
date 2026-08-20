@@ -477,11 +477,10 @@ const VIEW = (() => {
   function invalidate() { dirty = true; }
 
   async function loadFaceFlags(base = 'assets/net') {
+    // NET.inflate copes with the file arriving already decoded; see it for why
     try {
       const res = await fetch(`${base}/faces.bin.gz`);
-      const buf = await new Response(
-        res.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
-      hasFace = new Uint8Array(buf);
+      hasFace = new Uint8Array(await NET.inflate(await res.arrayBuffer(), 'faces.bin.gz'));
     } catch (e) { hasFace = null; }
   }
 

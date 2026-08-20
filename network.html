@@ -5,7 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>11 Degrees of Travis Kelce — Sportalytic</title>
 <meta name="description" content="Every NFL player since 1920, linked by shared team-seasons. Click anyone to see their path to the centre, or make them the centre.">
-<link rel="icon" href="assets/logo.png">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<!-- Link previews. Without an og:image a messenger scrapes the favicon and
+     scales a 192px mark to card size, which is what made this look so poor.
+     NOTE: some scrapers (Facebook and WhatsApp among them) insist on an
+     absolute og:image. Once the live domain is settled, put it in front of
+     these two paths -- https://<domain>/assets/share.jpg -- or the preview
+     will keep falling back on those services. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sportalytic">
+<meta property="og:title" content="11 Degrees of Travis Kelce">
+<meta property="og:description" content="Every NFL player since 1920, joined wherever two of them shared a squad. Click anyone to see their route to the centre, or make them the centre.">
+<meta property="og:image" content="assets/share-network.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="11 Degrees of Travis Kelce">
+<meta name="twitter:description" content="Every NFL player since 1920, joined wherever two of them shared a squad. Click anyone to see their route to the centre, or make them the centre.">
+<meta name="twitter:image" content="assets/share-network.jpg">
 <style>
 @font-face{font-family:"Archivo Black";src:url("assets/ArchivoBlack.woff2") format("woff2");font-weight:400;font-display:swap}
 :root{
@@ -523,7 +543,21 @@ async function showCredits(){
 document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(); });
 
 (async()=>{
-  const meta=await NET.load('assets/net');
+  let meta;
+  try{
+    meta=await NET.load('assets/net');
+  }catch(err){
+    // Silence here used to mean the loading line sat there for ever, which
+    // tells whoever is looking at it nothing at all.
+    $('#loading').innerHTML=
+      `<div style="max-width:34em;text-align:center;line-height:1.6">
+         <b style="color:var(--amber)">The network could not be loaded.</b><br>
+         ${String(err && err.message || err).replace(/</g,'&lt;')}
+         <div style="margin-top:14px;font-size:13px;color:var(--grey)">
+           If this is an older phone, updating the browser should fix it.</div>
+       </div>`;
+    return;
+  }
   await VIEW.loadLogoIndex('assets/net');
   await VIEW.loadFaceFlags('assets/net');
   $('#loading').remove();
@@ -655,6 +689,8 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
 
   function quizOpen(){
     QUIZ.on=true; QUIZ.done=false; QUIZ.chain=[]; QUIZ.best=null;
+    // a share answer left over from the last player is not about this round
+    clearShare();
     $('#panel').hidden=true; $('#results').hidden=true;
     $('#quiz').hidden=false;
     // the chart is the small half of a phone screen here: the chain reads as
