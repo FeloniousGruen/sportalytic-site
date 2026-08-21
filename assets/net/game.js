@@ -59,10 +59,13 @@ const GAME = (() => {
   const DAILY_TARGET = () => RULES().dailyTarget;
   const hasExpert = () => !!CFG.expert;
   function setExpert(v) { expert = !!v; }
-  /* Giving up is a fixed ten, not the par. Handing you the shortest route and
-     then scoring it as if you had found it made surrender the best play on any
-     hole you could not see -- you would card a par for pressing a button. */
-  const GIVE_UP = 10;
+  /* Giving up is a fixed fifteen, not the par. Handing you the shortest route
+     and then scoring it as if you had found it made surrender the best play on
+     any hole you could not see -- you would card a par for pressing a button.
+     Ten was still too cheap once the clue ladder ran four rungs deep and could
+     then hand you a whole link: working a par 4 out the hard way could cost
+     more than the button, which is the wrong way round. */
+  const GIVE_UP = 15;
   /* Two letters before names are offered.
      It was five, on the reasoning that a short query would let you read the
      answer off a list. That was worth less than it cost: the list is a
@@ -87,6 +90,13 @@ const GAME = (() => {
 
   let onCentred = null;                    // let the page retitle the chart
   function init(el, exit, centred) { host = el; onExit = exit; onCentred = centred; }
+
+  const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+  /* The top bar of the dailies chart. Pinning it to the give-up figure would
+     draw thirteen rows for a game whose par is three, nearly all of them
+     permanently empty; a surrender just lands in the "+" bucket at the end. */
+  const dailyTop = () => Math.min(GIVE_UP, RULES().dailyPar + 8);
 
   // each mode gets its own accent, so you can tell at a glance which you are in
   function setSkin(name) {
@@ -224,14 +234,17 @@ const GAME = (() => {
 
   function leg(a, b, opts = {}) {
     const L = {
-      a, b, chain: [a], done: false, clues: 0, clueLevel: 0, clue: null,
+      a, b, chain: [a], done: false, clues: 0, given: 0, clueLevel: 0, clue: null,
       par: opts.par ?? null, best: null, revealed: false,
     };
     const first = NET.route(a, b);
     L.best = first.degrees;
     const answer = first.path.slice().reverse();
     L.links = () => L.chain.length - 1;
-    L.score = () => L.revealed ? GIVE_UP : L.links() + L.clues;
+    /* Capped at the give-up figure, because otherwise a long hole worked out
+       with help could card worse than pressing the button, and then quitting
+       is the optimal play on exactly the holes the help exists for. */
+    L.score = () => L.revealed ? GIVE_UP : Math.min(GIVE_UP, L.links() + L.clues);
 
     L.add = function (i) {
       const last = L.chain[L.chain.length - 1];
@@ -291,6 +304,26 @@ const GAME = (() => {
       L.clueLevel++; L.clues++;
       L.clueSpent = L.clueLevel >= rungs.length;
       L.clue = 'Someone who ' + rungs.slice(0, L.clueLevel).join(', ') + '.';
+    };
+
+    /* Once the ladder is spent there was nothing left but to give up, which on
+       hole five is most of the way to a dead end: you have paid four strokes
+       for four rungs and still cannot put a name to the man. So the button
+       becomes the name itself, for the same stroke a rung cost. The chain
+       moves on a link and the ladder starts again from there, which means a
+       long hole can always be finished -- expensively, but finished. */
+    L.giveLink = function () {
+      const last = L.chain[L.chain.length - 1];
+      const r = NET.route(last, b);
+      NET.rotateSo(b, [Math.PI / 2, -Math.PI / 2], 180);   // route() undid it
+      VIEW.invalidate();
+      const next = r.path[r.path.length - 2];
+      if (next == null) { L.clue = 'No route left from here.'; return; }
+      // the shortest way on can run back through someone already named, and
+      // the no-repeats rule stands -- say so rather than charge for nothing
+      const err = L.add(next);
+      if (err) { L.clue = err; return; }
+      L.clues++; L.given++;
     };
 
     /* Giving up used to replace your chain with the answer, which lost what
@@ -400,11 +433,20 @@ const GAME = (() => {
   function startRound() {
     setSkin('round');
     const rng = Math.random;
+    /* Nobody twice in one round. Five holes drawn independently out of pools
+       built on the same few hundred well-known players repeat somebody often
+       enough to notice, and a card that opens two holes with the same name
+       reads as a smaller game than it is. Best effort, not a guarantee: after
+       forty tries take whatever came up rather than hang. */
+    const used = new Set();
     state = {
       mode: 'round', hole: 0,
       holes: HOLES().map(h => {
-        const [x, y] = pick(h.pool, rng);
-        return { par: h.par, a: x, b: y };
+        let pair = pick(h.pool, rng);
+        for (let k = 0; k < 40 && (used.has(pair[0]) || used.has(pair[1])); k++)
+          pair = pick(h.pool, rng);
+        used.add(pair[0]); used.add(pair[1]);
+        return { par: h.par, a: pair[0], b: pair[1] };
       }),
     };
     state.leg = leg(state.holes[0].a, state.holes[0].b, { par: HOLES()[0].par });
@@ -469,13 +511,53 @@ const GAME = (() => {
     return state.mode === 'daily' ? dailyShareText() : shareText();
   }
 
+  /* Copy, and show what was copied. This used to hand off to navigator.share
+     wherever it existed, which meant the button did something different on
+     every device -- an OS sheet on a phone, a Windows panel on a desktop, and
+     on anything that cancelled it, nothing at all and no text to fall back on.
+     A card you can read and paste yourself is the same everywhere.
+
+     Clipboard writes need a secure context AND a user gesture, and get refused
+     in a fair few in-app browsers, so the textarea is not just a fallback --
+     it is the thing that always works, with the copy as the convenience. */
+  function copyText(text) {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+    document.body.appendChild(el);
+    el.select();
+    // iOS ignores select() on a readonly field; the range is what it honours
+    try { el.setSelectionRange(0, text.length); } catch (e) { /* not iOS */ }
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    el.remove();
+    if (ok) return Promise.resolve(true);
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(() => true, () => false);
+    }
+    return Promise.resolve(false);
+  }
+
+  function shareBox(text, ok) {
+    const box = $('#gshareout');
+    if (!box) return;
+    box.innerHTML = `<div class="gmeta">${ok
+        ? 'Copied — paste it wherever you like.'
+        : 'Select this and copy it.'}</div>
+      <textarea class="sharebox" readonly rows="${
+        Math.min(12, text.split('\n').length)}">${
+        text.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))
+      }</textarea>`;
+    const ta = box.querySelector('textarea');
+    if (!ok) { ta.focus(); ta.select(); }
+  }
+
   async function share() {
     const text = await shareTextOf();
-    try {
-      if (navigator.share) { await navigator.share({ text }); return 'Shared'; }
-      await navigator.clipboard.writeText(text);
-      return 'Copied to the clipboard';
-    } catch (e) { return null; }
+    const ok = await copyText(text);
+    shareBox(text, ok);
+    return ok ? 'Copied to the clipboard' : null;
   }
 
   // ------------------------------------------------------------ the daily --
@@ -562,7 +644,7 @@ const GAME = (() => {
       `<h2>Archive</h2>
        <div class="lead">Every daily since the start is still there. Your record
          is kept on this device only.</div>
-       ${scores.length ? distribution(scores, -1, RULES().dailyPar, GIVE_UP, 'Your dailies') : ''}
+       ${scores.length ? distribution(scores, -1, RULES().dailyPar, dailyTop(), 'Your dailies') : ''}
        ${rounds.length ? distribution(rounds.map(r => r.shot), -1, PAR_TOTAL(), PAR_TOTAL() + 12, 'Your rounds') : ''}
        ${archiveMonths(days, all, today)}
        ${rounds.length ? `<div class="gmeta">Rounds played: ${rounds.length},
@@ -637,13 +719,19 @@ const GAME = (() => {
       const links = L.links();
       const shortest = L.bestPath();
       const matched = !L.revealed && links === L.best;
+      // a handed-out link cost the same stroke as a clue, but calling it one
+      // would be a small lie about what you actually did
+      const bits = [];
+      if (L.clues - L.given) bits.push(plural(L.clues - L.given, 'clue'));
+      if (L.given) bits.push(plural(L.given, 'link') + ' given');
+      const help = bits.join(' and ');
       if (daily) {
         verdict = L.revealed
           ? `<div class="qdone"><b>Not this time.</b> You did not solve
                ${dayLabel(state.day)}. There is a new one tomorrow.</div>`
           : `<div class="qdone"><b>Solved in ${links}</b>${
-               L.clues ? ` link${links === 1 ? '' : 's'} plus ${L.clues} clue${
-                 L.clues === 1 ? '' : 's'} — <b>${L.score()}</b> in all` : ''}. ${
+               L.clues ? ` link${links === 1 ? '' : 's'} plus ${help} — <b>${
+                 L.score()}</b> in all` : ''}. ${
                matched ? 'Nobody links them in fewer.'
                        : `The shortest way there is ${L.best}.`}</div>`;
       } else {
@@ -674,28 +762,36 @@ const GAME = (() => {
       saveDaily();
       const all = history.dailies();
       const scores = Object.values(all).map(r => r.score).filter(n => n != null);
-      chart = distribution(scores, L.score(), RULES().dailyPar, GIVE_UP, 'Your dailies');
+      chart = distribution(scores, L.score(), RULES().dailyPar, dailyTop(), 'Your dailies');
     }
     const t = state.mode === 'round' ? roundTotals() : null;
+    const spent = [];
+    if (L.clues - L.given) spent.push(plural(L.clues - L.given, 'clue'));
+    if (L.given) spent.push(plural(L.given, 'link') + ' given');
     host.innerHTML = exitBtn() + head +
       (best ? '' : chainHtml(L, true)) + verdict + best + chart +
-      `<div class="gmeta">${L.links()} link${L.links() === 1 ? '' : 's'}${
-        L.clues ? ` · ${L.clues} clue${L.clues === 1 ? '' : 's'}` : ''}${
+      `<div class="gmeta">${plural(L.links(), 'link')}${
+        spent.length ? ' · ' + spent.join(' · ') : ''}${
         t && t.played ? ` · round so far ${t.shot} (par ${t.par})` : ''}</div>` +
       (L.done
         ? (state.mode === 'round'
             ? `<button class="btn" id="gnexth">${
                 state.hole === HOLES().length - 1 ? 'See the card' : 'Next hole'}</button>`
-            : `<button class="btn" id="gshare">Share your result</button>
-               <button class="btn ghost" id="gagain">Back</button>`)
-        : `${L.clueSpent ? '' : `<button class="btn ghost" id="gclue">${
-              L.clueLevel ? 'Another clue' : 'Clue'} (+1)</button>`}
+            : `<button class="btn" id="gshare">Copy your result</button>
+               <button class="btn ghost" id="gagain">Back</button>
+               <div id="gshareout"></div>`)
+        : `${L.clueSpent
+              ? `<button class="btn ghost" id="gnextlink">Get next link (+1)</button>`
+              : `<button class="btn ghost" id="gclue">${
+                  L.clueLevel ? 'Another clue' : 'Clue'} (+1)</button>`}
            <button class="btn ghost" id="ggive">Give up on this one</button>`);
 
     if (!L.done) {
       wireInput(L, err => { render(); if (err) flash(err); });
       const cl = $('#gclue');
       if (cl) cl.onclick = () => { L.nextClue(); render(); };
+      const nl = $('#gnextlink');
+      if (nl) nl.onclick = () => { L.giveLink(); if (daily && L.done) saveDaily(); render(); };
       $('#ggive').onclick = () => { L.reveal(); if (daily) saveDaily(); render(); };
     } else {
       const nx = $('#gnexth'); if (nx) nx.onclick = nextHole;
@@ -732,8 +828,9 @@ const GAME = (() => {
        }).join('')}</ul>
        <div class="gmeta">Par ${t.par} · you shot ${t.shot}</div>
        ${distribution(past, t.shot, t.par, t.par + 12, 'Your rounds')}
-       <button class="btn" id="gshare">Share the card</button>
-       <button class="btn ghost" id="gagain">Play another round</button>`;
+       <button class="btn" id="gshare">Copy the card</button>
+       <button class="btn ghost" id="gagain">Play another round</button>
+       <div id="gshareout"></div>`;
     $('#gshare').onclick = async () => {
       const msg = await share();
       if (msg) flash(msg);

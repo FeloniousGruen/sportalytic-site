@@ -30,7 +30,7 @@
 @font-face{font-family:"Archivo Black";src:url("assets/ArchivoBlack.woff2") format("woff2");font-weight:400;font-display:swap}
 :root{
   --bg:#0B1117;--panel:#141C25;--ink:#FFFFFF;--amber:#FBC247;--blue:#4E7FA8;
-  --grey:#6C7A88;--greyd:#39454F;--maxw:1240px;
+  --grey:#6C7A88;--greyb:#9FAFBC;--greyd:#39454F;--maxw:1240px;
   --display:"Archivo Black","Arial Black",Arial,sans-serif;
   --body:Arial,"Helvetica Neue",Helvetica,sans-serif;
 }
@@ -40,7 +40,7 @@
    The button keeps the bright yellow, with dark text inside it. */
 :root[data-theme="light"]{
   --bg:#F4F6F8;--panel:#FFFFFF;--ink:#1A202C;--amber:#D97706;--blue:#2C5F86;
-  --grey:#64748B;--greyd:#E2E8F0;
+  --grey:#64748B;--greyb:#475569;--greyd:#E2E8F0;
   --shadow:0 4px 14px rgba(16,24,40,.07),0 1px 3px rgba(16,24,40,.06);
 }
 :root[data-theme="light"] header{background:rgba(255,255,255,.86);
@@ -266,8 +266,16 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   max-height:calc(100vh - 140px);overflow:auto}
 #game h2{font-family:var(--display);font-size:17px;margin:0 0 8px;text-transform:uppercase;
   padding-right:30px}
-#game .lead{color:var(--grey);font-size:12px;line-height:1.5;margin-bottom:10px}
-.gmeta{color:var(--grey);font-size:11px;margin-top:8px}
+#game .lead{color:var(--greyb);font-size:12px;line-height:1.5;margin-bottom:10px}
+.gmeta{color:var(--greyb);font-size:11px;margin-top:8px}
+/* The share result, shown rather than fired off into an OS sheet. Monospaced
+   because it is a block of emoji and fixed-width rows, and selectable because
+   the copy is a convenience -- some in-app browsers refuse it outright. */
+.sharebox{display:block;width:100%;margin-top:6px;background:#0B1117;
+  border:1px solid var(--greyd);border-radius:8px;padding:9px 10px;
+  color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11.5px;line-height:1.5;resize:vertical;white-space:pre}
+:root[data-theme="light"] .sharebox{background:#F8FAFC;border-color:#E2E8F0}
 .gbig{margin:6px 0 10px}
 .gbig b{font-family:var(--display);font-size:30px;color:var(--amber);display:block;line-height:1}
 .gbig span{color:var(--grey);font-size:11.5px}
@@ -276,7 +284,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   font:inherit;font-size:13px;cursor:pointer}
 .gmenu:hover{border-color:var(--grey)}   /* only the plain ones */
 .gmenu b{display:block;font-size:13.5px;margin-bottom:2px}
-.gmenu span{color:var(--grey);font-size:11.5px;line-height:1.4}
+.gmenu span{color:var(--greyb);font-size:11.5px;line-height:1.4}
 /* Colour by what the mode is for, not just to tell them apart.
      daily       the brand yellow -- the one thing to come back for each day
      round       teal, cool and focused, a set task with a number at the end
@@ -297,14 +305,14 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .dbtn:hover{color:var(--ink);background:rgba(255,255,255,.05)}
 .dbtn.on{background:var(--amber);color:#0B1117}
 .dbtn+.dbtn{border-left:1px solid var(--greyd)}
-.diffnote{color:var(--grey);font-size:11px;line-height:1.45;margin:0 0 4px}
+.diffnote{color:var(--greyb);font-size:11px;line-height:1.45;margin:0 0 4px}
 :root[data-theme="light"] .diff{border-color:#D8E0E8}
 :root[data-theme="light"] .dbtn{color:#64748B}
 :root[data-theme="light"] .dbtn.on{background:#FBC247;color:#1A202C}
 .gmenu[class*="m-"]{border:1px solid var(--c);
   background:color-mix(in srgb,var(--c) 10%,transparent)}
 .gmenu[class*="m-"] b{color:var(--c)}
-.gmenu[class*="m-"] span{color:#AEBAC6}
+.gmenu[class*="m-"] span{color:#C6D0D9}
 .gmenu[class*="m-"]{transition:background .15s,box-shadow .15s,transform .15s}
 /* hover lightens the mode's own colour; nothing here turns amber */
 .gmenu[class*="m-"]:hover{background:color-mix(in srgb,var(--c) 26%,transparent);
@@ -570,7 +578,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260822b';
+<script>window.ASSET_V='20260823a';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -605,9 +613,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260822b"></script>
-<script src="assets/net/view.js?v=20260822b"></script>
-<script src="assets/net/game.js?v=20260822b"></script>
+<script src="assets/net/app.js?v=20260823a"></script>
+<script src="assets/net/view.js?v=20260823a"></script>
+<script src="assets/net/game.js?v=20260823a"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -1341,6 +1349,12 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   }
 
   function quizOpen(){
+    /* The game menu occupies the same corner and wins on z-index, so opening
+       Free play underneath it looked like the button did nothing at all --
+       and since the page now opens ON the menu, that was every first click.
+       openGame() has always closed the quiz on its way in; this is the other
+       half of that pair. */
+    if(!gameEl.hidden) closeGame();
     fullRecordToPlay();
     QUIZ.on=true; QUIZ.done=false; QUIZ.chain=[]; QUIZ.best=null;
     // a share answer left over from the last player is not about this round
@@ -1577,9 +1591,11 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
          <button class="dbtn ${GAME.expert?'':'on'}" id="dReg">Regular</button>
          <button class="dbtn ${GAME.expert?'on':''}" id="dExp">Expert</button>
        </div>
+       <!-- what the setting changes, not what it scores: the pars belong on
+            the round button, which is the only place they mean anything -->
        <div class="diffnote">${GAME.expert
-         ? 'Across all top-flight football, not just the Premier League. Par 2·3·4·5·6.'
-         : 'The Premier League, 1992/93 on. Par 2·2·3·3·4.'}</div>
+         ? 'Across all top-flight football, not just the Premier League.'
+         : 'The Premier League, 1992/93 on.'}</div>
        <button class="gmenu m-daily" id="gm2"><b>The daily</b>
          <span>One pair a day, the same for everyone. Join them in under
            ${GAME.expert?10:8}.</span></button>

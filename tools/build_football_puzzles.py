@@ -1,31 +1,32 @@
 #!/usr/bin/env python3
 """Pick the pairs of footballers the games are played on.
 
-The NFL version of this (tools/build_puzzles.py) uses "has a portrait" as its
-proxy for fame, because that was the only signal in the nflverse data. The
-football source is better: it carries **career top-flight league appearances**
-for 16,439 of the 18,761 players, from 1888 onward. That is a far more honest
-measure -- it does not smuggle in the present day the way a photo does, and it
-reaches the pre-war game, where nobody has a headshot but Dixie Dean still
-played 399 times.
+Fame is measured, not proxied. The first version of this ranked players by
+career top-flight appearances, because that is the only fame-ish number the
+source carries, and it does not work: Steve Potts made 297 appearances for West
+Ham and nobody outside the Boleyn could name him, Bellegarde made 83 and is a
+Premier League regular, Cantona made 159. Appearances measure a career, not a
+reputation, and a round built on them hands you two men you have never heard of
+and calls it a puzzle.
 
-Two tiers, and every endpoint must be in one of them:
+tools/football_views.json holds Wikipedia traffic for every plausible candidate
+(see fetch_fame_views.py), which is the reputation directly: how many people
+went looking for this person. What it cannot be is compared across eras -- the
+median player still active reads 38,570 views over sixty days, the median
+player who finished before 1965 reads 219. So fame is a **rank within an era
+band**, never an absolute, and the bar is set on that rank.
 
-    recent   still playing within the last fifteen years, with a real career
-             behind them -- the players a reader has actually watched
-    great    a top-flight career long enough that anyone following the game at
-             the time knew the name, plus a hand-list for the short and
-             brilliant, who the appearance count cannot see (Cantona played
-             159 league games and is not a lesser-known player than the 400-cap
-             full back the threshold lets in instead)
+Three rules, all of them the user's:
 
-Unlike the NFL, this graph has real depth. There, 78% of well-known pairs sit
-exactly 2 apart and no pair of players both active since 1996 is ever 4 apart,
-which is why that round has to stop at par 4. English football spreads properly
--- a top flight of twenty clubs over 138 seasons churns far less -- so the same
-sample of household names gives 2, 3, 4, 5 and 6 in useful numbers, and the
-round can climb the way a round of golf should. The measured spread is printed
-at the end of every run; re-read it before changing the pars.
+  1. at least nine of the ten names in a round are people you have heard of.
+     Delivered as ten of ten: both ends of every pair clear the bar for their
+     own era.
+  2. every pair carries someone from the last ten years, so no hole is two
+     names from before you were watching.
+  3. expert runs over the whole record, 1888 on, with the bar rising the
+     further back an endpoint sits -- top half of the modern game, top few per
+     cent of the pre-war one. A 1930s name has to be Dixie Dean to be worth
+     asking about; a 2024 name only has to be a starter.
 
 Usage: python3 tools/build_football_puzzles.py [--per-bucket 400]
 """
@@ -38,23 +39,21 @@ NET = os.path.join(HERE, 'assets', 'foot')
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--per-bucket', type=int, default=400)
-ap.add_argument('--recent-from', type=int, default=2011,
-                help='a "recent" player must still have been playing this season')
-ap.add_argument('--recent-apps', type=int, default=80)
-ap.add_argument('--great-apps', type=int, default=260)
-ap.add_argument('--icon-apps', type=int, default=450,
-                help='the far end of a par 5 or 6 has to be a name people know, '
-                     'and 260 appearances is not that -- it admits a great many '
-                     'sound professionals nobody outside their own club recalls')
+ap.add_argument('--recent-from', type=int, default=2016,
+                help='"the last ten years": one end of every pair reaches it')
+ap.add_argument('--floor', type=int, default=300,
+                help='absolute view floor. A rank alone would promote whoever '
+                     'happens to top a thin era band, however little anyone '
+                     'reads about them')
 ap.add_argument('--per-source', type=int, default=6,
                 help='cap pairs taken from one player per bucket, so the pool '
                      'is not five variations on the same career')
-ap.add_argument('--seed', type=int, default=20260821)
+ap.add_argument('--seed', type=int, default=20260823)
 ap.add_argument('--pl-from', type=int, default=1992,
                 help='the Premier League pools are built over these seasons '
-                     'alone, because the page now defaults to them: a puzzle '
-                     'whose answer runs through a 1975 dressing room has no '
-                     'route at all once the graph is cut to 1992 on')
+                     'alone, because the page defaults to them: a puzzle whose '
+                     'answer runs through a 1975 dressing room has no route at '
+                     'all once the graph is cut to 1992 on')
 a = ap.parse_args()
 
 # ------------------------------------------------------------------ data ----
@@ -83,55 +82,102 @@ fame = pd.read_csv(os.path.join(HERE, 'tools', 'football_fame.csv'))
 apps = np.zeros(P, np.int32)
 apps[fame.node.values] = fame.apps.values
 
-# The short and brilliant. An appearance count cannot see these -- each played
-# too few league games to clear the threshold and every one of them is better
-# known than the journeyman it lets in instead. Kept deliberately short and
-# only ever ADDED to a tier, never used to exclude anyone.
+# ------------------------------------------------------------------ fame ----
+views = np.zeros(P, np.int64)
+looked = np.zeros(P, bool)                    # we have a reading, even if zero
+raw = json.load(open(os.path.join(HERE, 'tools', 'football_views.json')))
+for rec in raw.values():
+    n = rec['node']
+    if 0 <= n < P:
+        looked[n] = True
+        views[n] = rec['views']
+print(f'{int(looked.sum())} players with a traffic reading, '
+      f'{int((views > 0).sum())} of them non-zero')
+
+# Era bands. Not decades: the shape of the game changes at the Premier League
+# and again at the war, and a band that straddles either mixes two different
+# levels of how-well-remembered into one ranking.
+BANDS = [(2016, 3000, 'still playing'),
+         (2005, 2015, 'the 2000s'),
+         (1993, 2004, 'the early Premier League'),
+         (1980, 1992, 'the eighties'),
+         (1966, 1979, 'after the World Cup'),
+         (1946, 1965, 'post-war'),
+         (1888, 1945, 'before the war')]
+# How well known you have to be FOR YOUR OWN ERA to be worth asking about, as
+# a rank within the band. Rising backwards is the whole of rule 3: the further
+# back a name sits the fewer people carry it, so the bar has to climb or the
+# older end of a puzzle is always a stranger.
+KNOWN_BAR = np.array([0.50, 0.55, 0.62, 0.70, 0.78, 0.86, 0.93])
+# ...and the far end of a five- or six-link hole has to be better known still,
+# because at that distance the men in between are unnameable either way and
+# recognising who you are being asked to reach is the only thing holding the
+# puzzle up.
+ICON_BAR = np.minimum(0.985, KNOWN_BAR + 0.06)
+
+band = np.full(P, -1, np.int8)
+for k, (lo, hi, _) in enumerate(BANDS):
+    band[(last >= lo) & (last <= hi)] = k
+
+pct = np.zeros(P)
+for k in range(len(BANDS)):
+    idx = np.where((band == k) & looked)[0]
+    if idx.size < 2:
+        continue
+    order = np.argsort(views[idx], kind='stable')
+    r = np.empty(idx.size)
+    r[order] = np.arange(idx.size)
+    pct[idx] = r / (idx.size - 1)
+
+by_name = {}
+for i, n in enumerate(names):
+    by_name.setdefault(n, []).append(i)
+
+# The short and brilliant, and the handful whose article title is not the name
+# the source holds (Kanu is "Nwankwo Kanu", so the resolver never found him).
+# Only ever ADDED to a tier, never used to exclude anyone.
 GREAT_ALSO = [
-    'Eric Cantona', 'Gianfranco Zola', 'Dennis Bergkamp', 'Ruud van Nistelrooy',
+    'Eric Cantona', 'Gianfranco Zola', 'Dennis Bergkamp', 'Ruud van Nistelrooij',
     'Jürgen Klinsmann', 'Gary Lineker', 'Peter Schmeichel', 'Roy Keane',
     'Paul Gascoigne', 'Chris Waddle', 'Duncan Edwards', 'Dixie Dean',
     'Nat Lofthouse', 'Wilf Mannion', 'Len Shackleton', 'Danny Blanchflower',
-    'Dave Mackay', 'John Charles', 'Trevor Francis', 'Kenny Dalglish',
+    'Dave MacKay', 'John Charles', 'Trevor Francis', 'Kenny Dalglish',
     'Graeme Souness', 'Glenn Hoddle', 'Bryan Robson', 'Peter Beardsley',
     'Matt Le Tissier', 'David Ginola', 'Patrick Vieira', 'Didier Drogba',
     'Fernando Torres', 'Carlos Tevez', 'Sergio Agüero', 'Luis Suárez',
     'Robin van Persie', 'Cristiano Ronaldo', 'David Beckham', 'Michael Owen',
     'Rio Ferdinand', 'Nemanja Vidic', 'Vincent Kompany', 'Yaya Touré',
     'Cesc Fàbregas', 'Luka Modric', 'Gareth Bale', 'Eden Hazard',
-    'Riyad Mahrez', 'N’Golo Kanté', 'Son Heung-Min', 'Sadio Mané',
+    'Riyad Mahrez', "N'Golo Kanté", 'Son Heung-Min', 'Sadio Mané',
+    'Kanu', 'Petr Cech', 'Robert Lee', 'Tom Finney', 'Stanley Matthews',
+    'Billy Wright', 'Bobby Moore', 'Bobby Charlton', 'Jimmy Greaves',
 ]
-by_name = {}
-for i, n in enumerate(names):
-    by_name.setdefault(n, []).append(i)
-
 extra = np.zeros(P, bool)
-found, absent = 0, []
+absent = []
 for n in GREAT_ALSO:
     hits = by_name.get(n)
     if not hits:
         absent.append(n); continue
-    # a name split into two people by the identity heuristic: take the one with
-    # the most appearances, which is the one the reader means
-    i = max(hits, key=lambda k: apps[k])
-    extra[i] = True; found += 1
+    # a name split into two people: take the one with the most appearances,
+    # which is the one the reader means
+    extra[max(hits, key=lambda k: apps[k])] = True
 if absent:
     print(f'hand-list: {len(absent)} names not in the data: {", ".join(absent)}')
 
-recent = (last >= a.recent_from) & (apps >= a.recent_apps)
-great = (apps >= a.great_apps) | extra
-# A longer hole needs a MORE famous far end, not a less famous one: the men in
-# between are unnameable either way, so the only thing that makes a par 6
-# playable rather than absurd is that both ends are people you have heard of.
-icon = (apps >= a.icon_apps) | extra
-usable = recent | great
-pool = np.where(usable)[0]
+ok_band = band >= 0
+known = (looked & ok_band & (views >= a.floor)
+         & (pct >= KNOWN_BAR[np.clip(band, 0, None)])) | extra
+icon = (looked & ok_band & (views >= a.floor)
+        & (pct >= ICON_BAR[np.clip(band, 0, None)])) | extra
+recent = last >= a.recent_from
 
-print(f'{int(recent.sum())} recent (played since {a.recent_from}/'
-      f'{str(a.recent_from+1)[2:]}, {a.recent_apps}+ apps), '
-      f'{int(great.sum())} greats ({a.great_apps}+ apps or hand-listed, '
-      f'{found} of those), {int(icon.sum())} icons ({a.icon_apps}+ apps or '
-      f'hand-listed), {len(pool)} usable endpoints')
+print(f'{int(known.sum())} known, {int(icon.sum())} icons, '
+      f'{int((known & recent).sum())} of the known still playing since '
+      f'{a.recent_from}/{str(a.recent_from + 1)[2:]}')
+for k, (lo, hi, lab) in enumerate(BANDS):
+    m = band == k
+    print(f'  {lab:26} {int((m & known).sum()):4d} known  '
+          f'{int((m & icon).sum()):4d} icons  of {int((m & looked).sum()):5d} read')
 
 # ------------------------------------------------------------- traversal ----
 
@@ -182,30 +228,48 @@ def distances(src, era=None):
     return dist
 
 
-# r* : both ends someone playing now. Beyond 3 these barely exist -- a first
-#      run of this found 24 pairs of modern players 4 apart in the whole record
-#      -- so the long holes have to reach back, exactly as the NFL ones do.
-# g* : one all-time great and one current player. This is the era gap, and it
-#      is what makes a par 4 hard without making it unnameable: both ENDS are
-#      famous even though the men between them are not.
-# i* : the same, with the far end drawn from the much stricter icon tier,
-#      because at five and six links the only thing holding the puzzle up is
-#      recognising who you are being asked to reach.
-BUCKETS = [('r2', 2, 'recent'), ('r3', 3, 'recent'),
-           ('g3', 3, 'great'), ('g4', 4, 'great'),
-           ('i5', 5, 'icon'), ('i6', 6, 'icon')]
-FAR = {'great': great, 'icon': icon}
+rng = np.random.default_rng(a.seed)
+buckets = {}
+
+
+def collect(key, d, src_pool, partner, era=None, need_recent=True, report=None):
+    """Fill buckets[key] with pairs exactly d apart.
+
+    Every pair carries at least one player from the last ten years (rule 2):
+    a source who is not one of them may only be joined to a partner who is.
+    """
+    out, pairs, n = [], set(), 0
+    order = np.where(src_pool)[0]
+    rng.shuffle(order)
+    for n, s_ in enumerate(order, 1):
+        if len(out) >= a.per_bucket:
+            break
+        dist = distances(int(s_), era)
+        want = partner
+        if need_recent and not recent[s_]:
+            want = partner & recent
+        hits = np.where((dist == d) & want)[0]
+        hits = hits[hits != int(s_)]
+        if hits.size > a.per_source:
+            hits = rng.choice(hits, a.per_source, replace=False)
+        for t in hits:
+            pr = (min(int(s_), int(t)), max(int(s_), int(t)))
+            if pr in pairs:
+                continue
+            pairs.add(pr)
+            out.append([int(s_), int(t)])
+            if len(out) >= a.per_bucket:
+                break
+    buckets[key] = out
+    print(f'  {key}: {len(out)} pairs from {n} sources', flush=True)
+    return out
+
 
 # ------------------------------------------------------- Premier League ----
 # The page defaults to the Premier League, so the default games have to be
-# playable there. These pools are built over 1992 on ALONE -- an all-time
-# puzzle whose answer runs through a 1975 dressing room simply has no route
-# once the graph is cut, and the round would hand you an unsolvable hole.
-#
-# The shape is quite different. Thirty-odd seasons of twenty clubs is small and
-# tightly connected: nobody is more than four from anyone, so there is no par 5
-# or 6 to be had and the far tiers collapse into one. p* pools, one endpoint
-# tier, distances 2 to 4.
+# playable there. Thirty-odd seasons of twenty clubs is small and tightly
+# connected -- nobody is more than four from anyone -- so there is no par 5 or
+# 6 to be had and the round is 2*2*3*3*4.
 pl_era = ts_season >= a.pl_from
 in_pl = np.zeros(P, bool)
 for i in range(P):
@@ -213,73 +277,26 @@ for i in range(P):
         if pl_era[p_ix[k]]:
             in_pl[i] = True
             break
-pl_known = in_pl & (recent | great | icon)
-print(f'{int(in_pl.sum())} players appear in {a.pl_from}/'
-      f'{str(a.pl_from+1)[2:]} or later, {int(pl_known.sum())} of them notable')
-PL_BUCKETS = [('p2', 2), ('p3', 3), ('p4', 4)]
-buckets = {k: [] for k, _, _ in BUCKETS}
-rng = np.random.default_rng(a.seed)
-sources = pool.copy()
-rng.shuffle(sources)
+pl_ok = in_pl & known
+print(f'\n{int(in_pl.sum())} players appear in {a.pl_from}/'
+      f'{str(a.pl_from + 1)[2:]} or later, {int(pl_ok.sum())} of them known '
+      f'({int((pl_ok & recent).sum())} still playing)')
+for key, d in [('p2', 2), ('p3', 3), ('p4', 4)]:
+    collect(key, d, pl_ok, pl_ok, era=pl_era)
 
-spread = {}          # what the distance distribution across the pool looks like
-for n, s_ in enumerate(sources, 1):
-    if all(len(buckets[k]) >= a.per_bucket for k, _, _ in BUCKETS):
-        print(f'  every bucket full after {n - 1} sources')
-        break
-    dist = distances(int(s_))
-    hit = dist[pool]
-    for v in hit[hit >= 0]:
-        spread[int(v)] = spread.get(int(v), 0) + 1
-    for key, d, tier in BUCKETS:
-        if len(buckets[key]) >= a.per_bucket:
-            continue
-        if tier == 'recent':
-            if not recent[s_]:
-                continue
-            hits = np.where((dist == d) & recent)[0]
-            hits = hits[hits > int(s_)]              # each unordered pair once
-        else:
-            # exactly one end from the far tier, the other someone playing now
-            far = FAR[tier]
-            if far[s_] and not recent[s_]:
-                hits = np.where((dist == d) & recent)[0]
-            elif recent[s_]:
-                hits = np.where((dist == d) & far & ~recent)[0]
-            else:
-                continue
-            hits = hits[hits != int(s_)]
-        if hits.size > a.per_source:
-            hits = rng.choice(hits, a.per_source, replace=False)
-        for t in hits:
-            buckets[key].append([int(s_), int(t)])
-            if len(buckets[key]) >= a.per_bucket:
-                break
-    if n % 200 == 0:
-        print('  ' + f'{n} sources: ' +
-              ' '.join(f'{k}={len(v)}' for k, v in buckets.items()), flush=True)
-
-# ---- and again, restricted to the Premier League ----
-pl_pool = np.where(pl_known)[0]
-rng.shuffle(pl_pool)
-for key, _ in PL_BUCKETS:
-    buckets[key] = []
-for n, s_ in enumerate(pl_pool, 1):
-    if all(len(buckets[k]) >= a.per_bucket for k, _ in PL_BUCKETS):
-        print(f'  every Premier League bucket full after {n - 1} sources')
-        break
-    dist = distances(int(s_), pl_era)
-    for key, d in PL_BUCKETS:
-        if len(buckets[key]) >= a.per_bucket:
-            continue
-        hits = np.where((dist == d) & pl_known)[0]
-        hits = hits[hits > int(s_)]
-        if hits.size > a.per_source:
-            hits = rng.choice(hits, a.per_source, replace=False)
-        for t in hits:
-            buckets[key].append([int(s_), int(t)])
-            if len(buckets[key]) >= a.per_bucket:
-                break
+# ------------------------------------------------------------- all time ----
+# r* : both ends someone playing now.
+# g* : one all-time great and one current player -- the era gap, which is what
+#      makes a par 4 hard without making it unnameable.
+# i* : the same with a far end from the stricter icon tier, because at five and
+#      six links recognising who you are being asked to reach is all there is.
+print('\nall time:')
+collect('r2', 2, known & recent, known & recent)
+collect('r3', 3, known & recent, known & recent)
+collect('g3', 3, known & ~recent, known & recent)
+collect('g4', 4, known & ~recent, known & recent)
+collect('i5', 5, icon & ~recent, known & recent)
+collect('i6', 6, icon & ~recent, known & recent)
 
 out = {'players': {}, 'buckets': {}}
 for key, pairs in buckets.items():
@@ -292,15 +309,15 @@ for key, pairs in buckets.items():
 path = os.path.join(NET, 'puzzles.json')
 json.dump(out, open(path, 'w'), separators=(',', ':'))
 print('\n' + ' '.join(f'{k}={len(v)}' for k, v in buckets.items()))
-print(f'{path}  {os.path.getsize(path)/1024:.1f} KB')
+print(f'{path}  {os.path.getsize(path) / 1024:.1f} KB')
 
-tot = sum(spread.values()) or 1
-print('\ndistance spread across the notable pool (this is what sets the pars):')
-for d in sorted(spread):
-    print(f'  {d}: {spread[d]:8d}  {100*spread[d]/tot:5.1f}%')
-
-sl = lambda y: f'{y}/{str((y+1) % 100).zfill(2)}'
-for key, pairs in buckets.items():
-    for i, j in pairs[:2]:
-        print(f'  {key}  {names[i]} ({sl(first[i])}-{sl(last[i])})  ->  '
-              f'{names[j]} ({sl(first[j])}-{sl(last[j])})')
+# ---- what a round would actually look like, which is the only real test ----
+sl = lambda y: f'{y}/{str((y + 1) % 100).zfill(2)}'
+for pools, what in [(['p2', 'p2', 'p3', 'p3', 'p4'], 'regular'),
+                    (['r2', 'r3', 'g4', 'i5', 'i6'], 'expert')]:
+    print(f'\na {what} round:')
+    for key in pools:
+        i, j = buckets[key][rng.integers(len(buckets[key]))]
+        print(f'  {key}  {names[i]:24} ({sl(first[i])}-{sl(last[i])}, '
+              f'{views[i]:>7,})  ->  {names[j]:24} ({sl(first[j])}-{sl(last[j])}, '
+              f'{views[j]:>7,})')
