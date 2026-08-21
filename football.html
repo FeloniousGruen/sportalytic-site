@@ -540,7 +540,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821g';
+<script>window.ASSET_V='20260821i';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -575,9 +575,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821g"></script>
-<script src="assets/net/view.js?v=20260821g"></script>
-<script src="assets/net/game.js?v=20260821g"></script>
+<script src="assets/net/app.js?v=20260821i"></script>
+<script src="assets/net/view.js?v=20260821i"></script>
+<script src="assets/net/game.js?v=20260821i"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -1026,7 +1026,11 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     expandBtn.title = wide
       ? 'Narrow the chart to the Premier League, 1992/93 on'
       : 'Widen the chart to every season since 1888/89';
-    expandBtn.classList.toggle('on', wide);
+    /* Never `on`. In this tool bar amber is the selected state -- it is what
+       "Direct teammates" wears while that view is up -- so lighting this one
+       whenever the chart is wide read as "Premier League is selected" when it
+       is exactly the opposite. It is an action, not a toggle; the label alone
+       carries it. */
   }
   expandBtn.onclick=()=>{
     const to = eraSel.value==='all' ? 'pl' : 'all';

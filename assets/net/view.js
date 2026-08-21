@@ -158,16 +158,84 @@ const VIEW = (() => {
     }
     return Math.max(0, Math.min(m + 10, H * 0.3));
   }
-  const midY = () => topInset() + (H - topInset()) / 2;
+  /* Memoised for the duration of a frame.
+   *
+   * sy() calls this for every point it projects, and it walks keepOut(), which
+   * is getBoundingClientRect() on six elements -- a forced layout reflow. On
+   * the all-time chart that was happening 18,874 times for the dots and twice
+   * more per edge, which is where essentially the whole frame was going: 890ms
+   * to draw, of which the actual painting is a couple. The furniture cannot
+   * move mid-frame, so measuring it once is not an approximation. */
+  let midYCache = null;
+  const midY = () => (midYCache !== null ? midYCache
+                      : (midYCache = topInset() + (H - topInset()) / 2));
+  const remeasure = () => { midYCache = null; };
 
   const sx = x => (x - cam.x) * cam.scale + W / 2;
   const sy = y => (y - cam.y) * cam.scale + midY();
 
   /* Uniform bucket grid over layout space. Rebuilt whenever the layout changes;
    * 28k points into ~64px buckets makes hit-testing a handful of comparisons. */
+  /* Level of detail.
+   *
+   * The all-time football chart is 18,876 dots and 18,875 edges, and the
+   * outer rings are dense arcs where individual dots are not separable
+   * anyway -- drawing every one costs frames to say something the eye cannot
+   * read. So a share of them are left out of the DRAWING only.
+   *
+   * Nothing else changes: the graph, the traversal, the routes and the search
+   * are all still over every player. Positions come from the full tree's leaf
+   * counts, so a hidden player's place is computed exactly as before and is
+   * simply not painted -- which means the moment anything makes them matter
+   * (search, a route, a click) they appear in the right spot, in a cluster
+   * that already exists, with nothing else shifting to accommodate them.
+   *
+   * Who is dropped: only leaves, only where a parent has a big fan of them,
+   * and never anyone carrying a portrait. Structure -- the spokes, the
+   * branching, the shape of the thing -- is untouched; what thins is the
+   * repetition inside an arc.
+   */
+  let drawSkip = null;          // per node: leave out of the drawing
+  let pathMark = null;          // per node: on the highlighted chain
+  /* Default 1: draw everyone.
+     This machinery was built to cut the lag by thinning the outer arcs, and it
+     works -- but the lag turned out to be the per-dot layout reflow above, and
+     with that fixed the full chart draws in under 3ms. Dropping dots would now
+     cost information and buy nothing. It stays because it is tested and free
+     at 1, and because a much older phone may yet want it: VIEW.detail = 0.5. */
+  let detail = 1;               // share of a dense fan's leaves to keep
+
+  function shown(i) {
+    return !drawSkip || !drawSkip[i] || i === centre || i === selected ||
+           i === hover || (pathMark && pathMark[i]);
+  }
+
+  function buildSkip() {
+    const n = NET.P, par = NET.parent, dist = NET.dist;
+    if (!drawSkip || drawSkip.length !== n) drawSkip = new Uint8Array(n);
+    drawSkip.fill(0);
+    if (detail >= 1) return;
+    // how many children each node has, so a leaf can be told from a fork
+    const kids = new Int32Array(n);
+    for (let i = 0; i < n; i++) { const p = par[i]; if (p >= 0) kids[p]++; }
+    // keep one in every `stride` leaves of a fan, in the order they are met
+    const stride = Math.max(2, Math.round(1 / Math.max(0.05, detail)));
+    const seen = new Int32Array(n);
+    const MIN_FAN = 6;           // below this a fan is sparse enough to read
+    for (let i = 0; i < n; i++) {
+      if (dist[i] <= 1) continue;                 // centre and first ring stay
+      if (kids[i]) continue;                      // only ever drop leaves
+      if (hasFace && hasFace[i]) continue;        // never someone with a face
+      const p = par[i];
+      if (p < 0 || kids[p] < MIN_FAN) continue;
+      if (seen[p]++ % stride) drawSkip[i] = 1;
+    }
+  }
+
   function buildGrid() {
     const px = NET.px, py = NET.py, n = NET.P;
     const nd = NET.DEG_COLOUR.length;
+    buildSkip();
     buckets = Array.from({ length: nd }, () => []);
     for (let i = 0; i < n; i++) {
       const d = NET.dist[i];
@@ -197,6 +265,7 @@ const VIEW = (() => {
 
   function pick(mx, my) {
     if (!grid) return -1;
+    remeasure();
     const wx = (mx - W / 2) / cam.scale + cam.x, wy = (my - midY()) / cam.scale + cam.y;
     // a player wearing a portrait should be grabbable by the portrait, not by
     // the small dot hiding behind it
@@ -232,6 +301,7 @@ const VIEW = (() => {
 
   function draw() {
     const t0 = performance.now();
+    remeasure();
     ctx.fillStyle = NET.BG;
     ctx.fillRect(0, 0, W, H);
     const moving = morph < 1;
@@ -263,6 +333,7 @@ const VIEW = (() => {
         if (p < 0 || (throughMask && throughMask[i] && !throughMask[p] && p !== selected))
           p = par[i];
         if (p < 0) continue;
+        if (!shown(i)) continue;          // its dot is not drawn either
         if (ringSegs && (dist[i] > 1 || dist[p] > 1)) continue;
         let ax = px[i], ay = py[i], bx = px[p], by = py[p];
         if (useMorph) {
@@ -293,6 +364,7 @@ const VIEW = (() => {
         const i = bucket[bi];
         if (litMask) continue;                         // drawn by state, below
         if (throughMask && throughMask[i]) continue;   // drawn hot, below
+        if (!shown(i)) continue;
         let x = px[i], y = py[i];
         if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
         if (!(x === x)) continue;
@@ -667,6 +739,7 @@ const VIEW = (() => {
    * Kelce has 41 at eleven degrees, other centres have thousands -- so fitting
    * to the extreme leaves one layout tiny and lets the next overflow. */
   function fitScale() {
+    remeasure();
     // A canvas that has not been laid out yet reports zero size, and a zero
     // scale collapses all 29,000 dots onto one pixel -- the chart looks empty
     // until you press Fit. Keep whatever scale we have until there is a box.
@@ -704,7 +777,22 @@ const VIEW = (() => {
     get hasThrough() { return !!throughMask; },
     get ringMode() { return !!ringSegs; },
     invalidate,
-    set path(p) { path = p; dirty = true; },
+    /* 1 draws every dot. Lower keeps that share of each dense fan's leaves;
+       the graph is unaffected either way. */
+    set detail(v) { detail = Math.max(0.05, Math.min(1, +v || 1)); buildGrid(); dirty = true; },
+    get detail() { return detail; },
+    get drawnCount() {
+      let n = 0;
+      for (let i = 0; i < NET.P; i++) if (NET.dist[i] >= 0 && shown(i)) n++;
+      return n;
+    },
+    set path(p) {
+      path = p;
+      if (!pathMark || pathMark.length !== NET.P) pathMark = new Uint8Array(NET.P);
+      pathMark.fill(0);
+      for (const i of path) pathMark[i] = 1;
+      dirty = true;
+    },
     get path() { return path; },
     set selected(i) {
       if (i !== selected) { growWho = i; growFrom = performance.now(); }
