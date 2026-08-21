@@ -350,19 +350,28 @@ const GAME = (() => {
          The match is a substring anywhere in the name, which was harmless at
          five letters and useless at two: "sa" put Alan Halsall above Mohamed
          Salah, and "robe" led with a Robertson who played twice in 1902. So
-         a name that STARTS with what you typed comes first, then one whose
-         surname does, then the rest -- and within each, the most recent
+         Surname first, because that is how anyone looks for a footballer --
+         you type Salah or Haaland, not Mohamed or Erling. Then forename, then
+         a middle name, then anywhere at all; and within each the most recent
          player, who is overwhelmingly the one being reached for.
          Scanned once with a fixed-size shortlist rather than sorting 18,876
          rows on every keystroke. */
       const L2 = lower(), CAP = 25;
       const hits = [];
       for (let i = 0; i < NET.P; i++) {
-        const at = L2[i].indexOf(q);
-        if (at < 0) continue;
-        const rank = at === 0 ? 0 : (L2[i][at - 1] === ' ' ? 1 : 2);
+        const nm = L2[i];
+        const sp = nm.lastIndexOf(' ');
+        const sur = sp < 0 ? 0 : sp + 1;     // one-word names are their own surname
+        let rank;
+        if (nm.startsWith(q, sur)) rank = 0;          // surname
+        else if (nm.startsWith(q)) rank = 1;          // forename
+        else {
+          const at = nm.indexOf(q);
+          if (at < 0) continue;
+          rank = nm[at - 1] === ' ' ? 2 : 3;          // middle name, then mid-word
+        }
         hits.push({ i, rank, last: NET.lastSeason[i] });
-        if (hits.length > 400) break;        // enough to rank well
+        if (hits.length > 600) break;        // enough to rank well
       }
       hits.sort((a, b) => a.rank - b.rank || b.last - a.last);
       const out = hits.slice(0, CAP).map(h => h.i);
