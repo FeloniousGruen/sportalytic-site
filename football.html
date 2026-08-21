@@ -73,7 +73,6 @@
 :root[data-theme="light"] .gmenu.m-daily{--c:#B45309}
 :root[data-theme="light"] .gmenu.m-expedition{--c:#A21CAF}
 :root[data-theme="light"] .gmenu.m-archive{--c:#475569}
-:root[data-theme="light"] .gmenu.m-expert{--c:#475569}
 :root[data-theme="light"] .gmenu[class*="m-"]{
   background:color-mix(in srgb,var(--c) 13%,#FFFFFF);
   border-color:color-mix(in srgb,var(--c) 55%,#FFFFFF)}
@@ -146,9 +145,16 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 :root[data-theme="light"] #era.narrowed{border-color:var(--amber);color:var(--amber)}
 /* Said once, under the controls, when the era has taken most of the record
    away -- otherwise the chart looks broken rather than filtered. */
-#eraNote{align-self:flex-start;max-width:min(560px,100%);background:var(--panel);
-  border:1px solid var(--greyd);border-left:3px solid var(--amber);border-radius:8px;
-  padding:8px 11px;font-size:12px;line-height:1.5;color:#9CC2DC}
+#eraNote{position:relative;align-self:flex-start;max-width:min(560px,100%);
+  background:var(--panel);border:1px solid var(--greyd);border-left:3px solid var(--amber);
+  border-radius:8px;padding:8px 34px 8px 11px;font-size:12px;line-height:1.5;color:#9CC2DC}
+/* It has said its piece by the time you have read it, and it sits over the
+   chart. Dismissing is not the same as changing the era back -- the era stays
+   exactly as you set it. */
+#eraX{position:absolute;top:3px;right:5px;width:22px;height:22px;line-height:1;
+  background:none;border:0;color:var(--grey);font-size:17px;cursor:pointer;
+  border-radius:5px;padding:0}
+#eraX:hover{color:var(--ink);background:rgba(255,255,255,.08)}
 #eraNote b{color:var(--amber)}
 #eraNote button{background:none;border:0;padding:0;font:inherit;color:var(--amber);
   text-decoration:underline;cursor:pointer}
@@ -258,7 +264,19 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .gmenu.m-expedition{--c:#E879F9} .gmenu.m-archive{--c:#E2E8F0}
 /* expert is a setting rather than a game, so it reads cooler than the four
    above it -- a slate blue, present but not competing for the first press */
-.gmenu.m-expert{--c:#94A3B8}
+/* A segmented pair, not two buttons: one of them is always on, and which one
+   is the point. Sized down from the mode buttons so it reads as a setting. */
+.diff{display:flex;gap:0;margin:2px 0 6px;border:1px solid var(--greyd);
+  border-radius:8px;overflow:hidden}
+.dbtn{flex:1;background:transparent;color:var(--grey);border:0;padding:7px 8px;
+  font:inherit;font-size:12px;font-weight:bold;cursor:pointer;letter-spacing:.02em}
+.dbtn:hover{color:var(--ink);background:rgba(255,255,255,.05)}
+.dbtn.on{background:var(--amber);color:#0B1117}
+.dbtn+.dbtn{border-left:1px solid var(--greyd)}
+.diffnote{color:var(--grey);font-size:11px;line-height:1.45;margin:0 0 4px}
+:root[data-theme="light"] .diff{border-color:#D8E0E8}
+:root[data-theme="light"] .dbtn{color:#64748B}
+:root[data-theme="light"] .dbtn.on{background:#FBC247;color:#1A202C}
 .gmenu[class*="m-"]{border:1px solid var(--c);
   background:color-mix(in srgb,var(--c) 10%,transparent)}
 .gmenu[class*="m-"] b{color:var(--c)}
@@ -522,7 +540,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821f';
+<script>window.ASSET_V='20260821g';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -557,9 +575,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821f"></script>
-<script src="assets/net/view.js?v=20260821f"></script>
-<script src="assets/net/game.js?v=20260821f"></script>
+<script src="assets/net/app.js?v=20260821g"></script>
+<script src="assets/net/view.js?v=20260821g"></script>
+<script src="assets/net/game.js?v=20260821g"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -1073,9 +1091,12 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
       (res.all?'':`${e.note} <b>${res.players.toLocaleString()}</b> of
         ${NET.P.toLocaleString()} players are in it, and the distances are worked
         out over those seasons alone. `)+
-      `<button id="eraAll">Back to all time</button>`;
+      `<button id="eraAll">Back to all time</button>`+
+      `<button id="eraX" title="Dismiss">&times;</button>`;
     const b=document.getElementById('eraAll');
     if(b) b.onclick=()=>{ eraSel.value='all'; applyEra('all'); };
+    const x=document.getElementById('eraX');
+    if(x) x.onclick=()=>{ note.hidden=true; };
   }
 
   /* Each rule set has its own pools, built offline over its own seasons, so
@@ -1090,11 +1111,14 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     applyEra(want,{announce:false,teardown:false});
     const note=$('#eraNote');
     note.hidden=false;
-    note.innerHTML=GAME.expert
-      ? `Expert mode plays over <b>every season since 1888/89</b>, so the chart
-         has widened to match.`
+    note.innerHTML=(GAME.expert
+      ? `Expert plays over <b>all top-flight football</b>, back to 1888/89, so
+         the chart has widened to match.`
       : `These games are played over the <b>Premier League</b>, so the chart has
-         narrowed to match. Expert mode uses the whole record.`;
+         narrowed to match.`)+
+      `<button id="eraX" title="Dismiss">&times;</button>`;
+    const xx=document.getElementById('eraX');
+    if(xx) xx.onclick=()=>{ note.hidden=true; };
     setTimeout(()=>{ if(!note.hidden && /plays over|are played over/.test(note.textContent))
                        note.hidden=true; },6000);
   }
@@ -1424,6 +1448,13 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
        <h2>Play</h2>
        <div class="lead menu-lead">Every link is checked against the record: two
          players only join if they played for the same club in the same season.</div>
+       <div class="diff" role="group" aria-label="Difficulty">
+         <button class="dbtn ${GAME.expert?'':'on'}" id="dReg">Regular</button>
+         <button class="dbtn ${GAME.expert?'on':''}" id="dExp">Expert</button>
+       </div>
+       <div class="diffnote">${GAME.expert
+         ? 'Across all top-flight football, not just the Premier League. Par 2·3·4·5·6.'
+         : 'The Premier League, 1992/93 on. Par 2·2·3·3·4.'}</div>
        <button class="gmenu m-daily" id="gm2"><b>The daily</b>
          <span>One pair a day, the same for everyone. Join them in under
            ${GAME.expert?10:8}.</span></button>
@@ -1434,13 +1465,16 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
          <span>Start anywhere. Name a player, their teammates light up, and you
            see how much of the network you can uncover.</span></button>
        <button class="gmenu m-archive" id="gm4"><b>Archive</b>
-         <span>Any daily since the start, and how your scores have gone.</span></button>
-       <button class="gmenu m-expert" id="gm5"><b>${GAME.expert?'✓ Expert mode':'Expert mode'}</b>
-         <span>${GAME.expert
-           ? 'On. The same games over every season since 1888/89 — par 2·3·4·5·6, and the chart widens to match.'
-           : 'The same games over every season since 1888/89, not just the Premier League. Longer holes, older names, its own scores.'}</span></button>`;
-    $('#gm5').onclick=()=>{ GAME.setExpert(!GAME.expert); eraToPlay(); gameMenu(); };
+         <span>Any daily since the start, and how your scores have gone.</span></button>`;
     $('#gmclose').onclick=closeGame;
+    /* Difficulty is a setting the four games below inherit, not a fifth game,
+       so it sits above them and stays visible rather than being something you
+       go into and come out of. Switching it moves the chart to the era those
+       pools were built for. */
+    const setDiff=v=>()=>{ if(GAME.expert===v) return;
+                           GAME.setExpert(v); eraToPlay(); gameMenu(); };
+    $('#dReg').onclick=setDiff(false);
+    $('#dExp').onclick=setDiff(true);
     // starting a mode locks the chart; the menu itself does not
     const play=fn=>()=>{ VIEW.interactive=false; fn(); };
     $('#gm1').onclick=play(()=>{ VIEW.labels=!onPhone(); GAME.startRound(); });
