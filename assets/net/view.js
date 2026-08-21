@@ -665,7 +665,16 @@ const VIEW = (() => {
    * goes back to NET.px directly, so anyone no longer in the era stops being
    * drawn at all rather than sitting at the origin. */
   let toX = null, toY = null;
-  function beginMorph(ms = 900) {
+  /* `radial` sends arrivals and departures OUTWARD instead of through the
+     middle, which is what you want when the centre has not changed. Widening
+     the era then reads as a whole outer half of the game dropping in from
+     beyond the edge of the screen; narrowing it reads as those rings being
+     flung out past you while the camera closes in on what is left. Both are
+     the same motion the reels use.
+     Through the middle is still right when the centre itself changes -- there
+     is no "outward" that means anything when every position has moved. */
+  const OFF = 2.6;                 // how far beyond its ring a dot starts
+  function beginMorph(ms = 900, radial = false) {
     const n = NET.P;
     if (!toX || toX.length !== n) { toX = new Float32Array(n); toY = new Float32Array(n); }
     if (fromX && fromX.length === n) {
@@ -673,9 +682,15 @@ const VIEW = (() => {
         const fx = fromX[i], tx = NET.px[i];
         const hadPos = fx === fx, hasPos = tx === tx;
         if (hasPos) { toX[i] = tx; toY[i] = NET.py[i]; }
-        else if (hadPos) { toX[i] = 0; toY[i] = 0; }        // leaving: fall in
-        else { toX[i] = NaN; toY[i] = NaN; }                // absent either way
-        if (!hadPos && hasPos) { fromX[i] = 0; fromY[i] = 0; }  // arriving: fly out
+        else if (hadPos) {
+          // leaving: outward past the edge, or in through the middle
+          if (radial) { toX[i] = fx * OFF; toY[i] = fromY[i] * OFF; }
+          else { toX[i] = 0; toY[i] = 0; }
+        } else { toX[i] = NaN; toY[i] = NaN; }               // absent either way
+        if (!hadPos && hasPos) {                             // arriving
+          if (radial) { fromX[i] = tx * OFF; fromY[i] = NET.py[i] * OFF; }
+          else { fromX[i] = 0; fromY[i] = 0; }
+        }
       }
     } else { toX = null; toY = null; }
     morph = 0; morphStart = performance.now(); morphMs = ms;

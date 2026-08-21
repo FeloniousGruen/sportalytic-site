@@ -163,6 +163,12 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 #eraNote b{color:var(--amber)}
 #eraNote button{background:none;border:0;padding:0;font:inherit;color:var(--amber);
   text-decoration:underline;cursor:pointer}
+/* Overlaid, not in the flow: see syncSheetNow for why the heading must not
+   move when a search returns a long list. */
+@media(min-width:821px){
+  #results{position:absolute;top:100%;left:0;margin-top:8px;z-index:6}
+  #eraNote{position:absolute;top:100%;left:0;margin-top:8px;z-index:6}
+}
 #results{align-self:flex-start;min-width:260px;background:var(--panel);border:1px solid var(--greyd);border-radius:10px;max-height:46vh;overflow:auto;min-width:260px;z-index:5}
 #results div{padding:8px 12px;cursor:pointer;font-size:14px;border-bottom:1px solid rgba(255,255,255,.05)}
 #results div:hover{background:#1d2833}
@@ -521,7 +527,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   <canvas id="cv"></canvas>
   <div id="loading">Loading the network…</div>
   <div id="topbar">
-  <div class="hud">
+  <div class="hud" style="position:relative">
     <input id="q" placeholder="Search a player…" autocomplete="off">
     <button id="reset" class="tbtn" title="Put the chart back: the last player you picked, centred, with nothing else on">Reset</button>
     <select id="era" title="Which seasons count as a link"></select>
@@ -558,7 +564,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821w';
+<script>window.ASSET_V='20260821x';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -593,9 +599,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821w"></script>
-<script src="assets/net/view.js?v=20260821w"></script>
-<script src="assets/net/game.js?v=20260821w"></script>
+<script src="assets/net/app.js?v=20260821x"></script>
+<script src="assets/net/view.js?v=20260821x"></script>
+<script src="assets/net/game.js?v=20260821x"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -927,7 +933,14 @@ function syncSheetNow(){
   // Measured rather than guessed at: reserving a flat 48vh leaves a dead band
   // under a short card and clips the chart under a tall one.
   STAGE.style.setProperty('--sheet', card ? (card.offsetHeight + 64) + 'px' : '0px');
-  const tb = document.getElementById('topbar').offsetHeight;
+  /* Measured from the CONTROLS, not the whole top bar.
+     The results list and the era note live inside that bar, so a search
+     returning eleven rows pushed the heading a third of the way down the
+     chart and left it sitting across the middle of the network. Those two
+     overlay the chart; only the row of controls actually reserves space. */
+  const base = document.querySelector('.hud');
+  const sr = STAGE.getBoundingClientRect(), hr = base.getBoundingClientRect();
+  const tb = Math.round(hr.bottom - sr.top);
   const ti = document.getElementById('title').offsetHeight;
   STAGE.style.setProperty('--titleTop', (tb + 12) + 'px');
   STAGE.style.setProperty('--top', (tb + ti + 20) + 'px');
@@ -1174,10 +1187,15 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
        which is the honest picture: they are not somewhere else, they are gone.
        A little slower than a recentre, because far more is moving. */
     VIEW.captureFrom();
+    const heldCentre = CENTRE;
     const rr=NET.recentre(CENTRE);
     VIEW.centre=CENTRE; VIEW.path=[]; VIEW.selected=CENTRE;
     applyCentreImage();
-    VIEW.beginMorph(1100);
+    /* Outward only when the chart stays hung on the same player -- then every
+       ring keeps its bearing and the arrivals genuinely belong further out.
+       If the era had to move the centre, every position has changed and
+       "outward" means nothing, so those fall back through the middle. */
+    VIEW.beginMorph(1100, heldCentre === CENTRE && !moved);
     VIEW.buildGrid(); VIEW.invalidate();
     stats(rr);
     fillSeasons(club.value);
