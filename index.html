@@ -145,6 +145,11 @@ h2.sec{font-family:var(--display);text-transform:uppercase;font-size:clamp(29px,
 .sec-lede{color:#AEBAC6;max-width:46em;margin:0 0 52px;font-size:17.5px}
 
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+/* The interactives are a pair, not a trio. This lives here rather than inline
+   on the element because an inline grid-template-columns outranks every
+   stylesheet rule there is -- including the one that stacks cards on a phone,
+   which is how two of these came to sit side by side in 168px columns. */
+#page-graphics .cards{grid-template-columns:repeat(2,1fr)}
 .card{background:var(--panel);border:1px solid rgba(255,255,255,.07);padding:34px 30px 32px;transition:border-color .22s,transform .22s}
 .card:hover{border-color:rgba(251,194,71,.45);transform:translateY(-3px)}
 .card .num{font-family:var(--display);color:var(--amber);font-size:13px;letter-spacing:.16em;margin-bottom:16px}
@@ -266,6 +271,7 @@ footer a:hover{color:var(--ink)}
   .hero h1{margin-bottom:0}
   .grid{grid-template-columns:repeat(3,1fr)}
   .cards,.plans,.aud{grid-template-columns:1fr}
+  #page-graphics .cards{grid-template-columns:1fr}   /* beats the id rule above */
   .steps{grid-template-columns:repeat(2,1fr)}
   .facts .wrap{grid-template-columns:repeat(2,1fr);gap:22px}
   .cwrap{grid-template-columns:1fr;gap:36px}
@@ -521,13 +527,21 @@ footer a:hover{color:var(--ink)}
     <div class="wrap">
       <p class="eyebrow">Graphics</p>
       <h2 class="sec rev">Interactive</h2>
-      <div class="cards rev" style="grid-template-columns:repeat(2,1fr)">
+      <div class="cards rev">
         <a class="card" href="network.html" style="text-decoration:none;display:block">
           <div class="num">01</div>
           <h3>11 Degrees of Travis Kelce</h3>
-          <p>Every player since 1920, joined wherever two of them shared a squad. Click anyone to
-             see their route to the centre, or make them the centre and watch the whole thing
+          <p>Every NFL player since 1920, joined wherever two of them shared a squad. Click anyone
+             to see their route to the centre, or make them the centre and watch the whole thing
              rebuild around them. 29,513 players, 2.2 million connections.</p>
+          <p style="color:var(--amber);margin-bottom:0">Open it &rarr;</p>
+        </a>
+        <a class="card" href="football.html" style="text-decoration:none;display:block">
+          <div class="num">02</div>
+          <h3>10 Degrees of Erling Haaland</h3>
+          <p>The same thing for the English top flight, all the way back to the first season in
+             1888. Narrow it to the Premier League, or to any era you like, and the distances are
+             worked out again over those seasons alone. 18,761 players, 66,561 club-seasons.</p>
           <p style="color:var(--amber);margin-bottom:0">Open it &rarr;</p>
         </a>
       </div>
