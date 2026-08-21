@@ -553,11 +553,27 @@ const GAME = (() => {
     if (!ok) { ta.focus(); ta.select(); }
   }
 
-  async function share() {
-    const text = await shareTextOf();
-    const ok = await copyText(text);
-    shareBox(text, ok);
-    return ok ? 'Copied to the clipboard' : null;
+  /* Wire the share button of whichever card is on screen. The button says what
+     it is FOR -- sharing -- and then reports what it DID, on the button itself:
+     a toast at the bottom of a scrolled card is easy to miss, and pressing a
+     button that appears to do nothing is the complaint this is fixing. */
+  function wireShare() {
+    const btn = $('#gshare');
+    if (!btn) return;
+    const label = btn.textContent;
+    btn.onclick = async () => {
+      const text = await shareTextOf();
+      const ok = await copyText(text);
+      shareBox(text, ok);
+      btn.textContent = ok ? 'Copied ✓' : 'Copy it from below';
+      btn.classList.toggle('done', ok);
+      clearTimeout(wireShare.t);
+      wireShare.t = setTimeout(() => {
+        // the card may have been rebuilt underneath us; check before writing
+        if (btn.isConnected) { btn.textContent = label; btn.classList.remove('done'); }
+      }, 2600);
+      if (ok) flash('Copied to the clipboard');
+    };
   }
 
   // ------------------------------------------------------------ the daily --
@@ -777,7 +793,7 @@ const GAME = (() => {
         ? (state.mode === 'round'
             ? `<button class="btn" id="gnexth">${
                 state.hole === HOLES().length - 1 ? 'See the card' : 'Next hole'}</button>`
-            : `<button class="btn" id="gshare">Copy your result</button>
+            : `<button class="btn" id="gshare">Share your result</button>
                <button class="btn ghost" id="gagain">Back</button>
                <div id="gshareout"></div>`)
         : `${L.clueSpent
@@ -795,8 +811,7 @@ const GAME = (() => {
       $('#ggive').onclick = () => { L.reveal(); if (daily) saveDaily(); render(); };
     } else {
       const nx = $('#gnexth'); if (nx) nx.onclick = nextHole;
-      const sh = $('#gshare');
-      if (sh) sh.onclick = async () => { const m = await share(); if (m) flash(m); };
+      wireShare();
       const ag = $('#gagain'); if (ag) ag.onclick = () => onExit();
     }
     $('#gclose').onclick = () => onExit();
@@ -828,13 +843,10 @@ const GAME = (() => {
        }).join('')}</ul>
        <div class="gmeta">Par ${t.par} · you shot ${t.shot}</div>
        ${distribution(past, t.shot, t.par, t.par + 12, 'Your rounds')}
-       <button class="btn" id="gshare">Copy the card</button>
+       <button class="btn" id="gshare">Share your result</button>
        <button class="btn ghost" id="gagain">Play another round</button>
        <div id="gshareout"></div>`;
-    $('#gshare').onclick = async () => {
-      const msg = await share();
-      if (msg) flash(msg);
-    };
+    wireShare();
     $('#gagain').onclick = startRound;
     $('#gclose').onclick = () => onExit();
   }

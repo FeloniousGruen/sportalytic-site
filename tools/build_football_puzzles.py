@@ -114,6 +114,12 @@ KNOWN_BAR = np.array([0.50, 0.55, 0.62, 0.70, 0.78, 0.86, 0.93])
 # recognising who you are being asked to reach is the only thing holding the
 # puzzle up.
 ICON_BAR = np.minimum(0.985, KNOWN_BAR + 0.06)
+# ...and one rung DOWN, for the single deep cut a round is allowed. Every name
+# being a household one makes a round that never surprises anybody; a hole
+# whose far end you half-remember is the one worth talking about afterwards.
+# Strictly below the known bar, so the wide pools always contain exactly one
+# lesser name rather than sometimes two famous ones.
+WIDE_BAR = np.maximum(0.10, KNOWN_BAR - 0.25)
 
 band = np.full(P, -1, np.int8)
 for k, (lo, hi, _) in enumerate(BANDS):
@@ -169,9 +175,12 @@ known = (looked & ok_band & (views >= a.floor)
          & (pct >= KNOWN_BAR[np.clip(band, 0, None)])) | extra
 icon = (looked & ok_band & (views >= a.floor)
         & (pct >= ICON_BAR[np.clip(band, 0, None)])) | extra
+b = np.clip(band, 0, None)
+wide = (looked & ok_band & (views >= a.floor)
+        & (pct >= WIDE_BAR[b]) & (pct < KNOWN_BAR[b]) & ~extra)
 recent = last >= a.recent_from
 
-print(f'{int(known.sum())} known, {int(icon.sum())} icons, '
+print(f'{int(known.sum())} known, {int(icon.sum())} icons, {int(wide.sum())} wide, '
       f'{int((known & recent).sum())} of the known still playing since '
       f'{a.recent_from}/{str(a.recent_from + 1)[2:]}')
 for k, (lo, hi, lab) in enumerate(BANDS):
@@ -283,6 +292,9 @@ print(f'\n{int(in_pl.sum())} players appear in {a.pl_from}/'
       f'({int((pl_ok & recent).sum())} still playing)')
 for key, d in [('p2', 2), ('p3', 3), ('p4', 4)]:
     collect(key, d, pl_ok, pl_ok, era=pl_era)
+# the one deep cut: a lesser name at one end, someone current at the other, so
+# the hole is still anchored by a player you know
+collect('w3', 3, in_pl & wide, pl_ok & recent, era=pl_era)
 
 # ------------------------------------------------------------- all time ----
 # r* : both ends someone playing now.
@@ -297,6 +309,7 @@ collect('g3', 3, known & ~recent, known & recent)
 collect('g4', 4, known & ~recent, known & recent)
 collect('i5', 5, icon & ~recent, known & recent)
 collect('i6', 6, icon & ~recent, known & recent)
+collect('w3x', 3, wide, known & recent)
 
 out = {'players': {}, 'buckets': {}}
 for key, pairs in buckets.items():
@@ -313,8 +326,8 @@ print(f'{path}  {os.path.getsize(path) / 1024:.1f} KB')
 
 # ---- what a round would actually look like, which is the only real test ----
 sl = lambda y: f'{y}/{str((y + 1) % 100).zfill(2)}'
-for pools, what in [(['p2', 'p2', 'p3', 'p3', 'p4'], 'regular'),
-                    (['r2', 'r3', 'g4', 'i5', 'i6'], 'expert')]:
+for pools, what in [(['p2', 'p2', 'w3', 'p3', 'p4'], 'regular'),
+                    (['r2', 'w3x', 'g4', 'i5', 'i6'], 'expert')]:
     print(f'\na {what} round:')
     for key in pools:
         i, j = buckets[key][rng.integers(len(buckets[key]))]
