@@ -55,17 +55,37 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+[[redirects]]
+  from = "/11-degrees"
+  to = "/network.html"
+  status = 200
+
 [[headers]]
   for = "/link-up-play.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# The football page was /football.html until it was named. Anything already
+# Clean addresses. A .html on the end of a URL somebody is going to paste into
+# a message is just noise, so /link-up-play is the canonical one and the file
+# behind it is served in place -- a 200 rewrite, not a redirect, so the bar
+# keeps the address you typed.
+[[redirects]]
+  from = "/link-up-play"
+  to = "/link-up-play.html"
+  status = 200
+
+# ...and the two addresses it has already had are kept alive. Anything already
 # shared -- a link in a message, a preview card a scraper has cached -- still
-# points there, so it is kept alive rather than 404ing. 301 so the new address
-# is the one that gets remembered.
+# lands, and a 301 is what makes the clean one the address that gets
+# remembered from here on.
 [[redirects]]
   from = "/football.html"
-  to = "/link-up-play.html"
+  to = "/link-up-play"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/link-up-play.html"
+  to = "/link-up-play"
   status = 301
   force = true

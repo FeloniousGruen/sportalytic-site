@@ -296,7 +296,8 @@ const VIEW = (() => {
   function frameXY(i) {
     if (morph >= 1 || !fromX) return [NET.px[i], NET.py[i]];
     const t = morph;
-    return [fromX[i] + (NET.px[i] - fromX[i]) * t, fromY[i] + (NET.py[i] - fromY[i]) * t];
+    const tx = toX ? toX[i] : NET.px[i], ty = toY ? toY[i] : NET.py[i];
+    return [fromX[i] + (tx - fromX[i]) * t, fromY[i] + (ty - fromY[i]) * t];
   }
 
   function draw() {
@@ -337,6 +338,7 @@ const VIEW = (() => {
         if (ringSegs && (dist[i] > 1 || dist[p] > 1)) continue;
         let ax = px[i], ay = py[i], bx = px[p], by = py[p];
         if (useMorph) {
+          if (toX) { ax = toX[i]; ay = toY[i]; bx = toX[p]; by = toY[p]; }
           ax = fromX[i] + (ax - fromX[i]) * t; ay = fromY[i] + (ay - fromY[i]) * t;
           bx = fromX[p] + (bx - fromX[p]) * t; by = fromY[p] + (by - fromY[p]) * t;
         }
@@ -369,7 +371,10 @@ const VIEW = (() => {
         if (throughMask && throughMask[i]) continue;   // drawn hot, below
         if (!shown(i)) continue;
         let x = px[i], y = py[i];
-        if (useMorph) { x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t; }
+        if (useMorph) {
+          if (toX) { x = toX[i]; y = toY[i]; }
+          x = fromX[i] + (x - fromX[i]) * t; y = fromY[i] + (y - fromY[i]) * t;
+        }
         if (!(x === x)) continue;
         const X = sx(x), Y = sy(y);
         if (X < -8 || Y < -8 || X > W + 8 || Y > H + 8) continue;
@@ -644,7 +649,35 @@ const VIEW = (() => {
     fromY = Float32Array.from(NET.py);
   }
 
+  /* Where a dot comes from, and where it goes.
+   *
+   * Changing the era adds players who were not on the chart and removes ones
+   * who were. A player outside the era has no position at all -- NaN -- so
+   * without this the arrivals simply appeared at the end of the morph and the
+   * departures blinked out on its first frame. Nothing moved; the chart cut.
+   *
+   * Both get the centre as their other end. An arriving dot flies outward from
+   * the middle to its ring; a departing one falls back into the middle and is
+   * gone when it lands. That is the motion the reels use, and it reads as the
+   * network growing and contracting rather than being replaced.
+   *
+   * toX/toY only exist for the duration of the morph. Once it lands the draw
+   * goes back to NET.px directly, so anyone no longer in the era stops being
+   * drawn at all rather than sitting at the origin. */
+  let toX = null, toY = null;
   function beginMorph(ms = 900) {
+    const n = NET.P;
+    if (!toX || toX.length !== n) { toX = new Float32Array(n); toY = new Float32Array(n); }
+    if (fromX && fromX.length === n) {
+      for (let i = 0; i < n; i++) {
+        const fx = fromX[i], tx = NET.px[i];
+        const hadPos = fx === fx, hasPos = tx === tx;
+        if (hasPos) { toX[i] = tx; toY[i] = NET.py[i]; }
+        else if (hadPos) { toX[i] = 0; toY[i] = 0; }        // leaving: fall in
+        else { toX[i] = NaN; toY[i] = NaN; }                // absent either way
+        if (!hadPos && hasPos) { fromX[i] = 0; fromY[i] = 0; }  // arriving: fly out
+      }
+    } else { toX = null; toY = null; }
     morph = 0; morphStart = performance.now(); morphMs = ms;
     fromScale = cam.scale; toScale = fitScale();
     cam.x = 0; cam.y = 0;
