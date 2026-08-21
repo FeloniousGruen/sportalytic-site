@@ -88,11 +88,11 @@ TITLE = {
     'AFC Bournemouth': 'AFC Bournemouth',
 }
 
-# Clubs whose article carries no usable mark. Burnley's best-scoring file was a
-# black-and-white team photograph from 1889-90; better no crest than a
-# photograph pretending to be one. The wedge falls back to a tinted band and
-# its three letters, which is what every club had before this existed.
-NO_CREST = {'BUR'}
+# The wedge falls back to a tinted band and its three letters, which is what
+# every club had before crests existed.
+# Accrington F.C. folded in 1896 and has no mark on its article -- only an
+# 1889-93 league results table. Nothing to fetch.
+NO_CREST = {'ACC'}
 
 
 # Junk that appears on every club article and is never the crest.
@@ -198,12 +198,27 @@ def tint(im):
 # saturated colour" is meaningless and the extractor falls back to grey.
 # Where the article's best-scoring file is not the club's current mark.
 # Tottenham's scored "Tottenham Hotspur old logo.png" -- literally the old one.
-FILE_OVERRIDE = {'TOT': 'File:Spurs 2017 badge.svg'}
+# Clubs whose crest file carries only the club's name -- no "crest", "badge"
+# or "logo" in it -- so the scoring never reached the six it needs. Naming them
+# is more honest than loosening the gate, which is what let File:National Rail
+# logo.svg through in the first place.
+# Liverpool's is supplied by hand rather than fetched: the encyclopaedia offers
+# only the full ceremonial shield, a photograph of the Anfield gates, and an
+# "L.F.C." wordmark. The mark used here is the modern Liver bird, handed over
+# as a JPEG with a transparency checkerboard baked into it -- stripped by
+# treating any desaturated light pixel as background, then cropped and squared.
+FILE_OVERRIDE = {
+    'TOT': 'File:Spurs 2017 badge.svg',
+    'BLB': 'File:Blackburn Rovers.svg',
+    'BUR': 'File:Burnley FC Logo.svg',
+    'WIG': 'File:Wigan Athletic.svg',
+    'WAT': 'File:Watford.svg',
+}
 
 # Crests that are black line art on transparency: invisible on a dark chart.
 # A white disc behind them, not a square, so they sit in a round wedge the way
 # every other mark does.
-ON_WHITE = {'DER'}
+ON_WHITE = {'DER', 'SWA'}
 
 TINT_OVERRIDE = {
     'LIV': '#C8102E', 'TOT': '#132257', 'DER': '#1D2B39', 'SWA': '#121212',
