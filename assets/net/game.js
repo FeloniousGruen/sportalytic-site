@@ -63,7 +63,15 @@ const GAME = (() => {
      then scoring it as if you had found it made surrender the best play on any
      hole you could not see -- you would card a par for pressing a button. */
   const GIVE_UP = 10;
-  const MIN_QUERY = 5;                     // letters before a name is offered
+  /* Two letters before names are offered.
+     It was five, on the reasoning that a short query would let you read the
+     answer off a list. That was worth less than it cost: the list is a
+     substring match over 18,876 names capped at 25 rows, so two letters give
+     you an arbitrary 25 rather than a shortlist, and it is only ever names --
+     it cannot tell you which of them is a teammate. Meanwhile five letters
+     meant typing most of "Robertson" before the page would help you spell it,
+     which is friction on every single guess. */
+  const MIN_QUERY = 2;
   const EPOCH = Date.UTC(2026, 0, 1);
 
   let puzzles = null;                      // pairs by distance, built offline
@@ -337,12 +345,27 @@ const GAME = (() => {
     inp.oninput = () => {
       const q = inp.value.trim().toLowerCase();
       const box = $('#gres');
-      /* Five characters before anything is offered. At two you could type "a"
-         and read the answer off a list, which is not the game. */
       if (q.length < MIN_QUERY) { box.hidden = true; return; }
-      const L2 = lower(), out = [];
-      for (let i = 0; i < NET.P && out.length < 25; i++)
-        if (L2[i].indexOf(q) >= 0) out.push(i);
+      /* Ranked, not just filtered.
+         The match is a substring anywhere in the name, which was harmless at
+         five letters and useless at two: "sa" put Alan Halsall above Mohamed
+         Salah, and "robe" led with a Robertson who played twice in 1902. So
+         a name that STARTS with what you typed comes first, then one whose
+         surname does, then the rest -- and within each, the most recent
+         player, who is overwhelmingly the one being reached for.
+         Scanned once with a fixed-size shortlist rather than sorting 18,876
+         rows on every keystroke. */
+      const L2 = lower(), CAP = 25;
+      const hits = [];
+      for (let i = 0; i < NET.P; i++) {
+        const at = L2[i].indexOf(q);
+        if (at < 0) continue;
+        const rank = at === 0 ? 0 : (L2[i][at - 1] === ' ' ? 1 : 2);
+        hits.push({ i, rank, last: NET.lastSeason[i] });
+        if (hits.length > 400) break;        // enough to rank well
+      }
+      hits.sort((a, b) => a.rank - b.rank || b.last - a.last);
+      const out = hits.slice(0, CAP).map(h => h.i);
       box.hidden = false;
       box.innerHTML = out.length ? out.map(i =>
         `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${
