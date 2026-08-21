@@ -274,6 +274,150 @@
    "season": 1981,
    "confidence": "high",
    "why": "Youth-team only (1981-82 apprentice at the Victoria Ground); released after a broken leg with no first-team league appearance. His senior debut was for Port Vale on 28 August 1982."
+  },
+  {
+   "uid": "tommythompson#0",
+   "name": "Tommy Thompson",
+   "club": "BLP",
+   "season": 1961,
+   "confidence": "high",
+   "why": "Belongs to the other Tommy Thompson (born 1938), a full back. The 1928-born inside forward was at Stoke City and then Barrow over these years and was never in Blackpool's squad."
+  },
+  {
+   "uid": "jackbruton#0",
+   "name": "Jack Bruton",
+   "club": "BOL",
+   "season": 1923,
+   "confidence": "high",
+   "why": "Bruton was only an amateur on Bolton's books while working in the mines and, per both Wikipedia and Spartacus, 'failed to get into the first-team' - zero first-team league appearances and no first-team squad involvement."
+  },
+  {
+   "uid": "peterthompson#0",
+   "name": "Peter Thompson",
+   "club": "SHW",
+   "season": 1961,
+   "confidence": "medium",
+   "why": "Peter Thompson was a Preston North End player throughout 1961/62 (Division Two) and never played for or was registered with Sheffield Wednesday. No player named Thompson appears in Wednesday's 1961/62 squad."
+  },
+  {
+   "uid": "archiegemmill#0",
+   "name": "Archie Gemmill",
+   "club": "NFO",
+   "season": 1985,
+   "confidence": "high",
+   "why": "Gemmill's playing career ended at Derby County in 1984; his Wikipedia infobox lists no club after that. He returned to Nottingham Forest in 1984-85 as a member of Brian Clough's coaching staff (appointed assistant coach)"
+  },
+  {
+   "uid": "dickbirchall#0",
+   "name": "Dick Birchall",
+   "club": "BRC",
+   "season": 1919,
+   "confidence": "medium",
+   "why": "Wikipedia and Bradford City's own player list both record Birchall at the club in 1910 only, with 1 league appearance. By 1912-13 he was at Lincoln City and thereafter in non-league (Worksop, Rotherham Town, Mexborough T"
+  },
+  {
+   "uid": "fredparker#0",
+   "name": "Fred Parker",
+   "club": "MCI",
+   "season": 1913,
+   "confidence": "medium",
+   "why": "Parker did not join Manchester City until 1914; the ENFA season table shows his sole City season as 1914-15 (First Division, 0 apps). He was not in the City squad in 1913/14. The genuine top-flight season Manchester City"
+  },
+  {
+   "uid": "albertjuliussen#0",
+   "name": "Albert Juliussen",
+   "club": "POR",
+   "season": 1947,
+   "confidence": "medium",
+   "why": "He signed for Portsmouth in May 1948 and his 7 appearances came in August-early September 1948 before the mid-September move to Everton. Throughout 1947/48 he was a Dundee player. The genuine season, Portsmouth 1948/49, "
+  },
+  {
+   "uid": "albertjuliussen#0",
+   "name": "Albert Juliussen",
+   "club": "HUD",
+   "season": 1938,
+   "confidence": "medium",
+   "why": "He joined Huddersfield in 1938 as an apprentice and was a reserve only; he never appeared for or was part of the first-team squad, and was loaned to Mossley in 1939-40 before wartime service. Huddersfield's involvement i"
+  },
+  {
+   "uid": "keithpritchett#0",
+   "name": "Keith Pritchett",
+   "club": "WOL",
+   "season": 1972,
+   "confidence": "medium",
+   "why": "Pritchett joined Wolves as a youth-team trialist after a Scotland Under-18 game and was given apprentice duties in his first year as a professional; by his own account in the Wolves Heroes interview he never reached the "
+  },
+  {
+   "uid": "jockwightman#0",
+   "name": "Jock Wightman",
+   "club": "BLB",
+   "season": 1946,
+   "confidence": "medium",
+   "why": "Wikipedia and secondary sources put Wightman at Blackburn 1937-1946 (Division Two throughout) and at Carlisle United for 1946/47, where he made 36 league appearances in Division Three North - too many for a mid-season ar"
+  },
+  {
+   "uid": "garybrazil#0",
+   "name": "Gary Brazil",
+   "club": "CRY",
+   "season": 1979,
+   "confidence": "medium",
+   "why": "Youth/apprentice spell only (Palace 1979-80 is listed as a youth club); he left in August 1980 without a first-team appearance, joining Sheffield United specifically to get first-team football."
+  },
+  {
+   "uid": "daveswindlehurst#0",
+   "name": "Dave Swindlehurst",
+   "club": "CRY",
+   "season": 1972,
+   "confidence": "medium",
+   "why": "He was still a Crystal Palace youth player in 1972/73; his first senior appearance was 25 August 1973, the opening game of 1973/74 in Division Two. He was not in the 1972/73 First Division first-team squad."
+  },
+  {
+   "uid": "colinsmith#0",
+   "name": "Colin Smith",
+   "club": "LEE",
+   "season": 1969,
+   "confidence": "high",
+   "why": "Colin Smith (b.1951) was an apprentice/youth player only and per Wikipedia 'did not progress to the first team' - a youth spell leaking in as a real club-season"
+  },
+  {
+   "uid": "albertbarnett#0",
+   "name": "Albert Barnett",
+   "club": "BOL",
+   "season": 1911,
+   "confidence": "medium",
+   "why": "He had an unsuccessful trial at Bolton and was never signed; he was a Macclesfield Town player in 1911/12. Trial spell recorded as a real club-season."
+  },
+  {
+   "uid": "mikeflanagan#0",
+   "name": "Mike Flanagan",
+   "club": "TOT",
+   "season": 1970,
+   "confidence": "high",
+   "why": "Youth-team only. Flanagan was a Spurs apprentice/youth player (3 England youth caps 1971) and left on a free transfer to Charlton in 1971 without ever being in the Tottenham first-team squad. Classic Alan Ball-style scho"
+  },
+  {
+   "uid": "charliewilson#1",
+   "name": "Charlie Wilson",
+   "club": "SHU",
+   "season": 1920,
+   "confidence": "high",
+   "why": "No Charlie/Charles Wilson can be traced to Sheffield United in 1920/21; the 1905-born Wilson was a 15-year-old amateur signing for West Bromwich Albion in December 1920, the 1895-born Wilson was at Tottenham and the 1904"
+  },
+  {
+   "uid": "georgerichardson#1",
+   "name": "George Richardson",
+   "club": "SUN",
+   "season": 1920,
+   "confidence": "medium",
+   "why": "No George Richardson can be traced to Sunderland's 1920/21 first-team squad; the four identified namesakes were at Huddersfield, Gainsborough/Lincoln, Burnley and (in 1920) not yet born into senior football"
+  },
+  {
+   "uid": "stancrowther#0",
+   "name": "Stan Crowther",
+   "club": "WBA",
+   "season": 1950,
+   "confidence": "medium",
+   "why": "Crowther was born 3 September 1935 and was 15 that season, still a junior at Bilston Town; he turned professional with Aston Villa only in 1955. No Crowther appears in West Bromwich Albion's 1950/51 squad or appearance r"
   }
  ]
 }

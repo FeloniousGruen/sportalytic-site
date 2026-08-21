@@ -3080,5 +3080,2854 @@
     ]
    }
   ]
+ },
+ "joesmith#0": {
+  "node_when_audited": 7896,
+  "name": "Joe Smith",
+  "confidence": "high",
+  "evidence": "Three separate men welded together. Joe Smith (b.1889, forward) was Bolton Wanderers' second-highest scorer, 449 league apps 1908-1927, then Stockport County. Joe Smith (b.17 Apr 1890, right back, 2 England caps) played 434 league games for West Bromwich Albion 1910-1926 then 48 for Birmingham 1926-1929. Joseph Smith (b.1888, full back) was at Sheffield United 1907-1913 (48 league apps), then Sout",
+  "people": [
+   {
+    "who": "Joe Smith (football forward, Bolton)",
+    "seasons": [
+     [
+      "BOL",
+      1909
+     ],
+     [
+      "BOL",
+      1911
+     ],
+     [
+      "BOL",
+      1912
+     ],
+     [
+      "BOL",
+      1913
+     ],
+     [
+      "BOL",
+      1914
+     ],
+     [
+      "BOL",
+      1919
+     ],
+     [
+      "BOL",
+      1920
+     ],
+     [
+      "BOL",
+      1921
+     ],
+     [
+      "BOL",
+      1922
+     ],
+     [
+      "BOL",
+      1923
+     ],
+     [
+      "BOL",
+      1924
+     ],
+     [
+      "BOL",
+      1925
+     ],
+     [
+      "BOL",
+      1926
+     ]
+    ]
+   },
+   {
+    "who": "Joe Smith (right back, England, WBA/Birmingham)",
+    "seasons": [
+     [
+      "BIR",
+      1926
+     ],
+     [
+      "BIR",
+      1927
+     ],
+     [
+      "BIR",
+      1928
+     ],
+     [
+      "WBA",
+      1911
+     ],
+     [
+      "WBA",
+      1912
+     ],
+     [
+      "WBA",
+      1913
+     ],
+     [
+      "WBA",
+      1914
+     ],
+     [
+      "WBA",
+      1919
+     ],
+     [
+      "WBA",
+      1920
+     ],
+     [
+      "WBA",
+      1921
+     ],
+     [
+      "WBA",
+      1922
+     ],
+     [
+      "WBA",
+      1923
+     ],
+     [
+      "WBA",
+      1924
+     ],
+     [
+      "WBA",
+      1925
+     ]
+    ]
+   },
+   {
+    "who": "Joseph Smith (full back, Sheffield United)",
+    "seasons": [
+     [
+      "SHU",
+      1909
+     ],
+     [
+      "SHU",
+      1910
+     ],
+     [
+      "SHU",
+      1911
+     ],
+     [
+      "SHU",
+      1912
+     ]
+    ]
+   }
+  ]
+ },
+ "jacksmith#1": {
+  "node_when_audited": 6676,
+  "name": "Jack Smith",
+  "confidence": "high",
+  "evidence": "At least five different men. (1) John William 'Jack' Smith (b.28 Oct 1898, inside-right, 3 England caps 1931) played 299 games for Portsmouth from 1927 including the 1934 FA Cup final, leaving for Bournemouth in May 1935 - so Portsmouth 1927/28-1934/35 is his and is correct. (2) Jack Smith (b.15 Sept 1910, goalkeeper, nicknamed 'Smiler') joined Sheffield United in 1930 and made 347 league appearan",
+  "people": [
+   {
+    "who": "John William 'Jack' Smith (inside-right, England)",
+    "seasons": [
+     [
+      "POR",
+      1927
+     ],
+     [
+      "POR",
+      1928
+     ],
+     [
+      "POR",
+      1929
+     ],
+     [
+      "POR",
+      1930
+     ],
+     [
+      "POR",
+      1931
+     ],
+     [
+      "POR",
+      1932
+     ],
+     [
+      "POR",
+      1933
+     ],
+     [
+      "POR",
+      1934
+     ]
+    ]
+   },
+   {
+    "who": "Jack Smith 'Smiler' (goalkeeper)",
+    "seasons": [
+     [
+      "SHU",
+      1930
+     ],
+     [
+      "SHU",
+      1931
+     ],
+     [
+      "SHU",
+      1932
+     ],
+     [
+      "SHU",
+      1933
+     ]
+    ]
+   },
+   {
+    "who": "Arthur John 'Jack' Smith (full back)",
+    "seasons": [
+     [
+      "WOL",
+      1932
+     ],
+     [
+      "WOL",
+      1933
+     ]
+    ]
+   },
+   {
+    "who": "Jack Smith (forward, Batley)",
+    "seasons": [
+     [
+      "HUD",
+      1932
+     ],
+     [
+      "HUD",
+      1933
+     ],
+     [
+      "HUD",
+      1934
+     ],
+     [
+      "MUN",
+      1938
+     ]
+    ]
+   },
+   {
+    "who": "John 'Jack' Smith (forward, Eccleshill) - identification medium confidence",
+    "seasons": [
+     [
+      "BLB",
+      1926
+     ]
+    ]
+   }
+  ]
+ },
+ "pl:258": {
+  "node_when_audited": 12966,
+  "name": "Mark Wright",
+  "confidence": "high",
+  "evidence": "Two men. Mark Wright (footballer, born 1 August 1963), the England centre-half: Oxford United 1980-82 (Divisions Two/Three, correctly absent), Southampton 1982-1987, Derby County 1987-1991, Liverpool 1991-1998. He never played for Everton. Separately, Mark Wright (footballer, born 29 January 1970) was an Everton player 1989-1992 with loans to Blackpool and Huddersfield Town - he is the source of t",
+  "people": [
+   {
+    "who": "Mark Wright (defender, England international)",
+    "seasons": [
+     [
+      "DER",
+      1987
+     ],
+     [
+      "DER",
+      1988
+     ],
+     [
+      "DER",
+      1989
+     ],
+     [
+      "DER",
+      1990
+     ],
+     [
+      "LIV",
+      1991
+     ],
+     [
+      "LIV",
+      1992
+     ],
+     [
+      "LIV",
+      1993
+     ],
+     [
+      "LIV",
+      1994
+     ],
+     [
+      "LIV",
+      1995
+     ],
+     [
+      "LIV",
+      1996
+     ],
+     [
+      "LIV",
+      1997
+     ],
+     [
+      "SOU",
+      1981
+     ],
+     [
+      "SOU",
+      1982
+     ],
+     [
+      "SOU",
+      1983
+     ],
+     [
+      "SOU",
+      1984
+     ],
+     [
+      "SOU",
+      1985
+     ],
+     [
+      "SOU",
+      1986
+     ]
+    ]
+   },
+   {
+    "who": "Mark Wright (Everton)",
+    "seasons": [
+     [
+      "EVE",
+      1989
+     ]
+    ]
+   }
+  ]
+ },
+ "pl:26": {
+  "node_when_audited": 12982,
+  "name": "Alan Smith",
+  "confidence": "high",
+  "evidence": "Two men. Alan Martin Smith (b. 21 November 1962), the Leicester and Arsenal striker: signed professional for Leicester in June 1982, promoted with them in 1982/83, five seasons at Filbert Street (217 apps, 84 goals), sold to Arsenal in March 1987 and loaned straight back to Leicester for the rest of 1986/87, then Arsenal 1987-1995. He never played for Sheffield Wednesday. The Sheffield Wednesday 1",
+  "people": [
+   {
+    "who": "Alan Smith (Leicester/Arsenal striker, England international)",
+    "seasons": [
+     [
+      "ARS",
+      1987
+     ],
+     [
+      "ARS",
+      1988
+     ],
+     [
+      "ARS",
+      1989
+     ],
+     [
+      "ARS",
+      1990
+     ],
+     [
+      "ARS",
+      1991
+     ],
+     [
+      "ARS",
+      1992
+     ],
+     [
+      "ARS",
+      1993
+     ],
+     [
+      "ARS",
+      1994
+     ],
+     [
+      "LEI",
+      1983
+     ],
+     [
+      "LEI",
+      1984
+     ],
+     [
+      "LEI",
+      1985
+     ],
+     [
+      "LEI",
+      1986
+     ]
+    ]
+   },
+   {
+    "who": "Alan Smith (Sheffield Wednesday, later Darlington)",
+    "seasons": [
+     [
+      "SHW",
+      1984
+     ]
+    ]
+   }
+  ]
+ },
+ "lessmith#0": {
+  "node_when_audited": 9318,
+  "name": "Les Smith",
+  "confidence": "high",
+  "evidence": "Three different men have been welded together. (1) Leslie George Frederick Smith, b. 13 Mar 1918 Ealing, d. 1995, outside-right, 1 England cap 1939: Brentford 1936-39, Aston Villa Oct 1945-1952 (181 league apps), then back to Brentford (Division Two). (2) Les Smith, b. 2 Oct 1920 Manchester, d. 2001, wing-half: Huddersfield Town Mar 1946-1949 (37 league apps), then Oldham Athletic (Division Three ",
+  "people": [
+   {
+    "who": "Leslie George Frederick Smith (Brentford/Aston Villa, England)",
+    "seasons": [
+     [
+      "AVL",
+      1946
+     ],
+     [
+      "AVL",
+      1947
+     ],
+     [
+      "AVL",
+      1948
+     ],
+     [
+      "AVL",
+      1949
+     ],
+     [
+      "AVL",
+      1950
+     ],
+     [
+      "AVL",
+      1951
+     ]
+    ]
+   },
+   {
+    "who": "Les Smith (Huddersfield Town/Oldham Athletic wing-half)",
+    "seasons": [
+     [
+      "HUD",
+      1946
+     ],
+     [
+      "HUD",
+      1947
+     ]
+    ]
+   },
+   {
+    "who": "Leslie Joseph Smith (Wolves/Aston Villa)",
+    "seasons": [
+     [
+      "AVL",
+      1955
+     ],
+     [
+      "AVL",
+      1956
+     ],
+     [
+      "AVL",
+      1957
+     ],
+     [
+      "AVL",
+      1958
+     ],
+     [
+      "WOL",
+      1947
+     ],
+     [
+      "WOL",
+      1948
+     ],
+     [
+      "WOL",
+      1949
+     ],
+     [
+      "WOL",
+      1950
+     ],
+     [
+      "WOL",
+      1951
+     ],
+     [
+      "WOL",
+      1952
+     ],
+     [
+      "WOL",
+      1953
+     ],
+     [
+      "WOL",
+      1954
+     ],
+     [
+      "WOL",
+      1955
+     ]
+    ]
+   }
+  ]
+ },
+ "williecunningham#0": {
+  "node_when_audited": 18710,
+  "name": "Willie Cunningham",
+  "confidence": "high",
+  "evidence": "Two contemporaneous international full-backs of the same name have been merged. (1) Willie Cunningham, b. 22 Feb 1925 Cowdenbeath, Scotland international (8 caps, captained Scotland at the 1954 World Cup): joined Preston North End June 1949 for GBP 5,000 and stayed until 1963, 487 League and Cup apps, 1954 FA Cup finalist. He never played for Leicester City. (2) Willie Cunningham, b. 17 May 1930, ",
+  "people": [
+   {
+    "who": "Willie Cunningham (Scotland, Preston North End)",
+    "seasons": [
+     [
+      "PRE",
+      1951
+     ],
+     [
+      "PRE",
+      1952
+     ],
+     [
+      "PRE",
+      1953
+     ],
+     [
+      "PRE",
+      1954
+     ],
+     [
+      "PRE",
+      1956
+     ],
+     [
+      "PRE",
+      1957
+     ],
+     [
+      "PRE",
+      1958
+     ],
+     [
+      "PRE",
+      1959
+     ],
+     [
+      "PRE",
+      1960
+     ]
+    ]
+   },
+   {
+    "who": "Willie Cunningham (Northern Ireland, Leicester City)",
+    "seasons": [
+     [
+      "LEI",
+      1954
+     ],
+     [
+      "LEI",
+      1957
+     ],
+     [
+      "LEI",
+      1958
+     ],
+     [
+      "LEI",
+      1959
+     ]
+    ]
+   }
+  ]
+ },
+ "billywatson#0": {
+  "node_when_audited": 1909,
+  "name": "Billy Watson",
+  "confidence": "high",
+  "evidence": "Two different wing halves welded together. (1) Billy Watson, born Richard Watson, 11 Sep 1890 - 1 Sep 1955, 3 England caps: Southport Central 1907-08, Burnley 1908-1925 (346 league apps), Accrington Stanley 1925-26 (Division Three North), Blackburn Rovers 1926-27. (2) William 'Billy' Watson, 31 Dec 1893 - 21 Apr 1962: spent his entire career at Huddersfield Town, 1911/12-1927, 292 league apps, and",
+  "people": [
+   {
+    "who": "Billy Watson (born Richard Watson), Burnley wing half and England international",
+    "seasons": [
+     [
+      "BLB",
+      1926
+     ],
+     [
+      "BUR",
+      1913
+     ],
+     [
+      "BUR",
+      1914
+     ],
+     [
+      "BUR",
+      1919
+     ],
+     [
+      "BUR",
+      1920
+     ],
+     [
+      "BUR",
+      1921
+     ],
+     [
+      "BUR",
+      1922
+     ],
+     [
+      "BUR",
+      1923
+     ],
+     [
+      "BUR",
+      1924
+     ]
+    ]
+   },
+   {
+    "who": "William 'Billy' Watson, one-club Huddersfield Town wing half",
+    "seasons": [
+     [
+      "HUD",
+      1920
+     ],
+     [
+      "HUD",
+      1921
+     ],
+     [
+      "HUD",
+      1922
+     ],
+     [
+      "HUD",
+      1923
+     ],
+     [
+      "HUD",
+      1924
+     ],
+     [
+      "HUD",
+      1925
+     ],
+     [
+      "HUD",
+      1926
+     ]
+    ]
+   }
+  ]
+ },
+ "garystevens#0": {
+  "node_when_audited": 4706,
+  "name": "Gary Stevens",
+  "confidence": "high",
+  "evidence": "Two different England internationals of the same name, famously both picked in the 1986 World Cup squad. (1) Gary Andrew Stevens, born 30 Mar 1962 in Hillingdon, midfielder/defender: Brighton & Hove Albion 1978-1983 (First Division 1979/80-1982/83, scored in the 1983 FA Cup final), then Tottenham Hotspur 1983-1990, then Portsmouth (second tier, outside the row). (2) Michael Gary Stevens, born 27 M",
+  "people": [
+   {
+    "who": "Gary Andrew Stevens (Brighton and Tottenham)",
+    "seasons": [
+     [
+      "BHA",
+      1979
+     ],
+     [
+      "BHA",
+      1980
+     ],
+     [
+      "BHA",
+      1981
+     ],
+     [
+      "BHA",
+      1982
+     ],
+     [
+      "TOT",
+      1983
+     ],
+     [
+      "TOT",
+      1984
+     ],
+     [
+      "TOT",
+      1985
+     ],
+     [
+      "TOT",
+      1986
+     ],
+     [
+      "TOT",
+      1987
+     ],
+     [
+      "TOT",
+      1988
+     ],
+     [
+      "TOT",
+      1989
+     ]
+    ]
+   },
+   {
+    "who": "Michael Gary Stevens (Everton and Rangers)",
+    "seasons": [
+     [
+      "EVE",
+      1981
+     ],
+     [
+      "EVE",
+      1982
+     ],
+     [
+      "EVE",
+      1983
+     ],
+     [
+      "EVE",
+      1984
+     ],
+     [
+      "EVE",
+      1985
+     ],
+     [
+      "EVE",
+      1986
+     ],
+     [
+      "EVE",
+      1987
+     ]
+    ]
+   }
+  ]
+ },
+ "billydunlop#0": {
+  "node_when_audited": 1675,
+  "name": "Billy Dunlop",
+  "confidence": "high",
+  "evidence": "Two distinct Scots welded into one. Billy Dunlop (16 August 1869 - 25 May 1960), half-back: Annbank 1888-93, Sunderland from January 1893 (debut 28 January 1893) to 1899, 134 league apps, part of the 1894-95 championship side, then Rangers, Partick Thistle and Annbank; his English league career was limited to Sunderland. Billy Dunlop (11 August 1874 - 28 November 1941), left-back: Hurlford, Kilmar",
+  "people": [
+   {
+    "who": "Billy Dunlop (Sunderland half-back)",
+    "seasons": [
+     [
+      "SUN",
+      1892
+     ],
+     [
+      "SUN",
+      1893
+     ],
+     [
+      "SUN",
+      1894
+     ],
+     [
+      "SUN",
+      1895
+     ],
+     [
+      "SUN",
+      1896
+     ],
+     [
+      "SUN",
+      1897
+     ],
+     [
+      "SUN",
+      1898
+     ]
+    ]
+   },
+   {
+    "who": "Billy Dunlop (Liverpool left-back)",
+    "seasons": [
+     [
+      "LIV",
+      1894
+     ],
+     [
+      "LIV",
+      1896
+     ],
+     [
+      "LIV",
+      1897
+     ],
+     [
+      "LIV",
+      1898
+     ],
+     [
+      "LIV",
+      1899
+     ],
+     [
+      "LIV",
+      1900
+     ],
+     [
+      "LIV",
+      1901
+     ],
+     [
+      "LIV",
+      1902
+     ],
+     [
+      "LIV",
+      1903
+     ],
+     [
+      "LIV",
+      1905
+     ],
+     [
+      "LIV",
+      1906
+     ],
+     [
+      "LIV",
+      1907
+     ],
+     [
+      "LIV",
+      1908
+     ]
+    ]
+   }
+  ]
+ },
+ "billysmith#1": {
+  "node_when_audited": 1874,
+  "name": "Billy Smith",
+  "confidence": "high",
+  "evidence": "Two different men. Billy Smith (b. 1895) was Huddersfield Town's outside-left 1914-1934, 521 league apps, then player-manager at Rochdale; he never played for Portsmouth. A separate Billy Smith (William Henry Smith, b. 9 June 1906) was Portsmouth's full-back 1928-1937, 311 league apps, played in the 1934 FA Cup Final, then joined Stockport County.",
+  "people": [
+   {
+    "who": "Billy Smith (Huddersfield winger)",
+    "seasons": [
+     [
+      "HUD",
+      1920
+     ],
+     [
+      "HUD",
+      1921
+     ],
+     [
+      "HUD",
+      1922
+     ],
+     [
+      "HUD",
+      1923
+     ],
+     [
+      "HUD",
+      1924
+     ],
+     [
+      "HUD",
+      1925
+     ],
+     [
+      "HUD",
+      1926
+     ],
+     [
+      "HUD",
+      1927
+     ],
+     [
+      "HUD",
+      1928
+     ],
+     [
+      "HUD",
+      1929
+     ],
+     [
+      "HUD",
+      1930
+     ],
+     [
+      "HUD",
+      1931
+     ],
+     [
+      "HUD",
+      1932
+     ],
+     [
+      "HUD",
+      1933
+     ]
+    ]
+   },
+   {
+    "who": "Billy Smith (Portsmouth full-back)",
+    "seasons": [
+     [
+      "POR",
+      1928
+     ],
+     [
+      "POR",
+      1929
+     ],
+     [
+      "POR",
+      1930
+     ],
+     [
+      "POR",
+      1931
+     ],
+     [
+      "POR",
+      1932
+     ],
+     [
+      "POR",
+      1933
+     ],
+     [
+      "POR",
+      1934
+     ],
+     [
+      "POR",
+      1935
+     ],
+     [
+      "POR",
+      1936
+     ]
+    ]
+   }
+  ]
+ },
+ "billywright#1": {
+  "node_when_audited": 1928,
+  "name": "Billy Wright",
+  "confidence": "high",
+  "evidence": "Two men. Billy Wright CBE (b. 6 Feb 1924, d. 1994), England captain, spent his ENTIRE club career at Wolverhampton Wanderers, 490 league apps 1946-1959; his only other club link was wartime guest appearances for Leicester City in 1941-42, which are not Football League seasons. The Blackpool/Leicester/Newcastle seasons belong to Billy Wright (b. 4 March 1931 in Blackpool, d. 2020), an inside-forwar",
+  "people": [
+   {
+    "who": "Billy Wright CBE, Wolves and England centre-half",
+    "seasons": [
+     [
+      "WOL",
+      1946
+     ],
+     [
+      "WOL",
+      1947
+     ],
+     [
+      "WOL",
+      1948
+     ],
+     [
+      "WOL",
+      1949
+     ],
+     [
+      "WOL",
+      1950
+     ],
+     [
+      "WOL",
+      1951
+     ],
+     [
+      "WOL",
+      1952
+     ],
+     [
+      "WOL",
+      1953
+     ],
+     [
+      "WOL",
+      1954
+     ],
+     [
+      "WOL",
+      1955
+     ],
+     [
+      "WOL",
+      1956
+     ],
+     [
+      "WOL",
+      1957
+     ],
+     [
+      "WOL",
+      1958
+     ]
+    ]
+   },
+   {
+    "who": "Billy Wright, inside-forward",
+    "seasons": [
+     [
+      "BLP",
+      1952
+     ],
+     [
+      "BLP",
+      1954
+     ],
+     [
+      "LEI",
+      1957
+     ],
+     [
+      "NEW",
+      1958
+     ]
+    ]
+   }
+  ]
+ },
+ "tommythompson#0": {
+  "node_when_audited": 17791,
+  "name": "Tommy Thompson",
+  "confidence": "high",
+  "evidence": "Two different men have been welded together, and they even played different positions. Tommy Thompson born 1928 (Newcastle-born inside forward, England international, died 2015) played Newcastle United 1947-1950, Aston Villa 1950-1955, Preston North End 1955-1961, Stoke City 1961-1963, Barrow 1963-1964 - he never played for Blackpool. Tommy Thompson born 1938 was a full back who joined Blackpool i",
+  "people": [
+   {
+    "who": "Tommy Thompson (inside forward, England international)",
+    "seasons": [
+     [
+      "AVL",
+      1950
+     ],
+     [
+      "AVL",
+      1951
+     ],
+     [
+      "AVL",
+      1952
+     ],
+     [
+      "AVL",
+      1953
+     ],
+     [
+      "AVL",
+      1954
+     ],
+     [
+      "NEW",
+      1948
+     ],
+     [
+      "NEW",
+      1949
+     ],
+     [
+      "PRE",
+      1956
+     ],
+     [
+      "PRE",
+      1957
+     ],
+     [
+      "PRE",
+      1958
+     ],
+     [
+      "PRE",
+      1959
+     ],
+     [
+      "PRE",
+      1960
+     ]
+    ]
+   },
+   {
+    "who": "Tommy Thompson (full back)",
+    "seasons": [
+     [
+      "BLP",
+      1961
+     ],
+     [
+      "BLP",
+      1962
+     ],
+     [
+      "BLP",
+      1963
+     ],
+     [
+      "BLP",
+      1964
+     ],
+     [
+      "BLP",
+      1965
+     ],
+     [
+      "BLP",
+      1966
+     ]
+    ]
+   }
+  ]
+ },
+ "petersimpson#0": {
+  "node_when_audited": 10458,
+  "name": "Peter Simpson",
+  "confidence": "high",
+  "evidence": "Two different men have been welded together. Arsenal's Peter Simpson was born 13 January 1945 in Gorleston, joined Arsenal as a youth in 1960 and played for Arsenal alone from 1964 to 1978 (370 league apps), then New England Tea Men and Hendon - his Wikipedia career table contains no Burnley at all. The Burnley seasons belong to Peter Wilson Simpson, an inside forward born 21 September 1940, who j",
+  "people": [
+   {
+    "who": "Peter Wilson Simpson, inside forward",
+    "seasons": [
+     [
+      "BUR",
+      1961
+     ],
+     [
+      "BUR",
+      1962
+     ]
+    ]
+   },
+   {
+    "who": "Peter Frederick Simpson, Arsenal defender",
+    "seasons": [
+     [
+      "ARS",
+      1963
+     ],
+     [
+      "ARS",
+      1964
+     ],
+     [
+      "ARS",
+      1965
+     ],
+     [
+      "ARS",
+      1966
+     ],
+     [
+      "ARS",
+      1967
+     ],
+     [
+      "ARS",
+      1968
+     ],
+     [
+      "ARS",
+      1969
+     ],
+     [
+      "ARS",
+      1970
+     ],
+     [
+      "ARS",
+      1971
+     ],
+     [
+      "ARS",
+      1972
+     ],
+     [
+      "ARS",
+      1973
+     ],
+     [
+      "ARS",
+      1974
+     ],
+     [
+      "ARS",
+      1975
+     ],
+     [
+      "ARS",
+      1976
+     ],
+     [
+      "ARS",
+      1977
+     ]
+    ]
+   }
+  ]
+ },
+ "harryhampton#0": {
+  "node_when_audited": 5672,
+  "name": "Harry Hampton",
+  "confidence": "high",
+  "evidence": "Two men. Harry Hampton (b. 1885, Wellington, Shropshire) was Aston Villa's centre-forward 1904-1920 (339 league apps, 215 goals), then Birmingham 1920-1922 (Birmingham were Division Two in 1920/21 and promoted for 1921/22, so only 1921/22 is top flight) and Newport County 1922-23. Wikipedia is explicit that he never played for Bradford City. The Bradford spell belongs to Henry Verner 'Harry' Hampt",
+  "people": [
+   {
+    "who": "Harry Hampton (Aston Villa centre-forward)",
+    "seasons": [
+     [
+      "AVL",
+      1904
+     ],
+     [
+      "AVL",
+      1905
+     ],
+     [
+      "AVL",
+      1906
+     ],
+     [
+      "AVL",
+      1907
+     ],
+     [
+      "AVL",
+      1908
+     ],
+     [
+      "AVL",
+      1909
+     ],
+     [
+      "AVL",
+      1910
+     ],
+     [
+      "AVL",
+      1911
+     ],
+     [
+      "AVL",
+      1912
+     ],
+     [
+      "AVL",
+      1913
+     ],
+     [
+      "AVL",
+      1914
+     ],
+     [
+      "AVL",
+      1919
+     ],
+     [
+      "BIR",
+      1921
+     ]
+    ]
+   },
+   {
+    "who": "Henry Verner 'Harry' Hampton (Ireland international half-back)",
+    "seasons": [
+     [
+      "BRC",
+      1909
+     ],
+     [
+      "BRC",
+      1910
+     ],
+     [
+      "BRC",
+      1911
+     ],
+     [
+      "BRC",
+      1912
+     ],
+     [
+      "BRC",
+      1913
+     ]
+    ]
+   }
+  ]
+ },
+ "arthurgriffiths#0": {
+  "node_when_audited": 1023,
+  "name": "Arthur Griffiths",
+  "confidence": "high",
+  "evidence": "Two distinct men. Arthur Griffiths (b. 1879, Lozells/Bristol) played for Bristol Eastville Rovers 1897-98 and Bristol Rovers 1898-1904, then joined First Division Notts County in January 1904 and stayed to 1911, making 163 league appearances. Arthur Griffiths (b. 1885 in Stoke-upon-Trent) joined Stoke from Hartshill in 1904 and made 13 First Division appearances (1 goal) for Stoke across 1905-06 a",
+  "people": [
+   {
+    "who": "Arthur Griffiths (Bristol Rovers / Notts County half-back)",
+    "seasons": [
+     [
+      "NOT",
+      1903
+     ],
+     [
+      "NOT",
+      1904
+     ],
+     [
+      "NOT",
+      1905
+     ],
+     [
+      "NOT",
+      1906
+     ],
+     [
+      "NOT",
+      1907
+     ],
+     [
+      "NOT",
+      1908
+     ],
+     [
+      "NOT",
+      1909
+     ],
+     [
+      "NOT",
+      1910
+     ],
+     [
+      "NOT",
+      1911
+     ]
+    ]
+   },
+   {
+    "who": "Arthur Griffiths (Stoke-born forward)",
+    "seasons": [
+     [
+      "STK",
+      1905
+     ],
+     [
+      "STK",
+      1906
+     ]
+    ]
+   }
+  ]
+ },
+ "georgeharris#0": {
+  "node_when_audited": 4958,
+  "name": "George Harris",
+  "confidence": "high",
+  "evidence": "Two men. George Harris (b. 1877, Rocester, Staffordshire) joined Stoke in November 1900 from Uttoxeter Town, made 23 appearances/5 goals over four seasons with his best in 1901-02 (15 apps, 3 goals), spent 1903-04 entirely in the reserves and left for Reading in 1904, then Southampton 1905-07 (Southern League). George Abner Harris (1 January 1878 - 4 June 1923) was a wing half who played for Aston",
+  "people": [
+   {
+    "who": "George Harris (Stoke inside-left, from Uttoxeter Town)",
+    "seasons": [
+     [
+      "STK",
+      1900
+     ],
+     [
+      "STK",
+      1901
+     ],
+     [
+      "STK",
+      1902
+     ]
+    ]
+   },
+   {
+    "who": "George Abner Harris (Aston Villa wing half)",
+    "seasons": [
+     [
+      "AVL",
+      1901
+     ],
+     [
+      "AVL",
+      1902
+     ],
+     [
+      "AVL",
+      1903
+     ],
+     [
+      "AVL",
+      1905
+     ],
+     [
+      "AVL",
+      1906
+     ],
+     [
+      "AVL",
+      1907
+     ]
+    ]
+   }
+  ]
+ },
+ "johnmclaughlin#0": {
+  "node_when_audited": 8381,
+  "name": "John McLaughlin",
+  "confidence": "high",
+  "evidence": "Two contemporaries on Merseyside. John McLaughlin (b. 25 February 1952, Liverpool) was a midfielder who came through Liverpool's youth system, debuted in 1970 and made 40 Football League appearances for Liverpool before a knee injury; he later played in the NASL for Philadelphia Atoms and Dallas Tornado and non-League for South Liverpool, Barrow and Wrexham. John Ian 'Tiger' McLaughlin (b. 3 Janua",
+  "people": [
+   {
+    "who": "John McLaughlin (Liverpool midfielder)",
+    "seasons": [
+     [
+      "LIV",
+      1969
+     ],
+     [
+      "LIV",
+      1970
+     ],
+     [
+      "LIV",
+      1971
+     ],
+     [
+      "LIV",
+      1973
+     ],
+     [
+      "LIV",
+      1974
+     ]
+    ]
+   },
+   {
+    "who": "John Ian 'Tiger' McLaughlin (Everton left back, ex-Falkirk)",
+    "seasons": [
+     [
+      "EVE",
+      1971
+     ],
+     [
+      "EVE",
+      1972
+     ],
+     [
+      "EVE",
+      1973
+     ],
+     [
+      "EVE",
+      1974
+     ],
+     [
+      "EVE",
+      1975
+     ]
+    ]
+   }
+  ]
+ },
+ "arthursmith#1": {
+  "node_when_audited": 1107,
+  "name": "Arthur Smith",
+  "confidence": "high",
+  "evidence": "Three different men named Arthur Smith, all distinguished by separate records in the AFS/11v11 database (ids 47934, 47935, 47936). (1) Arthur Smith, Chelsea full back: 11 Div One apps 1937-38 (debut 12 Mar 1938 v Bolton) and 34 Div One + 4 FA Cup apps 1938-39. (2) Arthur Smith, Liverpool centre forward, exactly 1 Div One app in 1937-38 - LFChistory records this single appearance (16 Oct 1937 at Wo",
+  "people": [
+   {
+    "who": "Arthur Smith (Chelsea full back)",
+    "seasons": [
+     [
+      "CHE",
+      1937
+     ],
+     [
+      "CHE",
+      1938
+     ]
+    ]
+   },
+   {
+    "who": "Arthur (recorded elsewhere as Alexander) Smith, Liverpool centre forward",
+    "seasons": [
+     [
+      "LIV",
+      1937
+     ]
+    ]
+   },
+   {
+    "who": "Arthur Hoyle Smith, outside right",
+    "seasons": [
+     [
+      "LEI",
+      1938
+     ]
+    ]
+   }
+  ]
+ },
+ "bobroberts#0": {
+  "node_when_audited": 2208,
+  "name": "Bob Roberts",
+  "confidence": "high",
+  "evidence": "Two contemporaries. Bob Roberts (Robert John Roberts, 9 Apr 1859 - 20 Oct 1929), England goalkeeper, 'the Prince of Goalkeepers': West Bromwich Albion senior 1885-1890, then Sunderland Albion 1890-91 (outside the Football League, which explains the 1890/91 absence at WBA), back at WBA for 1891-92 (9 league apps), then Aston Villa 1892-93. Separately, Robert 'Bob' Roberts (July 1864 - 15 Mar 1932),",
+  "people": [
+   {
+    "who": "Bob Roberts (Robert John Roberts), goalkeeper, England international",
+    "seasons": [
+     [
+      "WBA",
+      1888
+     ],
+     [
+      "WBA",
+      1889
+     ],
+     [
+      "WBA",
+      1891
+     ]
+    ]
+   },
+   {
+    "who": "Robert 'Bob' Roberts, Welsh wing half",
+    "seasons": [
+     [
+      "BOL",
+      1888
+     ],
+     [
+      "BOL",
+      1889
+     ],
+     [
+      "BOL",
+      1890
+     ],
+     [
+      "BOL",
+      1891
+     ],
+     [
+      "PRE",
+      1891
+     ]
+    ]
+   }
+  ]
+ },
+ "hughmorgan#0": {
+  "node_when_audited": 6121,
+  "name": "Hugh Morgan",
+  "confidence": "high",
+  "evidence": "Two Scots of the same name, both with their own Wikipedia articles that explicitly cross-reference each other as different people. Hugh Morgan (20 Sep 1869 - 30 Jun 1938), inside left, Longriggend/St Mirren, joined Liverpool during 1897-98 (4 league apps, 2 goals), was Liverpool's top scorer in 1898-99 (32 league apps) and played 23 more in 1899-1900 - 59 Liverpool league apps, matching his infobo",
+  "people": [
+   {
+    "who": "Hugh Morgan, inside left (St Mirren/Liverpool/Blackburn/Dundee)",
+    "seasons": [
+     [
+      "BLB",
+      1900
+     ],
+     [
+      "BLB",
+      1901
+     ],
+     [
+      "BLB",
+      1902
+     ],
+     [
+      "LIV",
+      1897
+     ],
+     [
+      "LIV",
+      1898
+     ],
+     [
+      "LIV",
+      1899
+     ]
+    ]
+   },
+   {
+    "who": "Hugh Morgan, forward (Sunderland/Bolton/Newton Heath/Manchester City)",
+    "seasons": [
+     [
+      "BOL",
+      1898
+     ],
+     [
+      "BOL",
+      1900
+     ],
+     [
+      "MCI",
+      1901
+     ],
+     [
+      "SUN",
+      1896
+     ],
+     [
+      "SUN",
+      1897
+     ],
+     [
+      "SUN",
+      1898
+     ]
+    ]
+   }
+  ]
+ },
+ "johnnycampbell#0": {
+  "node_when_audited": 8447,
+  "name": "Johnny Campbell",
+  "confidence": "high",
+  "evidence": "Two Scottish forwards named John Campbell whose careers ran side by side in the mid-1890s. John Middleton Campbell (19 Feb 1869 - 8 Jun 1906): Sunderland 1890-1897, 186 league apps and 133 goals, three championships (1891-92, 1892-93, 1894-95), then Newcastle United, debut 4 Sep 1897 v Woolwich Arsenal, 29 apps - Newcastle's 1897/98 was Division Two (they were promoted at the end of it), which is ",
+  "people": [
+   {
+    "who": "John Middleton Campbell (Sunderland/Newcastle)",
+    "seasons": [
+     [
+      "NEW",
+      1898
+     ],
+     [
+      "SUN",
+      1890
+     ],
+     [
+      "SUN",
+      1891
+     ],
+     [
+      "SUN",
+      1892
+     ],
+     [
+      "SUN",
+      1893
+     ],
+     [
+      "SUN",
+      1894
+     ],
+     [
+      "SUN",
+      1895
+     ],
+     [
+      "SUN",
+      1896
+     ]
+    ]
+   },
+   {
+    "who": "John James Campbell (Celtic/Aston Villa)",
+    "seasons": [
+     [
+      "AVL",
+      1895
+     ],
+     [
+      "AVL",
+      1896
+     ]
+    ]
+   }
+  ]
+ },
+ "billjones#0": {
+  "node_when_audited": 1479,
+  "name": "Bill Jones",
+  "confidence": "high",
+  "evidence": "Bill Jones (William Henry Jones, b. 13 May 1921, Whaley Bridge), the England international centre-half/centre-forward, was effectively a one-club man: Liverpool 1938-1954 (plus wartime guest spells at York City, Leeds United and Reading), then player-manager at Ellesmere Port. No source has him at Manchester City. A separate Bill Jones (b. 6 June 1924, Liverpool; d. April 1995, Chester), a forward",
+  "people": [
+   {
+    "who": "Bill Jones (William Henry Jones), Liverpool and England half-back/centre-forward",
+    "seasons": [
+     [
+      "LIV",
+      1946
+     ],
+     [
+      "LIV",
+      1947
+     ],
+     [
+      "LIV",
+      1948
+     ],
+     [
+      "LIV",
+      1949
+     ],
+     [
+      "LIV",
+      1950
+     ],
+     [
+      "LIV",
+      1951
+     ],
+     [
+      "LIV",
+      1952
+     ],
+     [
+      "LIV",
+      1953
+     ]
+    ]
+   },
+   {
+    "who": "Bill Jones, Manchester City forward (later Chester, Wellington Town, Mossley)",
+    "seasons": [
+     [
+      "MCI",
+      1948
+     ],
+     [
+      "MCI",
+      1949
+     ]
+    ]
+   }
+  ]
+ },
+ "gordonsmith#0": {
+  "node_when_audited": 5396,
+  "name": "Gordon Smith",
+  "confidence": "high",
+  "evidence": "Two different Scots, both born in 1954, with careers running side by side. Gordon Melville Smith (b. 3 July 1954, Partick; d. 5 April 2014), a full-back: St Johnstone 1972-76, Aston Villa 1976 (1976-77 League Cup winner, sub in the second replay) until February 1979, Tottenham Hotspur signed 8 February 1979 and released end of June 1982, Wolverhampton Wanderers from August 1982 to 1984, then Pitts",
+  "people": [
+   {
+    "who": "Gordon Melville Smith, full-back (St Johnstone, Aston Villa, Tottenham, Wolves)",
+    "seasons": [
+     [
+      "AVL",
+      1976
+     ],
+     [
+      "AVL",
+      1977
+     ],
+     [
+      "AVL",
+      1978
+     ],
+     [
+      "TOT",
+      1978
+     ],
+     [
+      "TOT",
+      1979
+     ],
+     [
+      "TOT",
+      1980
+     ],
+     [
+      "TOT",
+      1981
+     ],
+     [
+      "WOL",
+      1983
+     ]
+    ]
+   },
+   {
+    "who": "Gordon Smith, striker (Kilmarnock, Rangers, Brighton; later SFA chief executive)",
+    "seasons": [
+     [
+      "BHA",
+      1980
+     ],
+     [
+      "BHA",
+      1981
+     ],
+     [
+      "BHA",
+      1982
+     ]
+    ]
+   }
+  ]
+ },
+ "regdavies#1": {
+  "node_when_audited": 15959,
+  "name": "Reg Davies",
+  "confidence": "high",
+  "evidence": "Two men. Reg Davies (Ellis Reginald Davies, b. 27 May 1929, Cymmer; d. 9 February 2009, Perth, Australia), Welsh inside-forward, six caps 1952-57: Southend United 1949-51, Newcastle United from April 1951 to October 1958 (170 apps, 50 goals; missed the 1955 FA Cup final with tonsillitis), then Swansea Town in the Ivor Allchurch deal, Carlisle United 1962-64, Merthyr Tydfil. He never played for Wes",
+  "people": [
+   {
+    "who": "Reg Davies (Ellis Reginald Davies), Wales inside-forward",
+    "seasons": [
+     [
+      "NEW",
+      1951
+     ],
+     [
+      "NEW",
+      1952
+     ],
+     [
+      "NEW",
+      1953
+     ],
+     [
+      "NEW",
+      1954
+     ],
+     [
+      "NEW",
+      1955
+     ],
+     [
+      "NEW",
+      1956
+     ],
+     [
+      "NEW",
+      1957
+     ],
+     [
+      "NEW",
+      1958
+     ]
+    ]
+   },
+   {
+    "who": "Reg Davies, goalkeeper (West Brom, Walsall, Millwall, Leyton Orient, Port Vale)",
+    "seasons": [
+     [
+      "WBA",
+      1953
+     ],
+     [
+      "WBA",
+      1954
+     ]
+    ]
+   }
+  ]
+ },
+ "georgeaitken#0": {
+  "node_when_audited": 4766,
+  "name": "George Aitken",
+  "confidence": "high",
+  "evidence": "Two different men, each with his own Wikipedia article. George Graham Aitken (b. 28 May 1925, Lochgelly; d. 22 Jan 2003, Sunderland), wing half and Scotland international: East Fife 1946-50, Third Lanark Feb 1951, bought by Sunderland in November 1951 for GBP 19,500, Sunderland until 1958, then Gateshead 1958-60 - never at Middlesbrough. George Bruce Aitken (b. 1928), centre half: signed by Middle",
+  "people": [
+   {
+    "who": "George Graham Aitken, wing half, Scotland international",
+    "seasons": [
+     [
+      "SUN",
+      1951
+     ],
+     [
+      "SUN",
+      1952
+     ],
+     [
+      "SUN",
+      1953
+     ],
+     [
+      "SUN",
+      1954
+     ],
+     [
+      "SUN",
+      1955
+     ],
+     [
+      "SUN",
+      1956
+     ],
+     [
+      "SUN",
+      1957
+     ]
+    ]
+   },
+   {
+    "who": "George Bruce Aitken, centre half",
+    "seasons": [
+     [
+      "MID",
+      1951
+     ],
+     [
+      "MID",
+      1952
+     ]
+    ]
+   }
+  ]
+ },
+ "grahamwilliams#0": {
+  "node_when_audited": 5450,
+  "name": "Graham Williams",
+  "confidence": "high",
+  "evidence": "Two men. Graham George Williams (b. 31 Dec 1936, Wrexham; d. 25 Nov 2018), Welsh left winger nicknamed 'Flicka', is the Everton man: Wikipedia's ENFA-sourced season table gives Everton 1955/56 (2 apps), 1956/57 (9), 1957/58 (13), 1958/59 (7) - exactly the four Everton seasons in the row - after signing from Bradford City in March 1956, leaving for Swansea Town in February 1959. He never played for",
+  "people": [
+   {
+    "who": "Graham George Williams, left winger (Bradford City, Everton, Swansea Town)",
+    "seasons": [
+     [
+      "BLP",
+      1952
+     ],
+     [
+      "BUR",
+      1953
+     ],
+     [
+      "EVE",
+      1955
+     ],
+     [
+      "EVE",
+      1956
+     ],
+     [
+      "EVE",
+      1957
+     ],
+     [
+      "EVE",
+      1958
+     ],
+     [
+      "WOL",
+      1952
+     ]
+    ]
+   },
+   {
+    "who": "Graham Evan Williams, left back, Wales and WBA captain",
+    "seasons": [
+     [
+      "WBA",
+      1957
+     ],
+     [
+      "WBA",
+      1958
+     ],
+     [
+      "WBA",
+      1959
+     ],
+     [
+      "WBA",
+      1961
+     ],
+     [
+      "WBA",
+      1962
+     ],
+     [
+      "WBA",
+      1963
+     ],
+     [
+      "WBA",
+      1964
+     ],
+     [
+      "WBA",
+      1965
+     ],
+     [
+      "WBA",
+      1966
+     ],
+     [
+      "WBA",
+      1967
+     ],
+     [
+      "WBA",
+      1968
+     ],
+     [
+      "WBA",
+      1969
+     ]
+    ]
+   }
+  ]
+ },
+ "johnmcdonald#0": {
+  "node_when_audited": 8361,
+  "name": "John McDonald",
+  "confidence": "medium",
+  "evidence": "At least three men, and the 1920/21-1921/22 overlap is two of them running in parallel rather than any transfer. (1) John 'Jock' Macdonald (b. 1886, Fife; d. 1960), outside right: Raith Rovers from 1901, Rangers Jan 1907, Liverpool 1909-1912, transferred to Newcastle United for GBP 900 signing 11 May 1912, Newcastle 1912/13 (24 games) and 1913/14 (12), then Dundee 1914-1919 and Raith Rovers 1919-1",
+  "people": [
+   {
+    "who": "John 'Jock' Macdonald, outside right (Raith Rovers, Rangers, Liverpool, Newcastle, Dundee)",
+    "seasons": [
+     [
+      "LIV",
+      1909
+     ],
+     [
+      "LIV",
+      1910
+     ],
+     [
+      "LIV",
+      1911
+     ],
+     [
+      "NEW",
+      1912
+     ],
+     [
+      "NEW",
+      1913
+     ]
+    ]
+   },
+   {
+    "who": "John 'Jock' McDonald, right back, Everton captain 1921/22",
+    "seasons": [
+     [
+      "EVE",
+      1920
+     ],
+     [
+      "EVE",
+      1921
+     ],
+     [
+      "EVE",
+      1922
+     ],
+     [
+      "EVE",
+      1923
+     ],
+     [
+      "EVE",
+      1924
+     ],
+     [
+      "EVE",
+      1925
+     ],
+     [
+      "EVE",
+      1926
+     ]
+    ]
+   },
+   {
+    "who": "A third John McDonald of Blackburn Rovers; forename detail and birth year not established",
+    "seasons": [
+     [
+      "BLB",
+      1919
+     ],
+     [
+      "BLB",
+      1920
+     ],
+     [
+      "BLB",
+      1921
+     ]
+    ]
+   }
+  ]
+ },
+ "jimmystewart#0": {
+  "node_when_audited": 7532,
+  "name": "Jimmy Stewart",
+  "confidence": "high",
+  "evidence": "Two men, both inside-forwards, whose careers overlap in 1909/10-1912/13. James Stewart (b. 15 Jan 1883, Newcastle-upon-Tyne), England international with three caps 1907-1911: joined Sheffield Wednesday in May 1902, in the 1902-03 championship side, then Newcastle United for GBP 1,000 in August 1908, winning the title there, and left for Rangers in 1913. James Stewart (b. 1885, Scottish), signed by",
+  "people": [
+   {
+    "who": "James Stewart, Sheffield Wednesday & Newcastle United inside-forward, England",
+    "seasons": [
+     [
+      "NEW",
+      1908
+     ],
+     [
+      "NEW",
+      1909
+     ],
+     [
+      "NEW",
+      1910
+     ],
+     [
+      "NEW",
+      1911
+     ],
+     [
+      "NEW",
+      1912
+     ],
+     [
+      "SHW",
+      1902
+     ],
+     [
+      "SHW",
+      1903
+     ],
+     [
+      "SHW",
+      1904
+     ],
+     [
+      "SHW",
+      1905
+     ],
+     [
+      "SHW",
+      1906
+     ],
+     [
+      "SHW",
+      1907
+     ]
+    ]
+   },
+   {
+    "who": "James Stewart, Motherwell / Liverpool / Hamilton Academical inside-right",
+    "seasons": [
+     [
+      "LIV",
+      1909
+     ],
+     [
+      "LIV",
+      1910
+     ],
+     [
+      "LIV",
+      1911
+     ],
+     [
+      "LIV",
+      1912
+     ],
+     [
+      "LIV",
+      1913
+     ]
+    ]
+   }
+  ]
+ },
+ "garywilliams#0": {
+  "node_when_audited": 4711,
+  "name": "Gary Williams",
+  "confidence": "high",
+  "evidence": "Two men. Gary Williams (b. 17 Jun 1960, Wolverhampton), left-back, Aston Villa 1978-1987, European Cup winner 1982; his only loan spell in that period was at Walsall in 1979-80, not Brighton. Gary S. Peter Williams (b. 8 Mar 1954), defender, signed for Brighton & Hove Albion in 1977 and stayed until July 1982 when he joined Crystal Palace, 158 league games, famous for the 30-yard winner against ch",
+  "people": [
+   {
+    "who": "Gary Williams, Aston Villa left-back",
+    "seasons": [
+     [
+      "AVL",
+      1978
+     ],
+     [
+      "AVL",
+      1979
+     ],
+     [
+      "AVL",
+      1980
+     ],
+     [
+      "AVL",
+      1981
+     ],
+     [
+      "AVL",
+      1982
+     ],
+     [
+      "AVL",
+      1983
+     ],
+     [
+      "AVL",
+      1984
+     ],
+     [
+      "AVL",
+      1985
+     ],
+     [
+      "AVL",
+      1986
+     ]
+    ]
+   },
+   {
+    "who": "Gary S. Peter Williams, Brighton & Hove Albion defender",
+    "seasons": [
+     [
+      "BHA",
+      1979
+     ],
+     [
+      "BHA",
+      1980
+     ],
+     [
+      "BHA",
+      1981
+     ]
+    ]
+   }
+  ]
+ },
+ "johnthomson#0": {
+  "node_when_audited": 8700,
+  "name": "John Thomson",
+  "confidence": "high",
+  "evidence": "Two Scots. John Ross 'Jock' Thomson (6 Jul 1906 - 1979), left half, joined Everton in 1929, relegated in his first season, won the Division Two title in 1930-31 (which is exactly why 1930/31 is absent from the row), the Division One title in 1932 and the 1933 FA Cup, later Everton captain. John Thomson (b. 14 Apr 1916), a Scottish forward signed from Loanhead Steelworks in September 1934, debuted ",
+  "people": [
+   {
+    "who": "John Ross 'Jock' Thomson, Everton left half",
+    "seasons": [
+     [
+      "EVE",
+      1929
+     ],
+     [
+      "EVE",
+      1931
+     ],
+     [
+      "EVE",
+      1932
+     ],
+     [
+      "EVE",
+      1933
+     ],
+     [
+      "EVE",
+      1934
+     ],
+     [
+      "EVE",
+      1935
+     ],
+     [
+      "EVE",
+      1936
+     ],
+     [
+      "EVE",
+      1937
+     ],
+     [
+      "EVE",
+      1938
+     ]
+    ]
+   },
+   {
+    "who": "John Thomson, Leeds United forward",
+    "seasons": [
+     [
+      "LEE",
+      1936
+     ],
+     [
+      "LEE",
+      1937
+     ],
+     [
+      "LEE",
+      1938
+     ]
+    ]
+   }
+  ]
+ },
+ "billywalsh#0": {
+  "node_when_audited": 1902,
+  "name": "Billy Walsh",
+  "confidence": "high",
+  "evidence": "Two men. Billy Walsh (31 May 1921, Dublin - 28 Jul 2006, Noosa, Australia), half-back, Manchester City 1938-1950, over 100 appearances, dual Irish international (IFA XI 1944-48 and FAI XI 1946-50, including the 1949 win over England at Goodison), then player-manager of Chelmsford City in April 1951; Manchester City's Division One seasons in that window are 1947/48-1949/50, since they were promoted",
+  "people": [
+   {
+    "who": "Billy Walsh, Manchester City half-back, Republic of Ireland / IFA XI",
+    "seasons": [
+     [
+      "MCI",
+      1947
+     ],
+     [
+      "MCI",
+      1948
+     ],
+     [
+      "MCI",
+      1949
+     ]
+    ]
+   },
+   {
+    "who": "William 'Bill' Walsh, Sunderland centre-half",
+    "seasons": [
+     [
+      "SUN",
+      1946
+     ],
+     [
+      "SUN",
+      1947
+     ],
+     [
+      "SUN",
+      1948
+     ],
+     [
+      "SUN",
+      1949
+     ],
+     [
+      "SUN",
+      1950
+     ],
+     [
+      "SUN",
+      1952
+     ]
+    ]
+   }
+  ]
+ },
+ "georgerichardson#1": {
+  "node_when_audited": 5123,
+  "name": "George Richardson",
+  "confidence": "medium",
+  "evidence": "Four or five men, only 87 league appearances between them, with three clubs running concurrently in 1921/22 and 1922/23. George Edward Holland Richardson (4 Dec 1891, Seaham - 25 Apr 1969, Huddersfield), midfielder, Huddersfield Town 1914-1924, 110 appearances, FA Cup winner 1921-22 and Charity Shield 1922, then Hull City; Huddersfield were promoted to Division One in 1920, so 1920/21-1923/24 is h",
+  "people": [
+   {
+    "who": "George Edward Holland Richardson, Huddersfield Town half-back",
+    "seasons": [
+     [
+      "HUD",
+      1920
+     ],
+     [
+      "HUD",
+      1921
+     ],
+     [
+      "HUD",
+      1922
+     ],
+     [
+      "HUD",
+      1923
+     ]
+    ]
+   },
+   {
+    "who": "George William Richardson, Burnley wing-half",
+    "seasons": [
+     [
+      "BUR",
+      1921
+     ],
+     [
+      "BUR",
+      1922
+     ]
+    ]
+   },
+   {
+    "who": "George William Richard Richardson, Lincoln City / Sheffield United left half",
+    "seasons": [
+     [
+      "SHU",
+      1921
+     ],
+     [
+      "SHU",
+      1922
+     ]
+    ]
+   },
+   {
+    "who": "George Richardson, Huddersfield Town / Sheffield United striker",
+    "seasons": [
+     [
+      "HUD",
+      1933
+     ]
+    ]
+   },
+   {
+    "who": "unidentified further namesake (or a data error)",
+    "seasons": [
+     [
+      "SUN",
+      1920
+     ]
+    ]
+   }
+  ]
+ },
+ "georgehunter#0": {
+  "node_when_audited": 4996,
+  "name": "George Hunter",
+  "confidence": "high",
+  "evidence": "Two men. George Charles 'Cocky' Hunter (b. 2 Jun 1885 Nowshera, British India, d. 20 Jan 1934), half back, played for Maidstone United, Croydon Common, Aston Villa (1908-Jan 1912), Oldham Athletic (Jan 1912-Mar 1914 - he debuted v Preston in Jan 1912 and played 16 more games as Oldham finished 18th), Chelsea, Manchester United and finally Portsmouth in the Southern League in 1919/20. He never play",
+  "people": [
+   {
+    "who": "George Charles 'Cocky' Hunter, half back",
+    "seasons": [
+     [
+      "OLD",
+      1911
+     ],
+     [
+      "OLD",
+      1912
+     ]
+    ]
+   },
+   {
+    "who": "George Hunter, wing half, from Hylton Colliery",
+    "seasons": [
+     [
+      "SUN",
+      1921
+     ],
+     [
+      "SUN",
+      1922
+     ]
+    ]
+   }
+  ]
+ },
+ "johnmurphy#0": {
+  "node_when_audited": 8427,
+  "name": "John Murphy",
+  "confidence": "high",
+  "evidence": "Three different men. (1) John H. Murphy, b. 3rd qtr 1872 Nottingham, d. 1924: Notts County 1896-1898 (37 apps, 24 goals), joint Division Two top scorer 1896-97, promoted so 1897/98 was top flight; he then went Bristol City, South Shields Adelaide, and Doncaster Rovers 1900-1904 - so he was demonstrably NOT at Stoke in 1903/04. (2) An English John Murphy, Wikipedia's 'John Murphy (1900s footballer)",
+  "people": [
+   {
+    "who": "John H. Murphy (English, Nottingham)",
+    "seasons": [
+     [
+      "NOT",
+      1897
+     ]
+    ]
+   },
+   {
+    "who": "John Murphy (English, 'John Murphy (1900s footballer)')",
+    "seasons": [
+     [
+      "STK",
+      1903
+     ]
+    ]
+   },
+   {
+    "who": "John Murphy (Irish, Dublin; 3 Ireland caps)",
+    "seasons": [
+     [
+      "BRC",
+      1909
+     ]
+    ]
+   }
+  ]
+ },
+ "andyelliott#0": {
+  "node_when_audited": 780,
+  "name": "Andy Elliott",
+  "confidence": "medium",
+  "evidence": "The Manchester City man is Andy Elliott, b. 21 Nov 1963 Ashton-under-Lyne, midfielder: Manchester City 1981-82 with exactly ONE league appearance (27 March 1982, 0-0 away at Middlesbrough, Division One) - this accounts for the single league app in the row. He then went Sligo Rovers 1982-83 (FAI Cup winner), Chester City 1983-84 (32 apps), then non-league Barrow and Mossley. No source connects him ",
+  "people": [
+   {
+    "who": "Andy Elliott (midfielder, Ashton-under-Lyne)",
+    "seasons": [
+     [
+      "MCI",
+      1981
+     ]
+    ]
+   },
+   {
+    "who": "A second Andy Elliott (Luton Town squad, identity not established)",
+    "seasons": [
+     [
+      "LUT",
+      1991
+     ]
+    ]
+   }
+  ]
+ },
+ "billywilliams#1": {
+  "node_when_audited": 1919,
+  "name": "Billy Williams",
+  "confidence": "high",
+  "evidence": "The Everton man is William David Williams, b. 16 Nov 1892 Salford, inside forward: Darwen 1921-22, Everton 1922-1925 (39 league apps, 14 goals), Blackpool 1925-1926 (Division Two). He DIED in 1926 in Blackburn, of meningitis - so he cannot be the Sheffield Wednesday player of 1933/34. The 39 Everton apps also fit the row's 41 total, leaving 2 for Wednesday. I could not identify the Sheffield Wedne",
+  "people": [
+   {
+    "who": "William David Williams (Salford)",
+    "seasons": [
+     [
+      "EVE",
+      1922
+     ],
+     [
+      "EVE",
+      1923
+     ],
+     [
+      "EVE",
+      1924
+     ]
+    ]
+   },
+   {
+    "who": "A second Billy Williams (Sheffield Wednesday, identity not established)",
+    "seasons": [
+     [
+      "SHW",
+      1933
+     ]
+    ]
+   }
+  ]
+ },
+ "colinsmith#0": {
+  "node_when_audited": 2821,
+  "name": "Colin Smith",
+  "confidence": "high",
+  "evidence": "Two distinct men. Colin Smith (b. 30 Nov 1951, Middlesbrough area) joined Leeds United at 15 and became an apprentice in 1969 but never progressed to the first team, quitting for teacher training; his only Football League football was 2 apps for Darlington in 1984-85. Colin Richard Smith (b. 3 Nov 1958, Ruddington) was a defender at Nottingham Forest 1976-82 (0 league apps) and Norwich City 1982 (",
+  "people": [
+   {
+    "who": "Colin Smith (Leeds apprentice)",
+    "seasons": [
+     [
+      "LEE",
+      1969
+     ]
+    ]
+   },
+   {
+    "who": "Colin Richard Smith (defender)",
+    "seasons": [
+     [
+      "NFO",
+      1977
+     ],
+     [
+      "NRW",
+      1982
+     ]
+    ]
+   }
+  ]
+ },
+ "tomevans#0": {
+  "node_when_audited": 17488,
+  "name": "Tom Evans",
+  "confidence": "medium",
+  "evidence": "Two different Welshmen. Thomas Henry Evans (b. 7 Apr 1903, Maerdy; d. 1990), a defender capped 4 times by Wales 1926-28, played for Newcastle United and Clapton/Leyton Orient - he is the Newcastle 1927/28-1928/29 record, and his cap window matches exactly. Tom Evans (b. 28 Nov 1907, Ton Pentre), a right half, played for Ton Pentre, Leytonstone, Northfleet United and Tottenham Hotspur (102 apps) 19",
+  "people": [
+   {
+    "who": "Thomas Henry Evans",
+    "seasons": [
+     [
+      "NEW",
+      1927
+     ],
+     [
+      "NEW",
+      1928
+     ]
+    ]
+   },
+   {
+    "who": "Tom Evans (Ton Pentre)",
+    "seasons": [
+     [
+      "WBA",
+      1937
+     ]
+    ]
+   }
+  ]
+ },
+ "harryfearnley#0": {
+  "node_when_audited": 5640,
+  "name": "Harry Fearnley",
+  "confidence": "high",
+  "evidence": "Two goalkeepers of the same name, twelve years apart. Harry Fearnley (b. 1923) began at Leeds United in 1946, joined Halifax Town in 1948 and Newport County in 1949 - Leeds were in Division One in 1946/47 and relegated that season, so the Leeds 1946/47 row is his. Henry 'Harry' Fearnley (b. 16 June 1935, Penistone; d. 12 January 2013), also a goalkeeper and a noted cricketer, played for Huddersfie",
+  "people": [
+   {
+    "who": "Harry Fearnley",
+    "seasons": [
+     [
+      "LEE",
+      1946
+     ]
+    ]
+   },
+   {
+    "who": "Henry 'Harry' Fearnley",
+    "seasons": [
+     [
+      "HUD",
+      1955
+     ]
+    ]
+   }
+  ]
+ },
+ "rodthomas#0": {
+  "node_when_audited": 16279,
+  "name": "Rod Thomas",
+  "confidence": "high",
+  "evidence": "Two different footballers named Rod Thomas. (1) Roderick John Thomas (11 Jan 1947 - 15 Nov 2025), Welsh defender, 50 Wales caps: Gloucester City, Swindon Town 1964-73, Derby County 1973-77 (First Division title 1974-75), Cardiff City 1977-81, Newport County. He never played for Watford. (2) Rod Thomas (b. 10 Oct 1970, London), English midfielder/winger, England U21: Watford 1988-1993, Gillingham (",
+  "people": [
+   {
+    "who": "Rod Thomas (Roderick John Thomas), Welsh defender",
+    "seasons": [
+     [
+      "DER",
+      1973
+     ],
+     [
+      "DER",
+      1974
+     ],
+     [
+      "DER",
+      1975
+     ],
+     [
+      "DER",
+      1976
+     ],
+     [
+      "DER",
+      1977
+     ]
+    ]
+   },
+   {
+    "who": "Rod Thomas, English midfielder/winger",
+    "seasons": [
+     [
+      "WAT",
+      1987
+     ]
+    ]
+   }
+  ]
+ },
+ "williewatson#1": {
+  "node_when_audited": 18792,
+  "name": "Willie Watson",
+  "confidence": "medium",
+  "evidence": "The double international Willie Watson (7 Mar 1920, Bolton-on-Dearne - 24 Apr 2004), England footballer and cricketer, played only for Huddersfield Town (11 apps, League debut at Portsmouth Sept 1938), Sunderland and Halifax Town. He signed for Sunderland for GBP 7,000 in APRIL 1946 and spent eight straight seasons there (1946/47-1953/54, 211-223 apps), only losing his place in Nov 1953 - so he ca",
+  "people": [
+   {
+    "who": "Willie Watson, England footballer and cricketer (wing-half)",
+    "seasons": [
+     [
+      "HUD",
+      1938
+     ],
+     [
+      "SUN",
+      1946
+     ],
+     [
+      "SUN",
+      1947
+     ],
+     [
+      "SUN",
+      1948
+     ],
+     [
+      "SUN",
+      1949
+     ],
+     [
+      "SUN",
+      1950
+     ],
+     [
+      "SUN",
+      1951
+     ],
+     [
+      "SUN",
+      1952
+     ],
+     [
+      "SUN",
+      1953
+     ]
+    ]
+   },
+   {
+    "who": "William 'Watson', Preston North End full-back (identity not established)",
+    "seasons": [
+     [
+      "PRE",
+      1946
+     ]
+    ]
+   }
+  ]
+ },
+ "pl:602": {
+  "node_when_audited": 15078,
+  "name": "Paul McGee",
+  "confidence": "high",
+  "evidence": "Two distinct Irish forwards/midfielders with separate Wikipedia articles. Paul Gerard McGee (b. 19 June 1954, Sligo) signed for QPR from Sligo Rovers in November 1977, debut v Ipswich 27 Dec 1977, 39 apps, left for Preston North End October 1979. Paul McGee (b. 17 May 1968, Dublin) signed for Wimbledon from Colchester in March 1989 for GBP 150,000, debut on his 21st birthday v Arsenal, 60 league a",
+  "people": [
+   {
+    "who": "Paul Gerard McGee",
+    "seasons": [
+     [
+      "QPR",
+      1978
+     ]
+    ]
+   },
+   {
+    "who": "Paul McGee",
+    "seasons": [
+     [
+      "WIM",
+      1988
+     ],
+     [
+      "WIM",
+      1990
+     ],
+     [
+      "WIM",
+      1991
+     ],
+     [
+      "WIM",
+      1992
+     ]
+    ]
+   }
+  ]
+ },
+ "kevinlewis#0": {
+  "node_when_audited": 9076,
+  "name": "Kevin Lewis",
+  "confidence": "high",
+  "evidence": "Wikipedia has a disambiguation page listing distinct footballers named Kevin Lewis. Kevin Lewis (b. 19 Sep 1940, Ellesmere Port), winger: Sheffield United 1957-60, Liverpool 1960-63, Huddersfield Town 1963-65 - his only top-flight season was Liverpool 1962/63 (Liverpool promoted to Division One in 1962). Kevin Lewis (b. 1952), Crewe Alexandra then Stoke City 1972-76, made 15 league apps for Stoke ",
+  "people": [
+   {
+    "who": "Kevin Lewis (winger)",
+    "seasons": [
+     [
+      "LIV",
+      1962
+     ]
+    ]
+   },
+   {
+    "who": "Kevin Lewis (defender/midfielder)",
+    "seasons": [
+     [
+      "STK",
+      1972
+     ],
+     [
+      "STK",
+      1974
+     ],
+     [
+      "STK",
+      1975
+     ]
+    ]
+   }
+  ]
  }
 }
