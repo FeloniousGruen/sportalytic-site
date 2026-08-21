@@ -117,10 +117,13 @@ const GAME = (() => {
   /* Puzzles are still keyed by day number -- that is what the saved history is
      keyed on, and changing it would silently reassign everybody's past scores
      to different puzzles. Only the LABEL is a date. */
-  const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-                  'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+  const dayDate = n => new Date(EPOCH + n * 86400000);
   function dayLabel(n) {
-    const d = new Date(EPOCH + n * 86400000);
+    const d = dayDate(n);
     return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
   }
   // the archive starts at 1 July 2026; before that the puzzles existed but
@@ -484,6 +487,38 @@ const GAME = (() => {
   /* Every past daily is still playable: the puzzle comes from the day number,
      so nothing had to be stored for it to exist. What is stored is how you did.
    */
+  /* Grouped by month, and by year above that.
+     A flat run of fifty-odd dates is a wall you have to read rather than scan;
+     with the month called out you can go straight to the week you missed. The
+     year heading only appears once there is more than one, since "2026" over
+     every month of a single year is a label that distinguishes nothing. */
+  function archiveMonths(days, all, today) {
+    const groups = [];
+    for (const d of days) {
+      const dt = dayDate(d), y = dt.getUTCFullYear(), m = dt.getUTCMonth();
+      let g = groups[groups.length - 1];
+      if (!g || g.y !== y || g.m !== m) { g = { y, m, days: [] }; groups.push(g); }
+      g.days.push(d);
+    }
+    const manyYears = new Set(groups.map(g => g.y)).size > 1;
+    let out = '', lastYear = null;
+    for (const g of groups) {
+      if (manyYears && g.y !== lastYear) {
+        out += `<div class="ayear">${g.y}</div>`;
+        lastYear = g.y;
+      }
+      out += `<div class="gmeta">${LONG[g.m]}${manyYears ? '' : ' ' + g.y}</div>
+        <div class="arch">${g.days.map(d => {
+          const r = all[d];
+          const cls = r ? (r.revealed ? 'gave' : 'done') : '';
+          return `<button class="aday ${cls}" data-day="${d}"
+                    title="${dayLabel(d)}${r ? ' — scored ' + r.score : ' — not played'}">${
+                    d === today ? 'Today' : dayDate(d).getUTCDate()}</button>`;
+        }).join('')}</div>`;
+    }
+    return out;
+  }
+
   function renderArchive() {
     const today = dayNumber();
     const all = history.dailies();
@@ -497,18 +532,12 @@ const GAME = (() => {
          is kept on this device only.</div>
        ${scores.length ? distribution(scores, -1, RULES().dailyPar, GIVE_UP, 'Your dailies') : ''}
        ${rounds.length ? distribution(rounds.map(r => r.shot), -1, PAR_TOTAL(), PAR_TOTAL() + 12, 'Your rounds') : ''}
-       <div class="gmeta">Pick a day</div>
-       <div class="arch">${days.map(d => {
-         const r = all[d];
-         const cls = r ? (r.revealed ? 'gave' : 'done') : '';
-         return `<button class="aday ${cls}" data-day="${d}"
-                   title="${dayLabel(d)}${r ? ' — scored ' + r.score : ' — not played'}">${
-                   d === today ? 'TODAY' : dayLabel(d)}</button>`;
-       }).join('')}</div>
+       ${archiveMonths(days, all, today)}
        ${rounds.length ? `<div class="gmeta">Rounds played: ${rounds.length},
           best ${Math.min(...rounds.map(r => r.shot))}</div>` : ''}
        <button class="btn ghost" id="gagain">Back</button>`;
-    host.querySelector('.arch').onclick = e => {
+    // delegated on the card, not on one .arch -- there is a row per month now
+    host.onclick = e => {
       const b = e.target.closest('[data-day]');
       if (b) { setSkin('daily'); startDaily(+b.dataset.day); }
     };

@@ -104,6 +104,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(11,17,23,.
 nav{display:flex;gap:18px;margin-right:auto}
 nav a{text-decoration:none;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--grey);padding:4px 0;border-bottom:2px solid transparent}
+nav a[href="/play"]{color:var(--amber)}
 nav a:hover{color:var(--ink);border-bottom-color:var(--amber)}
 .cta{background:var(--amber);color:#0B1117;text-decoration:none;font-weight:bold;font-size:12px;
   letter-spacing:.09em;text-transform:uppercase;padding:9px 15px;border-radius:8px;white-space:nowrap}
@@ -379,6 +380,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 .dbar.me{background:var(--accent);color:#0B1117}
 /* the archive: one square a day */
 .arch{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 4px}
+/* A year only when there is more than one; see archiveMonths. */
+.ayear{font-family:var(--display);font-size:15px;color:var(--ink);
+  margin:14px 0 2px;letter-spacing:.02em}
+.arch .aday{min-width:30px;text-align:center}
 .aday{background:#1d2833;color:var(--grey);border:1px solid var(--greyd);
   border-radius:6px;padding:5px 7px;font:inherit;font-size:11px;cursor:pointer}
 .aday:hover{border-color:var(--accent);color:var(--ink)}
@@ -565,7 +570,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821y';
+<script>window.ASSET_V='20260821z';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -600,9 +605,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821y"></script>
-<script src="assets/net/view.js?v=20260821y"></script>
-<script src="assets/net/game.js?v=20260821y"></script>
+<script src="assets/net/app.js?v=20260821z"></script>
+<script src="assets/net/view.js?v=20260821z"></script>
+<script src="assets/net/game.js?v=20260821z"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
