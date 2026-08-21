@@ -583,7 +583,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260823c';
+<script>window.ASSET_V='20260823d';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -627,9 +627,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260823c"></script>
-<script src="assets/net/view.js?v=20260823c"></script>
-<script src="assets/net/game.js?v=20260823c"></script>
+<script src="assets/net/app.js?v=20260823d"></script>
+<script src="assets/net/view.js?v=20260823d"></script>
+<script src="assets/net/game.js?v=20260823d"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -1300,7 +1300,8 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   console.log('load',meta.ms.toFixed(0)+'ms', 'recentre',(r.bfsMs+r.layoutMs).toFixed(1)+'ms');
 
   // ---- search + club/season filter ----
-  const lower=NET.names.map(s=>s.toLowerCase());
+  // accent- and apostrophe-blind, and shared with game.js; see NET.fold
+  const lower=NET.foldedNames();
   function rosterOf(team,yr){
     const set=new Set();
     let lo=-Infinity, hi=Infinity;
@@ -1316,7 +1317,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     return set;
   }
   function search(){
-    const q=$('#q').value.trim().toLowerCase();
+    const q=NET.fold($('#q').value.trim());
     const team=club.value, yr=season.value;
     if(!q && !team && !yr){ $('#results').hidden=true; return; }
     const pool=(team||yr)?rosterOf(team,yr):null;
@@ -1368,7 +1369,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   }
   function findByName(s){
     // the boxes show "Name (1996-2008)", so drop a trailing span before looking
-    s=s.replace(/\s*\((?:\d{4})\s*[–-]\s*(?:\d{4})\)\s*$/,'').trim().toLowerCase();
+    s=NET.fold(s.replace(/\s*\((?:\d{4})\s*[–-]\s*(?:\d{4})\)\s*$/,'').trim());
     if(!s) return -1;
     let exact=-1, part=-1;
     for(let i=0;i<NET.P;i++){
@@ -1565,7 +1566,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   }
 
   function quizSuggest(){
-    const q=$('#qnext').value.trim().toLowerCase();
+    const q=NET.fold($('#qnext').value.trim());
     const box=$('#quizRes');
     if(q.length<2){ box.hidden=true; return; }
     const out=[];

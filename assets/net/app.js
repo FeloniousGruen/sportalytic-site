@@ -115,6 +115,7 @@ const NET = (() => {
     ]);
     tables = tbl;
     names = new TextDecoder().decode(nbuf).split('\n');
+    foldedCache = null;
 
     const dv = new DataView(gbuf);
     const magic = new TextDecoder().decode(new Uint8Array(gbuf, 0, 8));
@@ -560,6 +561,37 @@ const NET = (() => {
              ms: performance.now() - t0, mask: through };
   }
 
+  /* ---------------------------------------------------------- name search --
+   * Nobody types the accents. 478 of these names carry one, and matching on
+   * the raw string meant "kante" found nothing while the player is sitting
+   * right there -- you had to know to press the é, which on a phone keyboard
+   * means holding a key down. So every lookup folds both sides.
+   *
+   * NFD splits an accented letter into the letter plus a combining mark, which
+   * strips off; that covers é, ü, ç, å, š and the rest. Four letters in this
+   * data do not decompose because they are letters in their own right rather
+   * than an accented a or o -- ø, æ, Ø, ß -- and they need naming. The others
+   * in the map are not in the football set today but are one Bundesliga or
+   * Balkan import away, and a missing one is a name that cannot be found.
+   *
+   * Apostrophes go too. O'Leary, N'Golo, D'Alessandro: typing the apostrophe
+   * is the same friction as typing the accent, and dropping it from both sides
+   * means either spelling works. Spaces stay -- the suggestion ranking reads
+   * them to find where the surname starts.
+   */
+  const FOLD = { 'ø': 'o', 'æ': 'ae', 'œ': 'oe', 'ß': 'ss', 'đ': 'd', 'ð': 'd',
+                 'ł': 'l', 'þ': 'th', 'ı': 'i', 'ŋ': 'n',
+                 "'": '', '’': '', 'ʼ': '', 'ʻ': '' };
+  const FOLD_RE = new RegExp(`[${Object.keys(FOLD).join('')}]`, 'g');
+  const fold = s => s.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')     // the combining marks NFD split off
+    .toLowerCase()
+    .replace(FOLD_RE, c => FOLD[c]);
+
+  let foldedCache = null;
+  // built once and shared: game.js and both pages search the same 18,876 rows
+  const foldedNames = () => foldedCache || (foldedCache = names.map(fold));
+
   function info(i) {
     return {
       id: i, name: names[i], position: tables.positions[posIdx[i]] || '',
@@ -570,6 +602,7 @@ const NET = (() => {
   return {
     load, inflate, bfs, layout, recentre, pathToCentre, route, info, maxDist,
     neighbours, reached, seasonLabel, setEra, era, playsInEra,
+    fold, foldedNames,
     get base() { return BASE; },
     sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
     throughParent,

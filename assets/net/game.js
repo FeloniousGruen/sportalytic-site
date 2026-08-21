@@ -104,10 +104,11 @@ const GAME = (() => {
   }
 
   // ---------------------------------------------------------------- utils --
-  const lower = () => (lower.c || (lower.c = NET.names.map(s => s.toLowerCase())));
+  // accent- and apostrophe-blind; see NET.fold
+  const lower = () => NET.foldedNames();
 
   function findByName(s) {
-    s = s.replace(/\s*\((?:\d{4})\s*[–-]\s*(?:\d{4})\)\s*$/, '').trim().toLowerCase();
+    s = NET.fold(s.replace(/\s*\((?:\d{4})\s*[–-]\s*(?:\d{4})\)\s*$/, '').trim());
     if (!s) return -1;
     const L = lower();
     let part = -1;
@@ -376,7 +377,7 @@ const GAME = (() => {
     const inp = $('#gnext');
     if (!inp) return;
     inp.oninput = () => {
-      const q = inp.value.trim().toLowerCase();
+      const q = NET.fold(inp.value.trim());
       const box = $('#gres');
       if (q.length < MIN_QUERY) { box.hidden = true; return; }
       /* Ranked, not just filtered.
