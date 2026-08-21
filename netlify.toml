@@ -60,6 +60,31 @@
   to = "/network.html"
   status = 200
 
+# The hub, and real paths for what were hash routes. A hash cannot be shared
+# cleanly, never shows up as its own page in analytics and is invisible to a
+# crawler -- which matters most for exactly the pages meant to bring people in.
+# 200 rewrites, so the address bar keeps what was typed; index.html reads the
+# path as well as the hash.
+[[redirects]]
+  from = "/play"
+  to = "/play.html"
+  status = 200
+
+[[redirects]]
+  from = "/work"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/graphics"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/play.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 [[headers]]
   for = "/link-up-play.html"
   [headers.values]

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play — Sportalytic</title>
+<meta name="description" content="Two games played on the real record: every English top-flight footballer since 1888, and every NFL player since 1920. Join any two players by the people they played with.">
+<link rel="icon" href="assets/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sportalytic">
+<meta property="og:title" content="Play — Sportalytic">
+<meta property="og:description" content="A daily puzzle, a round scored like golf, and every player who ever appeared. Link any two by the men they played with.">
+<meta property="og:image" content="assets/share-football.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Play — Sportalytic">
+<meta name="twitter:image" content="assets/share-football.jpg">
+<style>
+
+@font-face{
+  font-family:"Archivo Black";
+  src:url("assets/ArchivoBlack.woff2") format("woff2");
+  font-weight:400;font-style:normal;font-display:swap;
+}
+:root{
+  --bg:#0B1117;
+  --panel:#141C25;
+  --ink:#FFFFFF;
+  --amber:#FBC247;
+  --blue:#4E7FA8;
+  --blued:#2E4C66;
+  --named:#9CC2DC;
+  --grey:#6C7A88;
+  --greyd:#39454F;
+  --red:#E2604A;
+  --maxw:1240px;
+  --display:"Archivo Black","Arial Black",Arial,sans-serif;
+  --body:Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+a{color:inherit}
+img,video{display:block;max-width:100%}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.display{font-family:var(--display);text-transform:uppercase;letter-spacing:-0.015em;line-height:1.02}
+.eyebrow{
+  font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--grey);font-weight:bold;margin:0 0 18px;
+}
+.amber{color:var(--amber)}
+.muted{color:var(--grey)}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:60;
+  background:rgba(11,17,23,.78);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.bar{display:flex;align-items:center;gap:28px;height:70px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
+.brand img{width:30px;height:30px}
+.brand span{font-family:var(--display);font-size:17px;letter-spacing:.02em;text-transform:uppercase}
+nav{display:flex;flex-wrap:nowrap;white-space:nowrap}
+nav a{
+  text-decoration:none;font-size:13px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--grey);margin-left:21px;transition:color .2s;font-weight:bold;
+}
+/* six items plus the button is a tight fit; give back the letter-spacing
+   before anything wraps onto a second line */
+@media(max-width:1320px){
+  nav a{font-size:12px;letter-spacing:.08em;margin-left:15px}
+  .nav-cta{margin-left:16px;padding:10px 15px;font-size:11.5px}
+  .bar{gap:18px}
+}
+nav a:hover{color:var(--ink)}
+.btn{
+  display:inline-block;background:var(--amber);color:#0B1117;text-decoration:none;
+  font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.06em;
+  padding:13px 22px;border:0;cursor:pointer;transition:transform .18s, background .18s;
+}
+.btn:hover{background:#ffd268;transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
+.btn.ghost:hover{background:rgba(255,255,255,.07)}
+/* Never allowed to wrap: two lines of it throws the whole bar out. */
+.nav-cta{margin-left:26px;padding:12px 20px;white-space:nowrap;border-radius:6px;
+  font-size:12px;letter-spacing:.08em;box-shadow:0 1px 10px rgba(251,194,71,.16)}
+.nav-cta:hover{box-shadow:0 3px 16px rgba(251,194,71,.28)}
+.burger{display:none;background:none;border:0;color:var(--ink);font-size:22px;cursor:pointer}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;padding:96px 0 84px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-family:var(--display);text-transform:uppercase;font-size:clamp(33px,4.3vw,57px);line-height:1.0;margin:0 0 26px;letter-spacing:-.02em}
+.hero p.lede{font-size:19px;line-height:1.62;color:#C8D2DC;max-width:33em;margin:0 0 34px}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+.marquee{
+  position:relative;height:640px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);
+  mask-image:linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);
+}
+.mcols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:100%}
+.mcol{position:relative;overflow:hidden}
+.mtrack{display:flex;flex-direction:column;gap:14px;will-change:transform}
+.mcol:nth-child(1) .mtrack{animation:up 44s linear infinite}
+.mcol:nth-child(2) .mtrack{animation:down 52s linear infinite}
+.mcol:nth-child(3) .mtrack{animation:up 60s linear infinite}
+@keyframes up{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+@keyframes down{from{transform:translateY(-50%)}to{transform:translateY(0)}}
+.mtrack video,.mtrack img{
+  width:100%;aspect-ratio:9/16;object-fit:cover;
+  border:1px solid rgba(255,255,255,.08);background:var(--panel);
+}
+.glow{
+  position:absolute;width:760px;height:760px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(251,194,71,.13),transparent 62%);
+  left:-280px;top:-180px;z-index:-1;
+}
+
+/* ---------- ticker ---------- */
+.facts{border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);background:#0d141b}
+.facts .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding-top:34px;padding-bottom:34px}
+.fact b{display:block;font-family:var(--display);font-size:34px;color:var(--amber);line-height:1}
+.fact b.word{font-size:23px;padding-top:9px}
+.fact span{display:block;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin-top:9px;font-weight:bold}
+
+/* ---------- sections ---------- */
+section{padding:104px 0}
+h2.sec{font-family:var(--display);text-transform:uppercase;font-size:clamp(29px,3.5vw,44px);line-height:1.04;margin:0 0 20px;letter-spacing:-.015em}
+.sec-lede{color:#AEBAC6;max-width:46em;margin:0 0 52px;font-size:17.5px}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+/* The interactives are a pair, not a trio. This lives here rather than inline
+   on the element because an inline grid-template-columns outranks every
+   stylesheet rule there is -- including the one that stacks cards on a phone,
+   which is how two of these came to sit side by side in 168px columns. */
+#page-graphics .cards{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--panel);border:1px solid rgba(255,255,255,.07);padding:34px 30px 32px;transition:border-color .22s,transform .22s}
+.card:hover{border-color:rgba(251,194,71,.45);transform:translateY(-3px)}
+.card .num{font-family:var(--display);color:var(--amber);font-size:13px;letter-spacing:.16em;margin-bottom:16px}
+.card .num span{color:var(--grey);margin-left:10px}
+.card h3{font-family:var(--display);text-transform:uppercase;font-size:20px;margin:0 0 13px;line-height:1.15}
+.card p{margin:0;color:#A9B5C1;font-size:15.5px;line-height:1.62}
+.card ul{margin:16px 0 0;padding-left:18px;color:var(--grey);font-size:14.5px}
+.card li{margin-bottom:5px}
+
+/* ---------- work ---------- */
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 30px}
+.chip{
+  background:transparent;border:1px solid rgba(255,255,255,.16);color:var(--grey);
+  font-family:var(--body);font-weight:bold;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  padding:9px 15px;cursor:pointer;transition:.18s;
+}
+.chip:hover{color:var(--ink);border-color:rgba(255,255,255,.4)}
+.chip.on{background:var(--amber);border-color:var(--amber);color:#0B1117}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.tile{position:relative;cursor:pointer;background:var(--panel);border:1px solid rgba(255,255,255,.08);overflow:hidden}
+.tile video,.tile img{width:100%;aspect-ratio:9/16;object-fit:cover;transition:transform .5s}
+.tile video{position:absolute;inset:0;height:100%;opacity:0;transition:opacity .35s}
+.tile.playing video{opacity:1}
+.tile:hover img{transform:scale(1.03)}
+.tile .meta{
+  position:absolute;left:0;right:0;bottom:0;padding:44px 14px 13px;
+  background:linear-gradient(to top,rgba(11,17,23,.96),rgba(11,17,23,.72) 45%,transparent);
+  z-index:2;
+}
+.tile .meta b{display:block;font-family:var(--display);text-transform:uppercase;font-size:12.5px;line-height:1.22}
+.tile .meta span{display:block;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--amber);margin-top:6px;font-weight:bold}
+.tile.hide{display:none}
+.badge{
+  position:absolute;top:10px;left:10px;z-index:3;font-style:normal;
+  background:rgba(11,17,23,.82);color:var(--amber);border:1px solid rgba(251,194,71,.5);
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:bold;padding:4px 8px;
+}
+
+/* ---------- process ---------- */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;counter-reset:s}
+.step{border-top:2px solid var(--greyd);padding-top:22px}
+.step:before{counter-increment:s;content:"0" counter(s);font-family:var(--display);color:var(--amber);font-size:13px;letter-spacing:.14em;display:block;margin-bottom:11px}
+.step h3{font-family:var(--display);text-transform:uppercase;font-size:16.5px;margin:0 0 10px}
+.step p{margin:0;color:#9FABB7;font-size:14.5px;line-height:1.6}
+
+/* ---------- team ---------- */
+.team{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px;max-width:560px}
+.person img{
+  width:100%;aspect-ratio:1;object-fit:cover;background:var(--panel);
+  border:1px solid rgba(255,255,255,.1);filter:saturate(.92);
+}
+.person h3{font-family:var(--display);text-transform:uppercase;font-size:16px;margin:18px 0 4px;line-height:1.2}
+.person p{margin:0;font-size:14.5px;line-height:1.55;color:#9FABB7}
+
+/* ---------- pricing ---------- */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.plan{background:var(--panel);border:1px solid rgba(255,255,255,.08);padding:34px 30px;display:flex;flex-direction:column}
+.plan.feature{border-color:var(--amber)}
+.plan h3{font-family:var(--display);text-transform:uppercase;font-size:19px;margin:0 0 6px}
+.plan .price{font-family:var(--display);font-size:36px;color:var(--amber);margin:14px 0 4px;line-height:1}
+.plan .price small{font-family:var(--body);font-size:13px;color:var(--grey);font-weight:bold;letter-spacing:.04em}
+.plan p{color:#A9B5C1;font-size:15px;margin:0 0 18px}
+.plan ul{list-style:none;padding:0;margin:0 0 26px;color:#B7C2CD;font-size:14.5px}
+.plan li{padding:9px 0 9px 24px;position:relative;border-bottom:1px solid rgba(255,255,255,.06)}
+.plan li:before{content:"";position:absolute;left:0;top:17px;width:9px;height:9px;background:var(--amber)}
+.plan .btn{margin-top:auto;text-align:center}
+.tag{display:inline-block;align-self:flex-start;background:rgba(251,194,71,.14);color:var(--amber);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:bold;padding:5px 10px}
+
+/* ---------- audience ---------- */
+.aud{display:grid;grid-template-columns:repeat(3,1fr);gap:44px}
+.aud h3{font-family:var(--display);text-transform:uppercase;font-size:18px;margin:0 0 12px;border-left:3px solid var(--amber);padding-left:14px}
+.aud p{color:#A2AEBA;font-size:15.5px;margin:0}
+
+/* ---------- contact ---------- */
+.contact{background:linear-gradient(180deg,#0d141b,#0B1117)}
+.cwrap{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+form{display:grid;gap:16px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label{display:block;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin-bottom:7px;font-weight:bold}
+input,select,textarea{
+  width:100%;background:#0B1117;border:1px solid rgba(255,255,255,.16);color:var(--ink);
+  font-family:var(--body);font-size:15.5px;padding:13px 14px;
+}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--amber)}
+textarea{min-height:130px;resize:vertical}
+.formnote{font-size:13px;color:var(--grey);margin:2px 0 0}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid rgba(255,255,255,.08);padding:44px 0;color:var(--grey);font-size:13.5px}
+.fwrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+footer a{text-decoration:none}
+footer a:hover{color:var(--ink)}
+
+/* ---------- lightbox ---------- */
+.lb{position:fixed;inset:0;background:rgba(4,7,10,.94);z-index:200;display:none;align-items:center;justify-content:center;padding:32px}
+.lb.on{display:flex}
+.lb-inner{display:flex;gap:36px;align-items:center;max-width:940px;width:100%}
+.lb video{width:330px;aspect-ratio:9/16;object-fit:cover;background:#000;border:1px solid rgba(255,255,255,.12)}
+.lb-txt h3{font-family:var(--display);text-transform:uppercase;font-size:29px;margin:0 0 12px;line-height:1.08}
+.lb-txt p{color:#A9B5C1;margin:0 0 16px;font-size:16px}
+.lb-txt .src{font-size:13px;color:var(--greyd)}
+.lb-close{position:absolute;top:22px;right:26px;background:none;border:0;color:var(--grey);font-size:30px;cursor:pointer;line-height:1}
+.lb-close:hover{color:var(--ink)}
+
+/* ---------- reveal ---------- */
+.rev{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rev.in{opacity:1;transform:none}
+
+@media(max-width:1150px){nav{display:none}}
+@media(max-width:1000px){
+  .team{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:none}
+  .person h3{font-size:13.5px;margin-top:14px}
+  /* Stacked hero: headline, then the reels, then the rest of the copy — so the
+     scrolling work is in the first screen instead of below it. */
+  .hero-grid{grid-template-columns:1fr;gap:32px}
+  .hero-copy{display:contents}
+  .hero-head{order:1}
+  .marquee{order:2;height:min(46vh,420px)}
+  .hero-body{order:3}
+  .hero h1{margin-bottom:0}
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .cards,.plans,.aud{grid-template-columns:1fr}
+  #page-graphics .cards{grid-template-columns:1fr}   /* beats the id rule above */
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .facts .wrap{grid-template-columns:repeat(2,1fr);gap:22px}
+  .cwrap{grid-template-columns:1fr;gap:36px}
+  nav{display:none}
+  .lb-inner{flex-direction:column;gap:20px}
+  .lb video{width:210px}
+}
+@media(max-width:620px){
+  .wrap{padding:0 20px}
+  section{padding:72px 0}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .row2{grid-template-columns:1fr}
+  .hero{padding:34px 0 56px}
+  .bar{height:62px;gap:12px}
+  .nav-cta{margin-left:0;padding:10px 14px;font-size:11px;letter-spacing:.04em}
+  .brand span{font-size:15px}
+  .team{grid-template-columns:1fr;gap:24px}
+  .person{display:flex;gap:16px;align-items:flex-start}
+  .person img{width:96px;flex:0 0 96px}
+  .person h3{margin-top:0;font-size:15px}
+  .mcols{grid-template-columns:repeat(2,1fr);gap:10px}
+  .mcol:nth-child(3){display:none}
+  .mtrack{gap:10px}
+  .marquee{height:min(44vh,380px)}
+  .hero-grid{gap:26px}
+  .fact b{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){
+  .mtrack{animation:none!important}
+  .rev{opacity:1;transform:none;transition:none}
+}
+
+/* ---- the hub ---- */
+.playhero{padding:70px 0 10px}
+.playhero h1{font-family:var(--display);text-transform:uppercase;
+  font-size:clamp(34px,5vw,60px);line-height:1.02;margin:0 0 18px;letter-spacing:-.02em}
+.playhero p{color:#AEBAC6;font-size:18px;max-width:40em;margin:0}
+.today{display:block;text-decoration:none;background:var(--panel);
+  border:1px solid rgba(251,194,71,.4);border-left:4px solid var(--amber);
+  padding:26px 28px;margin:34px 0 40px;transition:border-color .2s,transform .2s}
+.today:hover{border-color:var(--amber);transform:translateY(-2px)}
+.today .k{font-family:var(--display);color:var(--amber);font-size:12px;
+  letter-spacing:.18em;margin-bottom:10px}
+.today h2{font-family:var(--display);text-transform:uppercase;font-size:26px;
+  margin:0 0 8px;line-height:1.12}
+.today p{margin:0;color:#A9B5C1;font-size:15.5px;line-height:1.6}
+.today .go{color:var(--amber);margin-top:14px;display:block;font-weight:bold}
+.madeby{border-top:1px solid rgba(255,255,255,.08);margin-top:56px;padding-top:26px;
+  color:var(--grey);font-size:15px;line-height:1.7}
+.madeby a{color:var(--amber);text-decoration:none}
+.madeby a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt=""><span>Sportalytic</span></a>
+    <nav>
+      <a href="/work">Our work</a>
+      <a href="/play">Play</a>
+      <a href="/graphics">Graphics</a>
+      <a href="#services">What we do</a>
+      <a href="#audience">Who we work with</a>
+      <a href="#team">Who we are</a>
+    </nav>
+    <a class="btn nav-cta" href="#contact">Get in touch</a>
+  </div>
+</header>
+
+<main>
+  <section class="playhero"><div class="wrap">
+    <p class="eyebrow">Play</p>
+    <h1>Two games,<br>played on the record</h1>
+    <p>Join any two players by the people they actually played with. Every link is
+      checked against the real thing — two players only join if they were at the same
+      club in the same season. Nothing is made up, and nothing is served: it all runs
+      in the page.</p>
+
+    <a class="today" href="/link-up-play">
+      <div class="k">TODAY'S DAILY</div>
+      <h2>Link-Up Play</h2>
+      <p>One pair a day, the same for everyone. Every player in the English top flight
+        since 1888/89 — 18,876 of them. There is a round scored like golf, an expedition
+        into the parts of the network nobody visits, and an archive of every daily so far.</p>
+      <span class="go">Play today's &rarr;</span>
+    </a>
+
+    <div class="cards" style="grid-template-columns:repeat(2,1fr)">
+      <a class="card" href="/link-up-play" style="text-decoration:none;display:block">
+        <div class="num">01 <span>Premier League Football</span></div>
+        <h3>Link-Up Play</h3>
+        <p>1888 to today. Narrow it to the Premier League or widen it to the whole
+          record, and the distances are worked out again over those seasons alone.</p>
+        <p style="color:var(--amber);margin-bottom:0">Open it &rarr;</p>
+      </a>
+      <a class="card" href="/11-degrees" style="text-decoration:none;display:block">
+        <div class="num">02 <span>NFL</span></div>
+        <h3>11 Degrees of Travis Kelce</h3>
+        <p>The same idea across the NFL, back to 1920. 29,513 players and 2.2 million
+          connections between them.</p>
+        <p style="color:var(--amber);margin-bottom:0">Open it &rarr;</p>
+      </a>
+    </div>
+
+    <div class="madeby">
+      These are made by <b>Sportalytic</b> — we build graphics, reels and interactives
+      about sport, told through the numbers.
+      <a href="/work">See the work</a> &nbsp;·&nbsp;
+      <a href="index.html#contact">Get in touch</a>
+    </div>
+  </div></section>
+</main>
+
+<footer>
+  <div class="wrap fwrap">
+    <span>&copy; <span id="yr"></span> Sportalytic — sport, in numbers.</span>
+    <span><a href="https://instagram.com/sportalytic" target="_blank" rel="noopener">@sportalytic</a> &nbsp;·&nbsp; <a href="mailto:sportalyticmedia@gmail.com">sportalyticmedia@gmail.com</a></span>
+  </div>
+</footer>
+<script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+</body>
+</html>

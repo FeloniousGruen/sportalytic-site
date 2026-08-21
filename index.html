@@ -313,6 +313,7 @@ footer a:hover{color:var(--ink)}
     <a class="brand" href="#top"><img src="assets/logo.png" alt=""><span>Sportalytic</span></a>
     <nav>
       <a href="#/reels" data-route>Our work</a>
+      <a href="/play">Play</a>
       <a href="#/graphics" data-route>Graphics</a>
       <a href="#services">What we do</a>
       <a href="#audience">Who we work with</a>
@@ -698,7 +699,13 @@ const HOME=document.getElementById('page-home'), REELS=document.getElementById('
       GFX=document.getElementById('page-graphics');
 function route(){
   const h=location.hash;
-  const onReels = h.indexOf('/reels')===1, onGfx = h.indexOf('/graphics')===1;
+  /* A path counts the same as a hash. Hash routes cannot be shared cleanly,
+     never appear as separate pages in analytics, and are invisible to a
+     crawler; /work and /graphics are rewritten to this file by netlify.toml
+     and picked up here. */
+  const p = location.pathname.replace(/\/+$/,'');
+  const onReels = h.indexOf('/reels')===1 || p==='/work',
+        onGfx   = h.indexOf('/graphics')===1 || p==='/graphics';
   HOME.hidden=onReels||onGfx; REELS.hidden=!onReels; GFX.hidden=!onGfx;
   document.querySelectorAll('nav a[data-route]').forEach(a=>{
     const hit=a.getAttribute('href')===h;

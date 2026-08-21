@@ -114,6 +114,19 @@ const GAME = (() => {
     return Math.floor((utc - EPOCH) / 86400000);
   }
 
+  /* Puzzles are still keyed by day number -- that is what the saved history is
+     keyed on, and changing it would silently reassign everybody's past scores
+     to different puzzles. Only the LABEL is a date. */
+  const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
+                  'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  function dayLabel(n) {
+    const d = new Date(EPOCH + n * 86400000);
+    return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
+  }
+  // the archive starts at 1 July 2026; before that the puzzles existed but
+  // nobody was playing them, and a list running back to January is just noise
+  const ARCHIVE_FROM = Math.floor((Date.UTC(2026, 6, 1) - EPOCH) / 86400000);
+
   function seeded(n) {                     // mulberry32, plenty for picking rows
     let a = n >>> 0;
     return () => {
@@ -404,7 +417,7 @@ const GAME = (() => {
   function dailyShareText() {
     const L = state.leg, links = L.links(), par = L.best;
     const who = `${NET.names[L.a]} → ${NET.names[L.b]}`;
-    const head = `${CFG.title}${expert && CFG.expert ? ' (all time)' : ''} — daily #${state.day}\n${who}`;
+    const head = `${CFG.title}${expert && CFG.expert ? ' (all time)' : ''} — ${dayLabel(state.day)}\n${who}`;
     if (L.revealed) {
       return `${head}\n❌ Beat me today. See if you can do better.\n${SHARE_URL}`;
     }
@@ -475,7 +488,7 @@ const GAME = (() => {
     const today = dayNumber();
     const all = history.dailies();
     const days = [];
-    for (let d = today; d > Math.max(-1, today - 60); d--) days.push(d);
+    for (let d = today; d >= ARCHIVE_FROM; d--) days.push(d);
     const scores = Object.values(all).map(r => r.score).filter(n => n != null);
     const rounds = history.rounds();
     host.innerHTML = exitBtn() +
@@ -489,8 +502,8 @@ const GAME = (() => {
          const r = all[d];
          const cls = r ? (r.revealed ? 'gave' : 'done') : '';
          return `<button class="aday ${cls}" data-day="${d}"
-                   title="${r ? 'scored ' + r.score : 'not played'}">${
-                   d === today ? 'today' : '#' + d}</button>`;
+                   title="${dayLabel(d)}${r ? ' — scored ' + r.score : ' — not played'}">${
+                   d === today ? 'TODAY' : dayLabel(d)}</button>`;
        }).join('')}</div>
        ${rounds.length ? `<div class="gmeta">Rounds played: ${rounds.length},
           best ${Math.min(...rounds.map(r => r.shot))}</div>` : ''}
@@ -552,8 +565,8 @@ const GAME = (() => {
     const head = daily
       ? `<h2>The daily</h2>
          <div class="lead">${state.par} links apart at best. Join them in under
-           <b>${state.target}</b> — puzzle #${state.day}${
-           state.today ? '' : ' (from the archive)'}.</div>`
+           <b>${state.target}</b> — ${dayLabel(state.day)}${
+           state.today ? '' : ', from the archive'}.</div>`
       : `<h2>Hole ${state.hole + 1} of ${HOLES().length}</h2>
          <div class="lead">Par <b>${L.par}</b>. Join
            <b>${NET.names[L.a]}</b> to <b>${NET.names[L.b]}</b>.</div>`;
@@ -566,7 +579,7 @@ const GAME = (() => {
       if (daily) {
         verdict = L.revealed
           ? `<div class="qdone"><b>Not this time.</b> You did not solve
-               puzzle #${state.day}. There is a new one tomorrow.</div>`
+               ${dayLabel(state.day)}. There is a new one tomorrow.</div>`
           : `<div class="qdone"><b>Solved in ${links}</b>${
                L.clues ? ` link${links === 1 ? '' : 's'} plus ${L.clues} clue${
                  L.clues === 1 ? '' : 's'} — <b>${L.score()}</b> in all` : ''}. ${
