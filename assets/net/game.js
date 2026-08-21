@@ -206,7 +206,7 @@ const GAME = (() => {
       if (!NET.sharedTeamSeasons(last, i).length)
         return `${NET.names[last]} and ${NET.names[i]} were never teammates.`;
       L.chain.push(i);
-      L.clue = null; L.clueLevel = 0;
+      L.clue = null; L.clueLevel = 0; L.clueSpent = false;
       if (i === b) L.done = true;
       return null;
     };
@@ -225,19 +225,27 @@ const GAME = (() => {
       if (next == null) { L.clue = 'No route left from here.'; return; }
       const sh = NET.sharedTeamSeasons(last, next);
       if (!sh.length) { L.clue = 'No clue available.'; return; }
-      if (L.clueLevel >= 4) return;
-      L.clueLevel++; L.clues++;
       const f = sh[0];
       const club = (NET.tables.teamMeta[f.team] || {}).name || f.team;
       const info = NET.info(next);
       // no trailing stop: the sentence supplies one, and "A.B.." looks broken
       const initials = NET.names[next].split(/\s+/)
         .map(w => w[0]).filter(Boolean).join('.');
-      const bits = [`played for <b>${club}</b>`];
-      if (L.clueLevel >= 2) bits.push(`in <b>${NET.seasonLabel(f.season)}</b>`);
-      if (L.clueLevel >= 3) bits.push(`as a <b>${info.position || '?'}</b>`);
-      if (L.clueLevel >= 4) bits.push(`initials <b>${initials}</b>`);
-      L.clue = 'Someone who ' + bits.join(', ') + '.';
+      /* The ladder is built from what is actually known about THIS player, not
+         from a fixed list of four. The football source has no position for a
+         fifth of its players, and a rung that reads "as a ?" told you nothing
+         while still costing you a stroke -- the worst of both. A rung with
+         nothing behind it is dropped, and the next real one takes its place. */
+      const rungs = [
+        `played for <b>${club}</b>`,
+        `in <b>${NET.seasonLabel(f.season)}</b>`,
+        info.position ? `as a <b>${info.position}</b>` : null,
+        initials ? `initials <b>${initials}</b>` : null,
+      ].filter(Boolean);
+      if (L.clueLevel >= rungs.length) { L.clueSpent = true; return; }
+      L.clueLevel++; L.clues++;
+      L.clueSpent = L.clueLevel >= rungs.length;
+      L.clue = 'Someone who ' + rungs.slice(0, L.clueLevel).join(', ') + '.';
     };
 
     /* Giving up used to replace your chain with the answer, which lost what
@@ -585,13 +593,14 @@ const GAME = (() => {
                 state.hole === HOLES.length - 1 ? 'See the card' : 'Next hole'}</button>`
             : `<button class="btn" id="gshare">Share your result</button>
                <button class="btn ghost" id="gagain">Back</button>`)
-        : `<button class="btn ghost" id="gclue">${
-              L.clueLevel ? 'Another clue' : 'Clue'} (+1)</button>
+        : `${L.clueSpent ? '' : `<button class="btn ghost" id="gclue">${
+              L.clueLevel ? 'Another clue' : 'Clue'} (+1)</button>`}
            <button class="btn ghost" id="ggive">Give up on this one</button>`);
 
     if (!L.done) {
       wireInput(L, err => { render(); if (err) flash(err); });
-      $('#gclue').onclick = () => { L.nextClue(); render(); };
+      const cl = $('#gclue');
+      if (cl) cl.onclick = () => { L.nextClue(); render(); };
       $('#ggive').onclick = () => { L.reveal(); if (daily) saveDaily(); render(); };
     } else {
       const nx = $('#gnexth'); if (nx) nx.onclick = nextHole;
