@@ -292,9 +292,12 @@ print(f'\n{int(in_pl.sum())} players appear in {a.pl_from}/'
       f'({int((pl_ok & recent).sum())} still playing)')
 for key, d in [('p2', 2), ('p3', 3), ('p4', 4)]:
     collect(key, d, pl_ok, pl_ok, era=pl_era)
-# the one deep cut: a lesser name at one end, someone current at the other, so
-# the hole is still anchored by a player you know
-collect('w3', 3, in_pl & wide, pl_ok & recent, era=pl_era)
+# The one deep cut: a lesser name at one end, someone current at the other, so
+# the hole is still anchored by a player you know. One per distance, because
+# which hole gets it is drawn at random from the last three and any of them
+# might be the one.
+for key, d in [('w3', 3), ('w4', 4)]:
+    collect(key, d, in_pl & wide, pl_ok & recent, era=pl_era)
 
 # ------------------------------------------------------------- all time ----
 # r* : both ends someone playing now.
@@ -309,7 +312,12 @@ collect('g3', 3, known & ~recent, known & recent)
 collect('g4', 4, known & ~recent, known & recent)
 collect('i5', 5, icon & ~recent, known & recent)
 collect('i6', 6, icon & ~recent, known & recent)
-collect('w3x', 3, wide, known & recent)
+# ...and the same for expert, whose last three holes are the 4, the 5 and the
+# 6. Nobody modern is five links from anyone, so those two draw from the older
+# half of the wide tier and save the walk.
+collect('w4x', 4, wide, known & recent)
+collect('w5x', 5, wide & ~recent, known & recent)
+collect('w6x', 6, wide & ~recent, known & recent)
 
 out = {'players': {}, 'buckets': {}}
 for key, pairs in buckets.items():
@@ -326,8 +334,9 @@ print(f'{path}  {os.path.getsize(path) / 1024:.1f} KB')
 
 # ---- what a round would actually look like, which is the only real test ----
 sl = lambda y: f'{y}/{str((y + 1) % 100).zfill(2)}'
-for pools, what in [(['p2', 'p2', 'w3', 'p3', 'p4'], 'regular'),
-                    (['r2', 'w3x', 'g4', 'i5', 'i6'], 'expert')]:
+for pools, what in [(['p2', 'p2', 'w3', 'p3', 'p4'], 'regular, deep cut third'),
+                    (['p2', 'p2', 'p3', 'p3', 'w4'], 'regular, deep cut last'),
+                    (['r2', 'r3', 'g4', 'w5x', 'i6'], 'expert, deep cut fourth')]:
     print(f'\na {what} round:')
     for key in pools:
         i, j = buckets[key][rng.integers(len(buckets[key]))]

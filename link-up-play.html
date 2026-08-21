@@ -583,7 +583,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260823b';
+<script>window.ASSET_V='20260823c';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -606,25 +606,30 @@ window.SPORT={
      is no par 5 or 6 to be had.
      Expert mode widens the graph and the pools back to 1888/89, where the
      spread is genuinely 2 to 6 and the round is a proper twenty. */
-  /* The third hole is the deep cut: one end of it is drawn from a wider pool
-     than the rest, so a round has nine names you know and one you half
-     remember. Ten household names never surprises anybody, and the hole people
-     talk about afterwards is the one they had to dig for. */
-  holes:[{par:2,pool:'p2'},{par:2,pool:'p2'},{par:3,pool:'w3'},
-         {par:3,pool:'p3'},{par:4,pool:'p4'}],
+  /* `wide` is the deep-cut version of a hole: one end drawn from a lower tier,
+     so a round has nine names you know and one you half remember. Ten
+     household names never surprises anybody, and the hole people talk about
+     afterwards is the one they had to dig for. Exactly one hole a round uses
+     it, chosen at random from the last three -- see startRound. */
+  holes:[{par:2,pool:'p2'},{par:2,pool:'p2'},
+         {par:3,pool:'p3',wide:'w3'},
+         {par:3,pool:'p3',wide:'w3'},
+         {par:4,pool:'p4',wide:'w4'}],
   dailyPools:['p3','p3','p3','p3','p4'],
   dailyPar:3, dailyTarget:8,
   expert:{
-    holes:[{par:2,pool:'r2'},{par:3,pool:'w3x'},{par:4,pool:'g4'},
-           {par:5,pool:'i5'},{par:6,pool:'i6'}],
+    holes:[{par:2,pool:'r2'},{par:3,pool:'r3'},
+           {par:4,pool:'g4',wide:'w4x'},
+           {par:5,pool:'i5',wide:'w5x'},
+           {par:6,pool:'i6',wide:'w6x'}],
     dailyPools:['r3','r3','r3','r3','g3'],
     dailyPar:3, dailyTarget:10,
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260823b"></script>
-<script src="assets/net/view.js?v=20260823b"></script>
-<script src="assets/net/game.js?v=20260823b"></script>
+<script src="assets/net/app.js?v=20260823c"></script>
+<script src="assets/net/view.js?v=20260823c"></script>
+<script src="assets/net/game.js?v=20260823c"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);

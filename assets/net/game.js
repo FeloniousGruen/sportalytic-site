@@ -433,6 +433,17 @@ const GAME = (() => {
   function startRound() {
     setSkin('round');
     const rng = Math.random;
+    /* One hole a round is the deep cut -- a name you half remember at one end
+       instead of two you know -- and which one moves. Fixed at the third it
+       became furniture; you knew before you started which hole was the awkward
+       one. Drawn from the last three, because an obscure name on the opening
+       par 2 is a shrug, while on a long hole it is the thing you have to work
+       out. A sport that declares no `wide` pools gets no deep cut and this
+       does nothing. */
+    const holes = HOLES();
+    const late = holes.map((h, k) => (k >= holes.length - 3 && h.wide ? k : -1))
+                      .filter(k => k >= 0);
+    const cut = late.length ? late[Math.floor(rng() * late.length)] : -1;
     /* Nobody twice in one round. Five holes drawn independently out of pools
        built on the same few hundred well-known players repeat somebody often
        enough to notice, and a card that opens two holes with the same name
@@ -441,10 +452,11 @@ const GAME = (() => {
     const used = new Set();
     state = {
       mode: 'round', hole: 0,
-      holes: HOLES().map(h => {
-        let pair = pick(h.pool, rng);
-        for (let k = 0; k < 40 && (used.has(pair[0]) || used.has(pair[1])); k++)
-          pair = pick(h.pool, rng);
+      holes: holes.map((h, k) => {
+        const pool = k === cut ? h.wide : h.pool;
+        let pair = pick(pool, rng);
+        for (let n = 0; n < 40 && (used.has(pair[0]) || used.has(pair[1])); n++)
+          pair = pick(pool, rng);
         used.add(pair[0]); used.add(pair[1]);
         return { par: h.par, a: pair[0], b: pair[1] };
       }),
