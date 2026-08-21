@@ -56,6 +56,16 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
-  for = "/football.html"
+  for = "/link-up-play.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# The football page was /football.html until it was named. Anything already
+# shared -- a link in a message, a preview card a scraper has cached -- still
+# points there, so it is kept alive rather than 404ing. 301 so the new address
+# is the one that gets remembered.
+[[redirects]]
+  from = "/football.html"
+  to = "/link-up-play.html"
+  status = 301
+  force = true
