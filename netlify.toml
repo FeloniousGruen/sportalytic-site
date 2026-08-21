@@ -20,6 +20,16 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# ...and the same for the football network, for the same reason. Both pages do
+# also carry ?v= on every asset URL, but that only helps if someone remembers
+# to bump ASSET_V -- forgetting is precisely what pinned a year-old app.js on
+# every returning phone in August 2026, and a stored immutable entry is never
+# revalidated, so no header change can reach it afterwards. Two defences.
+[[headers]]
+  for = "/assets/foot/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
 # The network data is gzipped on disk. Saying so lets the browser inflate it
 # itself, which matters on iOS: every browser there is WebKit, and WebKit only
 # got DecompressionStream in Safari 16.4 -- anything older cannot unpack these
@@ -30,12 +40,22 @@
     Content-Encoding = "gzip"
 
 [[headers]]
+  for = "/assets/foot/*.gz"
+  [headers.values]
+    Content-Encoding = "gzip"
+
+[[headers]]
   for = "/index.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# network.html is HTML too, and must not be cached hard either.
+# the two network pages are HTML too, and must not be cached hard either
 [[headers]]
   for = "/network.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/football.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
