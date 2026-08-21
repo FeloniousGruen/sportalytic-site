@@ -153,6 +153,26 @@ def crest_url(club):
     return None, None
 
 
+def fetch_by_name(fname):
+    ii = api(action='query', prop='imageinfo', iiprop='url', iiurlwidth=a.size,
+             titles=fname, redirects=1).get('query', {}).get('pages', [])
+    if not ii or not ii[0].get('imageinfo'):
+        return None, None
+    info = ii[0]['imageinfo'][0]
+    return (info.get('thumburl') or info.get('url')), fname
+
+
+def on_white(im):
+    from PIL import ImageDraw
+    s = im.size[0]
+    bg = Image.new('RGBA', (s, s), (0, 0, 0, 0))
+    ImageDraw.Draw(bg).ellipse((0, 0, s - 1, s - 1), fill=(255, 255, 255, 255))
+    inner = im.resize((int(s * 0.74),) * 2, Image.LANCZOS)
+    o = (s - inner.width) // 2
+    bg.paste(inner, (o, o), inner)
+    return bg
+
+
 def tint(im):
     """The colour anyone would name the club by, taken from its own crest."""
     small = im.convert('RGBA').resize((64, 64))
@@ -176,6 +196,15 @@ def tint(im):
 # Liverpool's came out pale cyan off the anti-aliasing round a mostly-red mark;
 # Derby, Swansea and Notts County are black-and-white crests, where "the most
 # saturated colour" is meaningless and the extractor falls back to grey.
+# Where the article's best-scoring file is not the club's current mark.
+# Tottenham's scored "Tottenham Hotspur old logo.png" -- literally the old one.
+FILE_OVERRIDE = {'TOT': 'File:Spurs 2017 badge.svg'}
+
+# Crests that are black line art on transparency: invisible on a dark chart.
+# A white disc behind them, not a square, so they sit in a round wedge the way
+# every other mark does.
+ON_WHITE = {'DER'}
+
 TINT_OVERRIDE = {
     'LIV': '#C8102E', 'TOT': '#132257', 'DER': '#1D2B39', 'SWA': '#121212',
     'NOT': '#1B1B1B', 'FUL': '#1B1B1B', 'NEW': '#1B1B1B', 'GRI': '#1B1B1B',
@@ -195,7 +224,8 @@ for code in codes:
     if os.path.exists(dest) and code in colours:
         ok.append(code); continue
     try:
-        url, title = crest_url(club)
+        over = FILE_OVERRIDE.get(code)
+        url, title = (fetch_by_name(over) if over else crest_url(club))
         if not url:
             miss.append((code, club, 'no crest found on the article')); continue
         im = Image.open(io.BytesIO(get(url.split('?')[0]))).convert('RGBA')
@@ -204,6 +234,8 @@ for code in codes:
         pad = Image.new('RGBA', (s, s), (0, 0, 0, 0))
         pad.paste(im, ((s - im.width) // 2, (s - im.height) // 2), im)
         pad = pad.resize((a.size, a.size), Image.LANCZOS)
+        if code in ON_WHITE:
+            pad = on_white(pad)
         pad.save(dest, 'PNG', optimize=True)
         colours[code] = TINT_OVERRIDE.get(code) or tint(pad)
         ok.append(code)
