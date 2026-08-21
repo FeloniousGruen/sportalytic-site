@@ -24,7 +24,14 @@ import numpy as np
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--verdicts', required=True, help='directory of verdict*.json')
+ap.add_argument('--verdicts', required=True, help='directory of verdict files')
+ap.add_argument('--glob', default='verdict*.json',
+                help='which verdict files in that directory to read. Each audit '
+                     'tranche carries node indices from the graph as it stood '
+                     'when that tranche ran, so tranches must be processed '
+                     'separately against their own --before map and merged.')
+ap.add_argument('--merge', action='store_true',
+                help='add to the existing splits file rather than replace it')
 ap.add_argument('--data', default=os.path.join(HERE, 'assets', 'foot'))
 ap.add_argument('--out', default=os.path.join(HERE, 'tools', 'football_splits.json'))
 ap.add_argument('--before', default='/tmp/fame_before.csv',
@@ -114,7 +121,7 @@ def parse_seasons(text, have):
     return mine
 
 verdicts = []
-for f in sorted(glob.glob(os.path.join(a.verdicts, 'verdict*.json'))):
+for f in sorted(glob.glob(os.path.join(a.verdicts, a.glob))):
     verdicts += json.load(open(f))
 
 # old node index -> current one, joined on the uid
@@ -127,6 +134,12 @@ REMAP = {int(n): int(new_of[u]) for n, u in zip(before.node, before.uid) if u in
 
 accept = set(a.accept.split(','))
 splits, rejected, skipped = {}, [], []
+if a.merge and os.path.exists(a.out):
+    splits = json.load(open(a.out))
+    print(f'merging into {len(splits)} splits already in {os.path.basename(a.out)}')
+    # a record already split is not a candidate again: the current graph no
+    # longer holds the seasons the earlier verdict was written against
+    already = {s_['name'] for s_ in splits.values()}
 
 for v in verdicts:
     if v.get('verdict') != 'SPLIT':
@@ -139,6 +152,9 @@ for v in verdicts:
     # uid, which is stable. Matching on the name instead does not work: the
     # upstream splitter has ALREADY cut several of these names into two or
     # three nodes, so a name lookup is ambiguous exactly where it matters.
+    if a.merge and v['name'] in already:
+        skipped.append((v['name'], 'already split by an earlier tranche'))
+        continue
     node = REMAP.get(v['node'])
     if node is None:
         rejected.append((v['name'], f'node {v["node"]} is no longer in the data'))

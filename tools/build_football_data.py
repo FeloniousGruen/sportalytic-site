@@ -111,6 +111,27 @@ mem_all['team'] = mem_all.club.map(CLUB_CODE)
 mem_all['season'] = mem_all.year.astype(int)
 mem_all['uid'] = mem_all.player_id
 
+# --------------------------------------------- hand-verified bad rows -------
+# A club-season the man was never actually at. Not a namesake merge -- there is
+# no second person to split off -- but just as damaging, because a squad row is
+# a teammate row: Alan Ball on Wolves' books as a schoolboy makes him a one-step
+# link to every Wolves player of 1961/62. See the note in the file for why this
+# is deliberately narrow.
+bad_path = os.path.join(HERE, 'tools', 'football_bad_rows.json')
+if os.path.exists(bad_path):
+    bad = json.load(open(bad_path)).get('rows', [])
+    want = {(r['uid'], r['club'], int(r['season'])) for r in bad}
+    key = list(zip(mem_all.uid, mem_all.team, mem_all.season))
+    sel = np.array([k in want for k in key])
+    found = {k for k in key if k in want}
+    for miss in sorted(want - found):
+        print(f'  WARNING: bad row {miss} is not in the data; drop it from '
+              f'{os.path.basename(bad_path)}')
+    if sel.any():
+        mem_all = mem_all[~sel].copy()
+        print(f'removed {int(sel.sum())} club-seasons the player was never at '
+              f'({len(found)} of {len(want)} listed)')
+
 # ------------------------------------------------- hand-verified namesakes ---
 # The upstream heuristic only separates namesakes more than ten seasons apart.
 # Closer than that and two men stay one record who bridges eras he never played

@@ -1721,5 +1721,1364 @@
     ]
    }
   ]
+ },
+ "johnsmith#0": {
+  "node_when_audited": 8634,
+  "name": "John Smith",
+  "confidence": "medium",
+  "evidence": "The Wolves/Birmingham spell belongs to Jack (John) Smith, born 1882 in Wednesfield, Staffordshire: Cannock and Stafford Road, then Wolverhampton Wanderers (104 apps, 38 goals) until Wolves' relegation was confirmed in April 1906, when he joined fellow First Division club Birmingham (6 apps, 1 goal); afterwards Bristol Rovers, Norwich City, Luton, Millwall, Coventry - all Southern League. Wikipedia",
+  "people": [
+   {
+    "who": "John/J. Smith, Nottingham Forest 1892-93 (identity not established; not Albert Smith or William 'Tich' Smith, who are separately recorded)",
+    "seasons": [
+     [
+      "NFO",
+      1892
+     ]
+    ]
+   },
+   {
+    "who": "Jack (John) Smith, forward, born Wednesfield, Staffordshire",
+    "seasons": [
+     [
+      "BIR",
+      1905
+     ],
+     [
+      "BIR",
+      1906
+     ],
+     [
+      "WOL",
+      1902
+     ],
+     [
+      "WOL",
+      1903
+     ],
+     [
+      "WOL",
+      1904
+     ],
+     [
+      "WOL",
+      1905
+     ]
+    ]
+   },
+   {
+    "who": "J. Smith, Nottingham Forest forward, 13 league apps and 2 goals across 1909-1911 per Nottingham Forest club records",
+    "seasons": [
+     [
+      "NFO",
+      1909
+     ],
+     [
+      "NFO",
+      1910
+     ]
+    ]
+   }
+  ]
+ },
+ "alfredrobinson#0": {
+  "node_when_audited": 613,
+  "name": "Alfred Robinson",
+  "confidence": "medium",
+  "evidence": "Two different men. (1) Alfred Robinson (b. 1888, Manchester), goalkeeper: Chapel-en-le-Frith 1908-11, Gainsborough Trinity, then Blackburn Rovers 1911-1920/23 with 144 appearances, first-choice keeper for the 1911/12 and 1913/14 title sides. Wikipedia's account of him contains no Sunderland and no Sheffield United, and he was playing non-league football in Derbyshire until 1911 - he was 16 in 1904",
+  "people": [
+   {
+    "who": "Alfred Robinson, inside left, born Witton Park, County Durham (West Hartlepool, Sunderland, Stockport County, Carlisle United, Sheffield United, Spennymoor United)",
+    "seasons": [
+     [
+      "SHU",
+      1909
+     ],
+     [
+      "SUN",
+      1904
+     ]
+    ]
+   },
+   {
+    "who": "Alfred Robinson, goalkeeper, born Manchester; Blackburn Rovers title-winning keeper 1911/12 and 1913/14",
+    "seasons": [
+     [
+      "BLB",
+      1911
+     ],
+     [
+      "BLB",
+      1912
+     ],
+     [
+      "BLB",
+      1913
+     ],
+     [
+      "BLB",
+      1919
+     ],
+     [
+      "BLB",
+      1920
+     ]
+    ]
+   }
+  ]
+ },
+ "bobthompson#0": {
+  "node_when_audited": 2220,
+  "name": "Bob Thompson",
+  "confidence": "medium",
+  "evidence": "Two contemporaries with separate Wikipedia articles, born seven months apart, different positions, different clubs. (1) Robert Atkinson Thompson (b. 5 Sept 1890, Coundon Grange, Co. Durham; d. 1 June 1969, Ferryhill), centre forward: Wingate Albion 1910-11, Preston North End 1911-13 (17 apps, 2 goals), Goole Town, Bristol Rovers, Rotherham Town, Hartlepools United, Durham City, Leeds United 1920-2",
+  "people": [
+   {
+    "who": "Robert Atkinson Thompson, centre forward (Preston North End, Leeds United, Accrington Stanley, Bury)",
+    "seasons": [
+     [
+      "BURY",
+      1925
+     ],
+     [
+      "PRE",
+      1910
+     ],
+     [
+      "PRE",
+      1911
+     ]
+    ]
+   },
+   {
+    "who": "Robert Thompson, full back, Everton's WWI-era captain and 1914/15 title winner",
+    "seasons": [
+     [
+      "EVE",
+      1913
+     ],
+     [
+      "EVE",
+      1914
+     ],
+     [
+      "EVE",
+      1919
+     ],
+     [
+      "EVE",
+      1920
+     ]
+    ]
+   }
+  ]
+ },
+ "joecooper#0": {
+  "node_when_audited": 7702,
+  "name": "Joe Cooper",
+  "confidence": "high",
+  "evidence": "Wikipedia carries two footballers of this name. Joe Cooper (b. 27 Jan 1899, Newbold, Derbyshire; d. 1959) was an inside forward: trial at West Bromwich Albion 1919, Sheffield Wednesday 1920-21 (1 app), Chesterfield 1921-23, Notts County 1923-24 (31 apps), Grimsby Town 1924-32 (154 apps), Lincoln City 1932-33. His top-flight-only seasons match the row exactly: Notts County were promoted to Division",
+  "people": [
+   {
+    "who": "Joe Cooper, inside forward, Sheffield Wednesday/Chesterfield/Notts County/Grimsby/Lincoln",
+    "seasons": [
+     [
+      "GRI",
+      1929
+     ],
+     [
+      "GRI",
+      1930
+     ],
+     [
+      "GRI",
+      1931
+     ],
+     [
+      "NOT",
+      1923
+     ],
+     [
+      "WBA",
+      1919
+     ]
+    ]
+   },
+   {
+    "who": "Joe Cooper, Blackpool and Crewe Alexandra",
+    "seasons": [
+     [
+      "BLP",
+      1938
+     ]
+    ]
+   }
+  ]
+ },
+ "davesmith#0": {
+  "node_when_audited": 3058,
+  "name": "Dave Smith",
+  "confidence": "high",
+  "evidence": "Two unrelated men. The Burnley spell is David Bowman Smith (b. 22 Sept 1933, Scotland; d. 2022), a full-back who joined First Division Burnley at 16 and spent 11 years there (99 league apps), then Brighton & Hove Albion and Bristol City; he later coached at Sheffield Wednesday, Newcastle and Arsenal. He has no Huddersfield connection of any kind. The Huddersfield spell is David Bryan Smith (b. 11 ",
+  "people": [
+   {
+    "who": "David Bowman Smith, Burnley full-back, later coach",
+    "seasons": [
+     [
+      "BUR",
+      1954
+     ],
+     [
+      "BUR",
+      1955
+     ],
+     [
+      "BUR",
+      1956
+     ],
+     [
+      "BUR",
+      1957
+     ],
+     [
+      "BUR",
+      1958
+     ],
+     [
+      "BUR",
+      1960
+     ]
+    ]
+   },
+   {
+    "who": "David Bryan Smith, Huddersfield Town striker",
+    "seasons": [
+     [
+      "HUD",
+      1970
+     ],
+     [
+      "HUD",
+      1971
+     ]
+    ]
+   }
+  ]
+ },
+ "rondavies#0": {
+  "node_when_audited": 16313,
+  "name": "Ron Davies",
+  "confidence": "high",
+  "evidence": "Two Welsh footballers of the same name, ten years apart. Ronald Thomas Davies (b. 21 Sept 1932) was a full-back at Cardiff City 1952-58, debuting in 1955-56 and making 32 appearances; Cardiff were in Division One until relegation in 1957, so his only top-flight seasons are 1955/56 and 1956/57. He then joined Southampton in March 1958 and played 1958-64 \u2014 but entirely in Divisions Three and Two, so",
+  "people": [
+   {
+    "who": "Ronald Thomas Davies, Cardiff City full-back",
+    "seasons": [
+     [
+      "CAR",
+      1955
+     ],
+     [
+      "CAR",
+      1956
+     ]
+    ]
+   },
+   {
+    "who": "Ron Davies, Wales centre-forward",
+    "seasons": [
+     [
+      "SOU",
+      1966
+     ],
+     [
+      "SOU",
+      1967
+     ],
+     [
+      "SOU",
+      1968
+     ],
+     [
+      "SOU",
+      1969
+     ],
+     [
+      "SOU",
+      1970
+     ],
+     [
+      "SOU",
+      1971
+     ],
+     [
+      "SOU",
+      1972
+     ]
+    ]
+   }
+  ]
+ },
+ "georgerobertson#0": {
+  "node_when_audited": 5114,
+  "name": "George Robertson",
+  "confidence": "high",
+  "evidence": "Two separate Scottish footballers named George Robertson, each with his own Wikipedia article. George Robertson (b. 1883) played Rutherglen Glencairn, Clyde 1901-02, Rangers (loan 1902), Blackburn Rovers 1902-03 (10 apps, 1 goal), back to Clyde 1903-1910, then Birmingham 1910-1914 - he never played for Sheffield Wednesday. George Clark Robertson (7 Mar 1885 - 10 May 1937), 4 Scotland caps 1910-13,",
+  "people": [
+   {
+    "who": "George Robertson, Scottish inside/outside forward (Clyde, Rangers, Birmingham)",
+    "seasons": [
+     [
+      "BLB",
+      1902
+     ]
+    ]
+   },
+   {
+    "who": "George Clark Robertson, Scotland international outside left (Motherwell, East Fife)",
+    "seasons": [
+     [
+      "SHW",
+      1909
+     ],
+     [
+      "SHW",
+      1910
+     ],
+     [
+      "SHW",
+      1911
+     ],
+     [
+      "SHW",
+      1912
+     ],
+     [
+      "SHW",
+      1914
+     ],
+     [
+      "SHW",
+      1919
+     ]
+    ]
+   }
+  ]
+ },
+ "jackscott#1": {
+  "node_when_audited": 6637,
+  "name": "Jack Scott",
+  "confidence": "medium",
+  "evidence": "Three different men. (1) Newcastle 1910-13 is John George Scott (b. 1890), an outside left signed from Wallsend Slipway, with 8 First Division appearances split 1/6/1 across 1910/11-1912/13; he then went to Grimsby Town (Div 2, 1913-15), served in the army, and finished at Cleethorpes Town and Charlton - no Bradford Park Avenue and no Sunderland. (2) Bradford (Park Avenue)'s Jack Scott is a differ",
+  "people": [
+   {
+    "who": "John George Scott, outside left (Wallsend Slipway, Grimsby Town, Charlton)",
+    "seasons": [
+     [
+      "NEW",
+      1910
+     ],
+     [
+      "NEW",
+      1911
+     ],
+     [
+      "NEW",
+      1912
+     ]
+    ]
+   },
+   {
+    "who": "Jack Scott, Bradford (Park Avenue) half back, club record 155 successive appearances (probably John Scott MM, the Scot of Hamilton Academical / Manchester United / St Mirren)",
+    "seasons": [
+     [
+      "BPA",
+      1914
+     ],
+     [
+      "BPA",
+      1919
+     ],
+     [
+      "BPA",
+      1920
+     ]
+    ]
+   },
+   {
+    "who": "Jack Scott, outside right (Seaham Harbour, Crystal Palace, Kettering, Nottingham Forest, Northampton, Exeter City, Hartlepools United)",
+    "seasons": [
+     [
+      "SUN",
+      1926
+     ]
+    ]
+   }
+  ]
+ },
+ "frankthompson#0": {
+  "node_when_audited": 4328,
+  "name": "Frank Thompson",
+  "confidence": "high",
+  "evidence": "Three different men, and the appearance totals confirm it. (1) Francis William Thompson (2 Oct 1885, Ballynahinch - 4 Oct 1950, Ayr), Ireland international outside left, 12 caps: Cliftonville 1905-10, Bradford City December 1910-1913 (51 apps, 11 goals, 1911 FA Cup winner), then Clyde 1913-1924 in Scotland and later manager of Clyde, Ayr United and Glentoran - he was never at Manchester City or Ne",
+  "people": [
+   {
+    "who": "Francis William Thompson, Ireland international outside left (Cliftonville, Clyde; later manager)",
+    "seasons": [
+     [
+      "BRC",
+      1910
+     ],
+     [
+      "BRC",
+      1911
+     ],
+     [
+      "BRC",
+      1912
+     ]
+    ]
+   },
+   {
+    "who": "Frank Thompson, Manchester City defender",
+    "seasons": [
+     [
+      "MCI",
+      1921
+     ],
+     [
+      "MCI",
+      1922
+     ],
+     [
+      "MCI",
+      1923
+     ],
+     [
+      "MCI",
+      1924
+     ],
+     [
+      "MCI",
+      1925
+     ]
+    ]
+   },
+   {
+    "who": "Frank Thompson, Newcastle United forward signed from St Peter's Albion in November 1923",
+    "seasons": [
+     [
+      "NEW",
+      1923
+     ]
+    ]
+   }
+  ]
+ },
+ "owenwilliams#1": {
+  "node_when_audited": 10032,
+  "name": "Owen Williams",
+  "confidence": "high",
+  "evidence": "Two different men. Owen Williams (23 Sept 1896, Ryhope - 9 Dec 1960) was an England international OUTSIDE LEFT: on Sunderland's books 1913-14, Manchester United 1914, Easington Colliery Welfare 1914-19, Clapton Orient 1919-24 (Division Two, hence no top-flight seasons), then Middlesbrough from February 1924 to 1930 (184 apps, 40 goals) - Boro's top-flight seasons in that window are 1923/24, 1927/2",
+  "people": [
+   {
+    "who": "Owen Williams, England international outside left (Sunderland/Man Utd/Clapton Orient/Middlesbrough)",
+    "seasons": [
+     [
+      "MID",
+      1923
+     ],
+     [
+      "MID",
+      1927
+     ],
+     [
+      "MID",
+      1929
+     ],
+     [
+      "SUN",
+      1913
+     ]
+    ]
+   },
+   {
+    "who": "Owen Williams, Welsh wing half, 2 Everton appearances",
+    "seasons": [
+     [
+      "EVE",
+      1919
+     ]
+    ]
+   }
+  ]
+ },
+ "billthompson#2": {
+  "node_when_audited": 1560,
+  "name": "Bill Thompson",
+  "confidence": "high",
+  "evidence": "Two unrelated men, 19 years apart. Bill (William Gordon) Thompson, born 10 August 1921 in Glasgow, died 26 December 1986 in Portsmouth, a wing half, joined Portsmouth from Carnoustie Panmure in 1948 aged 27, was in the Championship-winning sides of 1949 and 1950, made 40 league appearances and left for Bournemouth in 1952; he never played for Newcastle. Bill Thompson, born 5 January 1940, died 30 ",
+  "people": [
+   {
+    "who": "Bill (William Gordon) Thompson, Scottish wing half, Portsmouth double-winning squads",
+    "seasons": [
+     [
+      "POR",
+      1948
+     ],
+     [
+      "POR",
+      1949
+     ],
+     [
+      "POR",
+      1950
+     ],
+     [
+      "POR",
+      1951
+     ],
+     [
+      "POR",
+      1952
+     ]
+    ]
+   },
+   {
+    "who": "Bill Thompson, English centre half, one-club Newcastle United man",
+    "seasons": [
+     [
+      "NEW",
+      1960
+     ],
+     [
+      "NEW",
+      1965
+     ],
+     [
+      "NEW",
+      1966
+     ]
+    ]
+   }
+  ]
+ },
+ "jackpercival#0": {
+  "node_when_audited": 6599,
+  "name": "Jack Percival",
+  "confidence": "high",
+  "evidence": "Wikipedia carries two separate articles. Jack Percival (16 May 1913 - 1979), half back, was a Manchester City player 1933-1946: debut in a 1-0 win over Aston Villa, replaced Matt Busby in the side from 1936, won a Championship medal (1936/37) and a Division Two title, 161 apps; City were relegated at the end of 1937/38, which closes his top-flight run at 1937/38. He then went to Bournemouth and Mu",
+  "people": [
+   {
+    "who": "Jack Percival, Manchester City half back",
+    "seasons": [
+     [
+      "MCI",
+      1933
+     ],
+     [
+      "MCI",
+      1934
+     ],
+     [
+      "MCI",
+      1935
+     ],
+     [
+      "MCI",
+      1936
+     ],
+     [
+      "MCI",
+      1937
+     ]
+    ]
+   },
+   {
+    "who": "Ronald Frederick John 'Jack' Percival, defender",
+    "seasons": [
+     [
+      "HUD",
+      1947
+     ],
+     [
+      "HUD",
+      1949
+     ]
+    ]
+   }
+  ]
+ },
+ "johnsmith#2": {
+  "node_when_audited": 8636,
+  "name": "John Smith",
+  "confidence": "medium",
+  "evidence": "At least two, probably three men. John Smith (4 January 1939, Shoreditch - February 1988): West Ham youth product, West Ham 1956-60 (Division Two champions 1957/58, so top-flight 1958/59-1959/60), Tottenham Hotspur March 1960-1964 (21 league apps, in the 1960/61 Double squad, 5 apps in 1961/62 and 7 in 1962/63), then Coventry City 1964-65, Leyton Orient, Torquay, Swindon, Walsall, Dundalk 1973-74 ",
+  "people": [
+   {
+    "who": "John Smith, West Ham and Tottenham wing half / inside right, later Coventry, Orient, Torquay, Swindon, Walsall, Dundalk",
+    "seasons": [
+     [
+      "TOT",
+      1959
+     ],
+     [
+      "TOT",
+      1960
+     ],
+     [
+      "TOT",
+      1961
+     ],
+     [
+      "TOT",
+      1962
+     ],
+     [
+      "TOT",
+      1963
+     ],
+     [
+      "WHU",
+      1958
+     ],
+     [
+      "WHU",
+      1959
+     ]
+    ]
+   },
+   {
+    "who": "John Smith, local Liverpool-born Everton winger, 2 first-team appearances",
+    "seasons": [
+     [
+      "EVE",
+      1973
+     ]
+    ]
+   },
+   {
+    "who": "John Smith, untraced Burnley player (identity not established; may instead be a spurious row - see bad_rows)",
+    "seasons": [
+     [
+      "BUR",
+      1962
+     ]
+    ]
+   }
+  ]
+ },
+ "billyhughes#1": {
+  "node_when_audited": 1746,
+  "name": "Billy Hughes",
+  "confidence": "high",
+  "evidence": "Two men, and the row has them at two clubs simultaneously in 1948/49-1950/51, which is the giveaway. William Marshall Hughes (6 March 1918, Llanelli - 16 June 1981), Welsh left back, 10 Wales caps: joined Birmingham from Llanelli in 1934/35, debut January 1936, First Division regular until war, sold to Second Division Luton for a record GBP 11,000 in 1947, and eight months later (i.e. during 1947/",
+  "people": [
+   {
+    "who": "Billy (William Marshall) Hughes, Welsh left back, Birmingham/Luton/Chelsea",
+    "seasons": [
+     [
+      "BIR",
+      1935
+     ],
+     [
+      "BIR",
+      1936
+     ],
+     [
+      "BIR",
+      1937
+     ],
+     [
+      "BIR",
+      1938
+     ],
+     [
+      "CHE",
+      1947
+     ],
+     [
+      "CHE",
+      1948
+     ],
+     [
+      "CHE",
+      1949
+     ],
+     [
+      "CHE",
+      1950
+     ]
+    ]
+   },
+   {
+    "who": "Billy (William) Hughes, Northern Irish right winger, Larne/Bolton/Bournemouth",
+    "seasons": [
+     [
+      "BOL",
+      1948
+     ],
+     [
+      "BOL",
+      1949
+     ],
+     [
+      "BOL",
+      1950
+     ],
+     [
+      "BOL",
+      1951
+     ],
+     [
+      "BOL",
+      1952
+     ]
+    ]
+   }
+  ]
+ },
+ "harrygrundy#0": {
+  "node_when_audited": 5648,
+  "name": "Harry Grundy",
+  "confidence": "high",
+  "evidence": "Wikipedia carries two separate articles. Harry Grundy (footballer, born 1883) = Thomas Henry Grundy, joined Everton November 1905, debut 20 Dec 1905 at Middlesbrough, second and last first-team game at Newcastle; 2 Football League appearances in total. Harry Grundy (footballer, born 18 September 1893), a full back from Little Hulton, joined First Division Oldham Athletic in August 1914, debut at N",
+  "people": [
+   {
+    "who": "Thomas Henry 'Harry' Grundy, Everton winger",
+    "seasons": [
+     [
+      "EVE",
+      1905
+     ]
+    ]
+   },
+   {
+    "who": "Harry Grundy, Oldham Athletic full back",
+    "seasons": [
+     [
+      "OLD",
+      1914
+     ],
+     [
+      "OLD",
+      1919
+     ],
+     [
+      "OLD",
+      1920
+     ],
+     [
+      "OLD",
+      1921
+     ],
+     [
+      "OLD",
+      1922
+     ]
+    ]
+   }
+  ]
+ },
+ "robertferguson#0": {
+  "node_when_audited": 16125,
+  "name": "Robert Ferguson",
+  "confidence": "medium",
+  "evidence": "Three distinct men on Wikipedia. (1) Robert Gibson Ferguson (b. 5 January 1902, Blythswood Hill), Scottish centre-half: Cambuslang Rangers, Sunderland (32 league apps, c.1921/22-1925), then Middlesbrough 1925-1932 and Northwich Victoria. (2) Robert Ferguson (b. April 1908, Seaton Burn), inside forward: Ashington 1926, West Bromwich Albion 1926-27, Blyth Spartans, Annfield Plain, one league game fo",
+  "people": [
+   {
+    "who": "Robert Gibson Ferguson, Scottish centre-half",
+    "seasons": [
+     [
+      "SUN",
+      1921
+     ],
+     [
+      "SUN",
+      1922
+     ],
+     [
+      "SUN",
+      1923
+     ],
+     [
+      "SUN",
+      1924
+     ]
+    ]
+   },
+   {
+    "who": "Robert Ferguson, inside forward from Seaton Burn",
+    "seasons": [
+     [
+      "WBA",
+      1926
+     ]
+    ]
+   },
+   {
+    "who": "Robert 'Bob' Ferguson, Middlesbrough goalkeeper",
+    "seasons": [
+     [
+      "MID",
+      1936
+     ],
+     [
+      "MID",
+      1937
+     ]
+    ]
+   }
+  ]
+ },
+ "georgebeech#0": {
+  "node_when_audited": 4784,
+  "name": "George Beech",
+  "confidence": "high",
+  "evidence": "Two men, and the season-by-season Sheffield Wednesday appearance records (adrianbullock.com/swfc archive) settle it. A 'G Beech' appears in Wednesday's league appearance tables in 1896/97 (1 app, 1 goal - he scored in the 3-0 win over Nottingham Forest on 5 April 1897), 1898/99 (2 apps, 1 goal), 1901/02 (8 apps, 3 goals), 1902/03 (3 apps) and 1903/04 (4 apps). That is 18 league appearances, exactl",
+  "people": [
+   {
+    "who": "G. Beech, The Wednesday forward of the 1890s/1900s (18 league apps, 5 goals)",
+    "seasons": [
+     [
+      "SHW",
+      1896
+     ],
+     [
+      "SHW",
+      1898
+     ],
+     [
+      "SHW",
+      1901
+     ],
+     [
+      "SHW",
+      1902
+     ],
+     [
+      "SHW",
+      1903
+     ]
+    ]
+   },
+   {
+    "who": "George Beech, later of Brighton & Hove Albion",
+    "seasons": [
+     [
+      "SHW",
+      1911
+     ]
+    ]
+   }
+  ]
+ },
+ "albertbrown#0": {
+  "node_when_audited": 207,
+  "name": "Albert Brown",
+  "confidence": "high",
+  "evidence": "At least two, almost certainly three men; Wikipedia has a disambiguation page with two footballing Albert Browns. (1) Albert Alfred Brown (7 January 1862 - 1930), Aston Villa forward 1884-1894, 86 league appearances and 35 goals, FA Cup winner 1887, Villa's top scorer in 1890-91; he retired through injury in 1894 and has no post-Villa club. (2) Albert Frederick Brown (1 April 1879, Austrey - 6 Apr",
+  "people": [
+   {
+    "who": "Albert Alfred Brown, Aston Villa forward",
+    "seasons": [
+     [
+      "AVL",
+      1888
+     ],
+     [
+      "AVL",
+      1889
+     ],
+     [
+      "AVL",
+      1890
+     ],
+     [
+      "AVL",
+      1892
+     ],
+     [
+      "AVL",
+      1893
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified third Albert Brown at West Bromwich Albion",
+    "seasons": [
+     [
+      "WBA",
+      1898
+     ]
+    ]
+   },
+   {
+    "who": "Albert Frederick Brown, the 'Tamworth Sprinter'",
+    "seasons": [
+     [
+      "PRE",
+      1904
+     ],
+     [
+      "PRE",
+      1905
+     ]
+    ]
+   }
+  ]
+ },
+ "georgesmith#1": {
+  "node_when_audited": 5155,
+  "name": "George Smith",
+  "confidence": "high",
+  "evidence": "Four different men; Wikipedia's George Smith disambiguation page lists eighteen footballers of the name. (1) George Westwater Smith (b. 1898, Scottish), Chelsea 1921-1932, 351 league appearances - Chelsea were relegated in 1924 and promoted in 1930, which explains the 1924/25-1929/30 hole in the Chelsea rows and the '5-season gap' flagged here. (2) George Smith (b. 20 May 1901, Glasgow), right bac",
+  "people": [
+   {
+    "who": "George Westwater Smith, Chelsea full back",
+    "seasons": [
+     [
+      "CHE",
+      1921
+     ],
+     [
+      "CHE",
+      1922
+     ],
+     [
+      "CHE",
+      1923
+     ],
+     [
+      "CHE",
+      1930
+     ],
+     [
+      "CHE",
+      1931
+     ]
+    ]
+   },
+   {
+    "who": "George Smith, Notts County right back",
+    "seasons": [
+     [
+      "NOT",
+      1924
+     ],
+     [
+      "NOT",
+      1925
+     ]
+    ]
+   },
+   {
+    "who": "George Smith, Welsh left half (Bristol City, Thames, Bournemouth, Colchester)",
+    "seasons": [
+     [
+      "WOL",
+      1934
+     ]
+    ]
+   },
+   {
+    "who": "George Caspar Smith, Charlton Athletic centre half, later Portsmouth manager",
+    "seasons": [
+     [
+      "CHA",
+      1938
+     ]
+    ]
+   }
+  ]
+ },
+ "albertwatson#0": {
+  "node_when_audited": 349,
+  "name": "Albert Watson",
+  "confidence": "high",
+  "evidence": "Two separate Wikipedia articles, Albert Watson (footballer, born 1903) and Albert Watson (footballer, born 1918), and neither man played for the other's club. The 1903 man made nearly 400 league appearances for Blackpool 1923-1936 (Second Division champions 1929-30, so top flight only 1930/31-1932/33 before relegation in 1933), then Halifax Town and Gateshead; he never played for Huddersfield. The",
+  "people": [
+   {
+    "who": "Albert Watson (wing half, Blackpool)",
+    "seasons": [
+     [
+      "BLP",
+      1930
+     ],
+     [
+      "BLP",
+      1931
+     ],
+     [
+      "BLP",
+      1932
+     ]
+    ]
+   },
+   {
+    "who": "Albert Watson (wing half, Huddersfield Town / Oldham Athletic)",
+    "seasons": [
+     [
+      "HUD",
+      1937
+     ],
+     [
+      "HUD",
+      1938
+     ],
+     [
+      "HUD",
+      1946
+     ],
+     [
+      "HUD",
+      1947
+     ]
+    ]
+   }
+  ]
+ },
+ "johnrobertson#1": {
+  "node_when_audited": 8591,
+  "name": "John Robertson",
+  "confidence": "high",
+  "evidence": "Two different men. John Robertson (b. 20 January 1953), the Scottish winger, joined Nottingham Forest in May 1970 and stayed to June 1983, then Derby County 1983-85 (Second Division, so invisible here), then Forest again 1985-86; his Wikipedia article contains no Newcastle United spell at all. The Forest gap 1971/72->1977/78 is Forest sitting in Division Two 1972-1977, so the whole Forest block is",
+  "people": [
+   {
+    "who": "John Robertson (Scotland winger, Nottingham Forest / Derby County)",
+    "seasons": [
+     [
+      "NFO",
+      1971
+     ],
+     [
+      "NFO",
+      1977
+     ],
+     [
+      "NFO",
+      1978
+     ],
+     [
+      "NFO",
+      1979
+     ],
+     [
+      "NFO",
+      1980
+     ],
+     [
+      "NFO",
+      1982
+     ],
+     [
+      "NFO",
+      1985
+     ]
+    ]
+   },
+   {
+    "who": "John Grant Robertson (Heart of Midlothian striker)",
+    "seasons": [
+     [
+      "NEW",
+      1988
+     ]
+    ]
+   }
+  ]
+ },
+ "raywilson#0": {
+  "node_when_audited": 15918,
+  "name": "Ray Wilson",
+  "confidence": "high",
+  "evidence": "Two men with separate Wikipedia articles. Ramon 'Ray' Wilson (b. 17 December 1934, d. 2018), the 1966 World Cup winner, played Huddersfield Town 1952-64 - Huddersfield were relegated at the end of 1955-56, so 1955/56 is his only top-flight season there and the 1955/56->1964/65 gap is Huddersfield in Division Two - then Everton 1964-69, then Oldham and Bradford City in the lower divisions. He never",
+  "people": [
+   {
+    "who": "Ramon 'Ray' Wilson, England left-back (1966 World Cup winner)",
+    "seasons": [
+     [
+      "EVE",
+      1964
+     ],
+     [
+      "EVE",
+      1965
+     ],
+     [
+      "EVE",
+      1966
+     ],
+     [
+      "EVE",
+      1967
+     ],
+     [
+      "EVE",
+      1968
+     ],
+     [
+      "HUD",
+      1955
+     ]
+    ]
+   },
+   {
+    "who": "Ray Wilson, Scottish left-back",
+    "seasons": [
+     [
+      "WBA",
+      1965
+     ],
+     [
+      "WBA",
+      1968
+     ],
+     [
+      "WBA",
+      1969
+     ],
+     [
+      "WBA",
+      1971
+     ],
+     [
+      "WBA",
+      1972
+     ]
+    ]
+   }
+  ]
+ },
+ "williambrown#0": {
+  "node_when_audited": 18350,
+  "name": "William Brown",
+  "confidence": "high",
+  "evidence": "Wikipedia carries a long list of distinct footballers called William Brown from this era, and no single one of them holds more than one of these five club blocks. Confirmed separately: William Brown (b. 1865), reserve outside-left signed from Stanley (Liverpool), made 6 league apps for Everton in the inaugural 1888-89 season, debut and debut goal v Bolton on 3 November 1888, 'not retained for the ",
+  "people": [
+   {
+    "who": "William Brown, Everton outside-left (from Stanley FC)",
+    "seasons": [
+     [
+      "EVE",
+      1888
+     ]
+    ]
+   },
+   {
+    "who": "William Brown, goalkeeper, born in Nottingham (Notts Rangers / Notts County)",
+    "seasons": [
+     [
+      "NFO",
+      1892
+     ],
+     [
+      "NFO",
+      1893
+     ]
+    ]
+   },
+   {
+    "who": "William Brown, Scottish half-back (Beith, later Aston Villa, Plymouth Argyle, Crystal Palace)",
+    "seasons": [
+     [
+      "BOL",
+      1900
+     ],
+     [
+      "BOL",
+      1901
+     ],
+     [
+      "BOL",
+      1902
+     ]
+    ]
+   },
+   {
+    "who": "William Brown, Preston North End - unidentified, matches none of the documented Browns above",
+    "seasons": [
+     [
+      "PRE",
+      1895
+     ]
+    ]
+   },
+   {
+    "who": "William Brown, Bury - unidentified, matches none of the documented Browns above",
+    "seasons": [
+     [
+      "BURY",
+      1904
+     ]
+    ]
+   }
+  ]
+ },
+ "grahamoates#0": {
+  "node_when_audited": 5416,
+  "name": "Graham Oates",
+  "confidence": "high",
+  "evidence": "Two separate Wikipedia articles. Graham Oates (b. 4 December 1943, Scunthorpe), midfielder: Blackpool 1961-1968 (121 league apps) - Blackpool were relegated in 1967, so his top-flight seasons are exactly 1961/62-1966/67 - then Grimsby Town 1968-71 and Wigan Athletic 1971-73. He never played for Newcastle. Graham Oates (b. 14 March 1949, Bradford): Bradford City 1969-74, Blackburn Rovers 1974-76 (b",
+  "people": [
+   {
+    "who": "Graham Oates, Blackpool midfielder",
+    "seasons": [
+     [
+      "BLP",
+      1961
+     ],
+     [
+      "BLP",
+      1962
+     ],
+     [
+      "BLP",
+      1963
+     ],
+     [
+      "BLP",
+      1964
+     ],
+     [
+      "BLP",
+      1965
+     ],
+     [
+      "BLP",
+      1966
+     ]
+    ]
+   },
+   {
+    "who": "Graham Oates, Bradford City / Blackburn Rovers / Newcastle United",
+    "seasons": [
+     [
+      "NEW",
+      1975
+     ],
+     [
+      "NEW",
+      1976
+     ],
+     [
+      "NEW",
+      1977
+     ]
+    ]
+   }
+  ]
+ },
+ "georgeedwards#0": {
+  "node_when_audited": 4887,
+  "name": "George Edwards",
+  "confidence": "high",
+  "evidence": "Two separate Wikipedia articles, and neither man appears in the other's record. George Robert Edwards (1 April 1918 - 21 January 1993), born Great Yarmouth, a striker: Norwich City, then Aston Villa, where he played 122 games during WWII and continued in the First Division after the war until 1951. His article lists no Cardiff City spell; his Birmingham connection is explicitly only WARTIME guest ",
+  "people": [
+   {
+    "who": "George Robert Edwards, Aston Villa forward (formerly Norwich City)",
+    "seasons": [
+     [
+      "AVL",
+      1938
+     ],
+     [
+      "AVL",
+      1946
+     ],
+     [
+      "AVL",
+      1947
+     ],
+     [
+      "AVL",
+      1948
+     ],
+     [
+      "AVL",
+      1949
+     ],
+     [
+      "AVL",
+      1950
+     ]
+    ]
+   },
+   {
+    "who": "George Edwards, Wales international winger (Swansea Town, Birmingham City, Cardiff City)",
+    "seasons": [
+     [
+      "BIR",
+      1948
+     ],
+     [
+      "CAR",
+      1952
+     ],
+     [
+      "CAR",
+      1953
+     ],
+     [
+      "CAR",
+      1954
+     ]
+    ]
+   }
+  ]
+ },
+ "chrisjones#0": {
+  "node_when_audited": 2662,
+  "name": "Chris Jones",
+  "confidence": "high",
+  "evidence": "Two separate Wikipedia articles, and the merge bridges 16 seasons that no one person covers. Chris Jones (b. 19 November 1945, Altrincham), striker: joined Manchester City in May 1964, league debut December 1966 v Nottingham Forest, two appearances in the 1967-68 title-winning side, then Swindon Town, Walsall, Huddersfield Town, York City 1973-76, Doncaster Rovers, Rochdale. He never played for To",
+  "people": [
+   {
+    "who": "Chris Jones, Manchester City / York City striker",
+    "seasons": [
+     [
+      "MCI",
+      1966
+     ],
+     [
+      "MCI",
+      1967
+     ]
+    ]
+   },
+   {
+    "who": "Chris Jones, Tottenham Hotspur striker (from Jersey)",
+    "seasons": [
+     [
+      "MCI",
+      1982
+     ],
+     [
+      "TOT",
+      1974
+     ],
+     [
+      "TOT",
+      1975
+     ],
+     [
+      "TOT",
+      1976
+     ],
+     [
+      "TOT",
+      1978
+     ],
+     [
+      "TOT",
+      1979
+     ],
+     [
+      "TOT",
+      1981
+     ]
+    ]
+   }
+  ]
  }
 }

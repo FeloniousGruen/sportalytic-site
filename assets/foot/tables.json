@@ -510,7 +510,7 @@
    "name": "Blackpool",
    "from": 1930,
    "to": 2010,
-   "players": 290,
+   "players": 288,
    "seasons": [
     1930,
     1931,
@@ -543,7 +543,7 @@
    "name": "Bolton Wanderers",
    "from": 1888,
    "to": 2011,
-   "players": 823,
+   "players": 820,
    "seasons": [
     1888,
     1889,
@@ -707,7 +707,7 @@
    "name": "Burnley",
    "from": 1888,
    "to": 2025,
-   "players": 654,
+   "players": 652,
    "seasons": [
     1888,
     1889,
@@ -973,7 +973,7 @@
    "name": "Coventry City",
    "from": 1967,
    "to": 2026,
-   "players": 306,
+   "players": 305,
    "seasons": [
     1967,
     1968,
@@ -1132,7 +1132,7 @@
    "name": "Everton",
    "from": 1888,
    "to": 2026,
-   "players": 934,
+   "players": 933,
    "seasons": [
     1888,
     1889,
@@ -1333,7 +1333,7 @@
    "name": "Huddersfield Town",
    "from": 1920,
    "to": 2018,
-   "players": 409,
+   "players": 406,
    "seasons": [
     1920,
     1921,
@@ -2402,7 +2402,7 @@
    "name": "Sheffield United",
    "from": 1893,
    "to": 2023,
-   "players": 713,
+   "players": 711,
    "seasons": [
     1893,
     1894,
@@ -2473,7 +2473,7 @@
    "name": "Sheffield Wednesday",
    "from": 1892,
    "to": 1999,
-   "players": 657,
+   "players": 655,
    "seasons": [
     1892,
     1893,
@@ -2601,7 +2601,7 @@
    "name": "Stoke City",
    "from": 1888,
    "to": 2017,
-   "players": 596,
+   "players": 595,
    "seasons": [
     1888,
     1889,
@@ -2668,7 +2668,7 @@
    "name": "Sunderland",
    "from": 1890,
    "to": 2026,
-   "players": 1050,
+   "players": 1045,
    "seasons": [
     1890,
     1891,
@@ -2912,7 +2912,7 @@
    "name": "West Bromwich Albion",
    "from": 1888,
    "to": 2020,
-   "players": 776,
+   "players": 775,
    "seasons": [
     1888,
     1889,
@@ -3107,7 +3107,7 @@
    "name": "Wolverhampton Wanderers",
    "from": 1888,
    "to": 2025,
-   "players": 839,
+   "players": 836,
    "seasons": [
     1888,
     1889,
@@ -3194,7 +3194,7 @@
    "from": 1888,
    "to": 2100,
    "note": "Every English top-flight season since 1888/89.",
-   "centre": 7877,
+   "centre": 7896,
    "centreName": "Joe Smith"
   },
   {
@@ -3203,7 +3203,7 @@
    "from": 1992,
    "to": 2100,
    "note": "From 1992/93. Links formed in the old First Division do not count.",
-   "centre": 12446,
+   "centre": 12470,
    "centreName": "James Milner"
   },
   {
@@ -3212,7 +3212,7 @@
    "from": 2000,
    "to": 2100,
    "note": "From 2000/01.",
-   "centre": 12446,
+   "centre": 12470,
    "centreName": "James Milner"
   },
   {
@@ -3221,7 +3221,7 @@
    "from": 1946,
    "to": 1991,
    "note": "Post-war, 1946/47 to 1991/92.",
-   "centre": 10431,
+   "centre": 10455,
    "centreName": "Peter Shilton"
   },
   {
@@ -3230,19 +3230,19 @@
    "from": 1888,
    "to": 1938,
    "note": "The Football League from its first season to 1938/39.",
-   "centre": 7877,
+   "centre": 7896,
    "centreName": "Joe Smith"
   }
  ],
- "players": 18792,
+ "players": 18824,
  "teamSeasons": 2580,
- "memberships": 66513,
+ "memberships": 66481,
  "notable": {
-  "Erling Haaland": 15156,
-  "Jack Grealish": 14230,
-  "Stanley Matthews": 16796,
-  "Bobby Charlton": 1968,
-  "Alan Shearer": 15618,
-  "Billy Meredith": 1811
+  "Erling Haaland": 15180,
+  "Jack Grealish": 14254,
+  "Stanley Matthews": 16824,
+  "Bobby Charlton": 1974,
+  "Alan Shearer": 15642,
+  "Billy Meredith": 1817
  }
 }

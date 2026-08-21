@@ -1,0 +1,279 @@
+{
+ "_note": [
+  "Club-seasons where the man never made a first-team league appearance for that",
+  "club, and was not in its squad either -- a youth or trial spell that leaked",
+  "into the source. This is a different fault from a namesake merge and needs a",
+  "different fix: there is no second person to split off, the row simply should",
+  "not be there.",
+  "",
+  "It matters because a squad row is a teammate row. Alan Ball on Wolves' books",
+  "as a schoolboy makes him a one-step link to every Wolves player of 1961/62,",
+  "which is exactly the kind of false bridge this whole audit exists to remove.",
+  "",
+  "Deliberately conservative. A row is only listed when a source says plainly",
+  "that no first-team appearance was made. The dataset legitimately records",
+  "squad members with zero league appearances -- being at a club and not playing",
+  "is a real thing it is meant to capture -- so 'played no games' on its own is",
+  "NOT grounds for deletion. Only 'was never in the first-team squad' is.",
+  "",
+  "Each entry: uid, club code, season start year, and why."
+ ],
+ "rows": [
+  {
+   "uid": "alanball#0",
+   "name": "Alan Ball",
+   "club": "BOL",
+   "season": 1961,
+   "confidence": "high",
+   "why": "Ball Jr was a schoolboy at Bolton and was released; he turned professional at Blackpool in May 1962 and made no senior appearance for Bolton. No other top-flight Alan Ball was active in 1961/62."
+  },
+  {
+   "uid": "alanball#0",
+   "name": "Alan Ball",
+   "club": "WOL",
+   "season": 1961,
+   "confidence": "high",
+   "why": "Same schoolboy period at Wolves, also released. No senior appearance."
+  },
+  {
+   "uid": "georgehunt#0",
+   "name": "George Hunt",
+   "club": "SHU",
+   "season": 1927,
+   "confidence": "high",
+   "why": "Hunt b.1910 had an unsuccessful trial at Sheffield United and did not turn professional until 1929, with Chesterfield. He was 17 and never on their books as a first-team player."
+  },
+  {
+   "uid": "tommybroad#0",
+   "name": "Tommy Broad",
+   "club": "MCI",
+   "season": 1903,
+   "confidence": "high",
+   "why": "Trial only. Broad had an unsuccessful trial at Maine Road in 1904 and never signed; the 1903-04 Manchester City appearance table has no Broad, and StatCity records his Man City appearances as 1919/20 and 1920/21 only."
+  },
+  {
+   "uid": "daihopkins#0",
+   "name": "Dai Hopkins",
+   "club": "SHW",
+   "season": 1929,
+   "confidence": "high",
+   "why": "Hopkins was on Sheffield Wednesday's books in 1929-30 but made no Football League appearance before dropping into non-league; his league debut came for Crystal Palace in October 1932."
+  },
+  {
+   "uid": "chrisnicholl#0",
+   "name": "Chris Nicholl",
+   "club": "BUR",
+   "season": 1965,
+   "confidence": "high",
+   "why": "Nicholl turned professional at Burnley in April 1965 but made zero first-team appearances (Wikipedia infobox: Burnley 1965-1966, 0 apps, 0 goals) and was released at the end of 1965/66 to join non-league Witton Albion."
+  },
+  {
+   "uid": "alfredrobinson#0",
+   "name": "Alfred Robinson",
+   "club": "SUN",
+   "season": 1904,
+   "confidence": "medium",
+   "why": "The Witton Park Alfred Robinson was signed by Sunderland in 1904 but spent 1904-05 on their books without making a first-team appearance."
+  },
+  {
+   "uid": "bertsproston#0",
+   "name": "Bert Sproston",
+   "club": "HUD",
+   "season": 1932,
+   "confidence": "high",
+   "why": "Sproston does not appear in the Wikipedia 1932-33 Huddersfield Town appearances-and-goals table (Beaumont, Blackwell, Bott, Bungay, Campbell, Carr, Christie, Dodgin, Fogg, Goodall, Hine, Jennings, Luke, Mangnall, McLean,"
+  },
+  {
+   "uid": "joecooper#0",
+   "name": "Joe Cooper",
+   "club": "WBA",
+   "season": 1919,
+   "confidence": "high",
+   "why": "Cooper (b.1899) was only a trialist at West Bromwich Albion in 1919; Wikipedia's career table lists no WBA appearances and his Football League record (263 apps) begins at Sheffield Wednesday in 1920."
+  },
+  {
+   "uid": "joecooper#0",
+   "name": "Joe Cooper",
+   "club": "BLP",
+   "season": 1938,
+   "confidence": "high",
+   "why": "Joe Cooper (b.1918) 'started his career on the books of Blackpool' but made no League appearances for them; his only League football was 4 apps for Crewe Alexandra."
+  },
+  {
+   "uid": "jockdodds#0",
+   "name": "Jock Dodds",
+   "club": "HUD",
+   "season": 1932,
+   "confidence": "high",
+   "why": "Dodds was on Huddersfield's books 1932-34 but made 0 first-team league appearances (career table shows 0/0); he left for Lincoln City without playing."
+  },
+  {
+   "uid": "normanwilkinson#0",
+   "name": "Norman Wilkinson",
+   "club": "HUD",
+   "season": 1932,
+   "confidence": "high",
+   "why": "Wilkinson made 0 first-team league appearances for Huddersfield Town (1932-35), playing second fiddle to Hugh Turner in the reserves; Stoke signed him out of Huddersfield's reserve side."
+  },
+  {
+   "uid": "tomholley#0",
+   "name": "Tom Holley",
+   "club": "SUN",
+   "season": 1931,
+   "confidence": "high",
+   "why": "Holley was an amateur on Sunderland's books in 1931-32 but 'never played in their first eleven'; his League career began at Barnsley in 1932."
+  },
+  {
+   "uid": "davesmith#0",
+   "name": "Dave Smith",
+   "club": "HUD",
+   "season": 1970,
+   "confidence": "high",
+   "why": "Dave Smith (b.1950) is recorded at Huddersfield only from 1971 and does not appear in the complete 1970-71 Huddersfield appearances table (21 players listed); the only Smith in that Division One side was midfielder Steve"
+  },
+  {
+   "uid": "johnosborne#0",
+   "name": "John Osborne",
+   "club": "BOL",
+   "season": 1959,
+   "confidence": "high",
+   "why": "Osborne was a Bolton youth-team player only and made no senior/League appearance for them (Bolton's goalkeeper in that period was Eddie Hopkinson); his senior debut came with Chesterfield in 1960."
+  },
+  {
+   "uid": "georgehandley#ovr1",
+   "name": "George Handley",
+   "club": "SHU",
+   "season": 1904,
+   "confidence": "high",
+   "why": "Handley made no Football League appearance for Sheffield United. In 1904/05 he was at Chesterfield Town (7 Division Two apps). His only United connection is occasional wartime guest appearances in 1918-19, which are not "
+  },
+  {
+   "uid": "johnwile#0",
+   "name": "John Wile",
+   "club": "SUN",
+   "season": 1966,
+   "confidence": "high",
+   "why": "Wile was at Sunderland 1966-67 but made no Football League appearance for them; his League debut came for Peterborough United after his 1967 move."
+  },
+  {
+   "uid": "pl:510",
+   "name": "John Sheridan",
+   "club": "MCI",
+   "season": 1981,
+   "confidence": "high",
+   "why": "Sheridan was a Manchester City youth player 1981-82 and made no league appearances before being released and joining Leeds United in 1982."
+  },
+  {
+   "uid": "pl:510",
+   "name": "John Sheridan",
+   "club": "NFO",
+   "season": 1989,
+   "confidence": "high",
+   "why": "Sheridan's brief Forest spell in autumn 1989 produced no Football League appearance \u2014 only one League Cup match \u2014 before he moved to Sheffield Wednesday in November 1989."
+  },
+  {
+   "uid": "bobhesford#0",
+   "name": "Bob Hesford",
+   "club": "BLP",
+   "season": 1931,
+   "confidence": "high",
+   "why": "Hesford was an amateur on Blackpool's books in 1931-32 at age 15 and never made their first eleven; he dropped to local club South Shore in 1932 before signing for Huddersfield in 1933. No first-team league appearance fo"
+  },
+  {
+   "uid": "georgeutley#0",
+   "name": "George Utley",
+   "club": "SHW",
+   "season": 1906,
+   "confidence": "medium",
+   "why": "Wikipedia states Utley began with Sheffield Wednesday in 1906 but made no first-team appearances; other sources describe it as a trial after which he returned to Elsecar and was then signed by Barnsley in 1907."
+  },
+  {
+   "uid": "jackscott#1",
+   "name": "Jack Scott",
+   "club": "SUN",
+   "season": 1926,
+   "confidence": "medium",
+   "why": "Jack Scott (b. 1908) signed for Sunderland from Seaham Harbour in 1926 but failed to make the first team; he made no Football League appearance for the club before moving on to Crystal Palace and then Kettering Town."
+  },
+  {
+   "uid": "albertstubbins#0",
+   "name": "Albert Stubbins",
+   "club": "SUN",
+   "season": 1936,
+   "confidence": "high",
+   "why": "Stubbins was on Sunderland's books as an amateur in 1936-37 but never played for their first eleven; he turned professional with Newcastle United in April 1937 without a Sunderland league appearance."
+  },
+  {
+   "uid": "pl:834",
+   "name": "Colin Foster",
+   "club": "COV",
+   "season": 1976,
+   "confidence": "medium",
+   "why": "Colin Foster (b.1964) was 12 in 1976/77 and no player of that name appears in any Coventry City 1976/77 squad or appearance list; the record's own 'seasons actually played' count (6) is exactly Forest 1986/87-1989/90 plu"
+  },
+  {
+   "uid": "stanbentham#0",
+   "name": "Stan Bentham",
+   "club": "BOL",
+   "season": 1932,
+   "confidence": "high",
+   "why": "Trial only. Bentham trialled at Bolton as a teenager in the early 1930s, was not offered a professional contract and joined non-league Wigan Athletic instead; he made no Bolton first-team league appearance."
+  },
+  {
+   "uid": "johnsmith#2",
+   "name": "John Smith",
+   "club": "BUR",
+   "season": 1962,
+   "confidence": "medium",
+   "why": "Could not verify any John Smith making a Burnley first-team league appearance in 1962/63 - he is absent from the Transfermarkt 1962/63 squad and from Burnley club histories. It also collides with his recorded Tottenham s"
+  },
+  {
+   "uid": "pl:2896",
+   "name": "John Ruddy",
+   "club": "EVE",
+   "season": 2005,
+   "confidence": "high",
+   "why": "Ruddy made no league appearance for Everton in any season. His single Everton senior appearance was as a substitute in an FA Cup third-round tie against Plymouth Argyle on 9 January 2008. The row's own 'seasons actually "
+  },
+  {
+   "uid": "georgebeech#0",
+   "name": "George Beech",
+   "club": "SHW",
+   "season": 1911,
+   "confidence": "high",
+   "why": "George Beech (b. 1892) was on Wednesday's books 1911-1914 but Wikipedia credits him with 0 league appearances, and he does not appear in the club's 1911-12 league appearance table. All 18 league apps on this record belon"
+  },
+  {
+   "uid": "clivewhitehead#0",
+   "name": "Clive Whitehead",
+   "club": "WOL",
+   "season": 1972,
+   "confidence": "high",
+   "why": "Whitehead had a trial with Wolves in 1971 but never signed; he joined Bristol City in March 1973. His only Wolves first-team appearances were 2 games on loan from WBA in the 1985-86 season. The Wolves Complete History 19"
+  },
+  {
+   "uid": "cyrilsidlow#0",
+   "name": "Cyril Sidlow",
+   "club": "WOL",
+   "season": 1953,
+   "confidence": "high",
+   "why": "Sidlow was genuinely re-signed by Wolves for 1953-1955, but he made no first-team league appearance in that second spell (Bert Williams was the champion side's keeper) - his career total of 169 league apps is fully accou"
+  },
+  {
+   "uid": "georgesmith#1",
+   "name": "George Smith",
+   "club": "WOL",
+   "season": 1934,
+   "confidence": "high",
+   "why": "Wolves Complete History lists George Smith among the 1934/35 playing staff but he does not appear anywhere in that season's first-team appearances-and-scorers table, i.e. 0 league appearances. Consistent with the Welsh G"
+  },
+  {
+   "uid": "pl:598",
+   "name": "Robbie Earle",
+   "club": "STK",
+   "season": 1981,
+   "confidence": "high",
+   "why": "Youth-team only (1981-82 apprentice at the Victoria Ground); released after a broken leg with no first-team league appearance. His senior debut was for Port Vale on 28 August 1982."
+  }
+ ]
+}
