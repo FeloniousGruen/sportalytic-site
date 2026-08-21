@@ -3226,12 +3226,12 @@
   },
   {
    "id": "prewar",
-   "name": "Before the war",
+   "name": "Before the Second World War",
    "from": 1888,
    "to": 1938,
-   "note": "The Football League from its first season to 1938/39.",
-   "centre": 17477,
-   "centreName": "Tim Williamson"
+   "note": "The Football League from its first season to 1938/39. The First World War shutdown is inside this range, which is why it needs saying which war.",
+   "centre": 16920,
+   "centreName": "Steve Bloomer"
   }
  ],
  "players": 18876,

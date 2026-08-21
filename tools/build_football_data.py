@@ -352,8 +352,10 @@ ERAS = [
    'note': 'From 2000/01.'},
   {'id': 'div1', 'name': 'Old First Division', 'from': 1946, 'to': 1991,
    'note': 'Post-war, 1946/47 to 1991/92.'},
-  {'id': 'prewar', 'name': 'Before the war', 'from': 1888, 'to': 1938,
-   'note': 'The Football League from its first season to 1938/39.'},
+  {'id': 'prewar', 'name': 'Before the Second World War', 'from': 1888, 'to': 1938,
+   'note': 'The Football League from its first season to 1938/39. The First '
+           'World War shutdown is inside this range, which is why it needs '
+           'saying which war.'},
 ]
 
 # Choosing an era means the chart may no longer have a centre: Haaland never
@@ -361,13 +363,30 @@ ERAS = [
 # gives a chart of one dot. Each era therefore names a fallback -- the most
 # capped player whose whole career falls inside it -- so the page can move the
 # chart somewhere that exists and say why.
+# Who has a portrait, needed here as well as for faces.bin.gz below: an era
+# whose centre has no photograph opens on a bare dot, which after a chart with
+# a face in the middle reads as something having failed to load. 62 of the
+# pre-war players have one, so there is no need to settle for a dot.
+faces_dir_early = os.path.join(a.out, 'faces')
+has_face = set()
+if os.path.isdir(faces_dir_early):
+    for fn in os.listdir(faces_dir_early):
+        if fn.endswith('.webp'):
+            try:
+                has_face.add(int(fn[:-5]))
+            except ValueError:
+                pass
+
 for e in ERAS:
-    best, best_apps = None, -1
+    # a portrait first, appearances second -- fall back to the most capped
+    # player if nobody inside the era has one
+    best, best_key = None, None
     for i, u in enumerate(uids):
         if first_season[i] < e['from'] or last_season[i] > e['to']:
             continue
-        if by_uid_app[u] > best_apps:
-            best, best_apps = i, by_uid_app[u]
+        key = (1 if i in has_face else 0, by_uid_app[u])
+        if best_key is None or key > best_key:
+            best, best_key = i, key
     if best is not None:
         e['centre'] = int(best)
         e['centreName'] = names[best]

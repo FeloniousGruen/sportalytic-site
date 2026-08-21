@@ -124,7 +124,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 /* width:fit-content, not a full-width block: the label placer measures this
    element, and a full-width box would fence off the whole band either side of
    the words instead of just the words. */
-#title{position:absolute;top:50px;left:0;right:0;margin:0 auto;width:fit-content;
+/* top follows the controls' actual height, which the phone layout already did.
+   On a laptop it was pinned at 50px, so the moment the era note appeared under
+   the controls it was written straight through the heading. */
+#title{position:absolute;top:var(--titleTop,50px);left:0;right:0;margin:0 auto;width:fit-content;
   max-width:calc(100% - 24px);text-align:center;
   font-family:var(--display);font-size:22px;text-transform:uppercase;
   line-height:1.15;pointer-events:none;z-index:4}
@@ -555,7 +558,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821r';
+<script>window.ASSET_V='20260821u';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -590,9 +593,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821r"></script>
-<script src="assets/net/view.js?v=20260821r"></script>
-<script src="assets/net/game.js?v=20260821r"></script>
+<script src="assets/net/app.js?v=20260821u"></script>
+<script src="assets/net/view.js?v=20260821u"></script>
+<script src="assets/net/game.js?v=20260821u"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -1104,12 +1107,11 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   eraSel.addEventListener('change',syncExpand);
 
   t.eras.forEach(e=>eraSel.add(new Option(e.name,e.id)));
-  /* The page opens on the Premier League. All-time is the more remarkable
-     chart, but it is also 18,876 players over 138 years, and almost nobody on
-     it is a name you know -- which makes the thing look like an ink blot
-     rather than a network you can read. Starting inside the competition people
-     actually watch, with one button to widen it, gets both. */
-  eraSel.value='pl';
+  /* The page opens on the whole record. Eleven rings of colour is simply the
+     better-looking chart, and the era only has to narrow at the moment it
+     starts to matter -- which is when a game begins, not when the menu that
+     lists them opens. */
+  eraSel.value='all';
   const eraById=id=>t.eras.find(e=>e.id===id)||t.eras[0];
   // Haaland: where the page opens, and where widening the era again returns
   // you. Assigned below, once the notable table has been read.
@@ -1117,6 +1119,26 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   let borrowed=false;               // is the centre one an era lent us?
 
   APPLY_ERA=(id,opts)=>applyEra(id,opts);
+  /* Every era message goes through here.
+     It sits over the chart, it has said its piece within a few seconds of
+     appearing, and one of them was previously written without a timer and
+     stayed until dismissed by hand. Routing all of them through one function
+     is the only way that cannot drift: the × and the countdown are attached
+     where the text is, not at each call site. */
+  let eraNoteTimer=0;
+  function showEraNote(html,secs=14){
+    const note=$('#eraNote');
+    clearTimeout(eraNoteTimer);
+    note.hidden=false;
+    note.innerHTML=html+`<button id="eraX" title="Dismiss">&times;</button>`;
+    const x=document.getElementById('eraX');
+    if(x) x.onclick=()=>{ clearTimeout(eraNoteTimer); note.hidden=true; };
+    const b=document.getElementById('eraAll');
+    if(b) b.onclick=()=>{ clearTimeout(eraNoteTimer); note.hidden=true;
+                          eraSel.value='all'; applyEra('all'); };
+    eraNoteTimer=setTimeout(()=>{ note.hidden=true; }, secs*1000);
+  }
+
   function applyEra(id,{announce=true,teardown=true}={}){
     const e=eraById(id);
     const res=NET.setEra(e.from,e.to);
@@ -1142,31 +1164,40 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     }else if(borrowed && CENTRE!==ORIGIN && NET.playsInEra(ORIGIN)){
       CENTRE=ORIGIN; HOME=ORIGIN; borrowed=false;
     }
+    /* Slide, do not cut.
+       Changing the era rebuilds the whole layout, and simply painting the new
+       one is a hard jump that reads as the page reloading. Capturing where
+       everyone stands first and morphing to where the new graph puts them
+       shows the chart reorganising instead -- rings collapsing inward when the
+       range narrows, whole arms growing out of it when it widens. Players who
+       leave the era have no position to move to and fade rather than fly,
+       which is the honest picture: they are not somewhere else, they are gone.
+       A little slower than a recentre, because far more is moving. */
+    VIEW.captureFrom();
     const rr=NET.recentre(CENTRE);
     VIEW.centre=CENTRE; VIEW.path=[]; VIEW.selected=CENTRE;
     applyCentreImage();
-    VIEW.fit(); VIEW.buildGrid(); VIEW.invalidate();
+    VIEW.beginMorph(1100);
+    VIEW.buildGrid(); VIEW.invalidate();
     stats(rr);
     fillSeasons(club.value);
+    // the card was about the old centre; after a move it should be about the
+    // one the chart is actually hung on
+    if(teardown && !onPhone()) renderPanel(CENTRE);
     const note=$('#eraNote');
-    if(!announce || (res.all && !moved)){ note.hidden=true; return; }
-    note.hidden=false;
+    if(!announce || (res.all && !moved)){
+      clearTimeout(eraNoteTimer); note.hidden=true; return; }
     /* The years, not the era's name. "never played in old first division" is
        what slotting a label into a sentence gets you; a date range reads
        properly whatever the era is called. */
     const span=`${NET.seasonLabel(e.from)}–${NET.seasonLabel(Math.min(e.to,t.seasonMax))}`;
-    note.innerHTML=
+    showEraNote(
       (moved?`<b>${moved}</b> never played in ${span}, so the chart has moved to
               <b>${NET.names[CENTRE]}</b>. `:'')+
       (res.all?'':`${e.note} <b>${res.players.toLocaleString()}</b> of
         ${NET.P.toLocaleString()} players are in it, and the distances are worked
         out over those seasons alone. `)+
-      `<button id="eraAll">Back to all time</button>`+
-      `<button id="eraX" title="Dismiss">&times;</button>`;
-    const b=document.getElementById('eraAll');
-    if(b) b.onclick=()=>{ eraSel.value='all'; applyEra('all'); };
-    const x=document.getElementById('eraX');
-    if(x) x.onclick=()=>{ note.hidden=true; };
+      `<button id="eraAll">Back to all time</button>`);
   }
 
   /* Each rule set has its own pools, built offline over its own seasons, so
@@ -1179,18 +1210,11 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     if(eraSel.value===want) return;
     eraSel.value=want;
     applyEra(want,{announce:false,teardown:false});
-    const note=$('#eraNote');
-    note.hidden=false;
-    note.innerHTML=(GAME.expert
+    showEraNote(GAME.expert
       ? `Expert plays over <b>all top-flight football</b>, back to 1888/89, so
          the chart has widened to match.`
       : `These games are played over the <b>Premier League</b>, so the chart has
-         narrowed to match.`)+
-      `<button id="eraX" title="Dismiss">&times;</button>`;
-    const xx=document.getElementById('eraX');
-    if(xx) xx.onclick=()=>{ note.hidden=true; };
-    setTimeout(()=>{ if(!note.hidden && /plays over|are played over/.test(note.textContent))
-                       note.hidden=true; },6000);
+         narrowed to match.`, 9);
   }
   const fullRecordToPlay=eraToPlay;
   fillSeasons('');
@@ -1495,7 +1519,10 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   async function openGame(){
     if(opening) return;                 // a second tap while the first loads
     opening=true;
-    fullRecordToPlay();
+    /* Deliberately not eraToPlay() here. Opening the menu is not playing
+       anything, and narrowing the chart the instant somebody presses Play
+       throws away the view they were looking at before they have chosen a
+       mode. Each mode sets its own era below. */
     quizClose();
     $('#panel').hidden=true; $('#results').hidden=true;
     clearShare();
@@ -1550,17 +1577,20 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     $('#dReg').onclick=setDiff(false);
     $('#dExp').onclick=setDiff(true);
     // starting a mode locks the chart; the menu itself does not
-    const play=fn=>()=>{ VIEW.interactive=false; fn(); };
+    // starting a mode locks the chart AND puts it in the era that mode's
+    // puzzle pools were built over
+    const play=fn=>()=>{ VIEW.interactive=false; eraToPlay(); fn(); };
     $('#gm1').onclick=play(()=>{ VIEW.labels=!onPhone(); GAME.startRound(); });
     $('#gm2').onclick=play(()=>{ VIEW.labels=!onPhone(); GAME.startDaily(); });
     $('#gm3').onclick=play(()=>{ VIEW.labels=false; GAME.startExpedition(CENTRE); });
-    $('#gm4').onclick=()=>{ VIEW.labels=!onPhone(); GAME.setSkin('archive'); GAME.renderArchive(); };
+    $('#gm4').onclick=()=>{ eraToPlay(); VIEW.labels=!onPhone();
+                            GAME.setSkin('archive'); GAME.renderArchive(); };
   }
 
   document.getElementById('playBtn').onclick=()=>
     gameEl.hidden?openGame():closeGame();
 
-  applyEra('pl',{announce:false});
+  applyEra('all',{announce:false});
   // the games are the point of the page now, so lead with them
   openGame().then(()=>{
     /* After, not before: openGame hides the player card on its way in, so a
