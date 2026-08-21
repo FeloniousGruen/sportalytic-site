@@ -88,6 +88,25 @@ if len(set(CLUB_CODE.values())) != len(CLUB_CODE):
     dup = [c for c, n in Counter(CLUB_CODE.values()).items() if n > 1]
     sys.exit(f'club codes are not unique: {dup}')
 
+# Rows that are not a person.
+#
+# 11v11's scorer tables carry an "Own Goal" line, and the upstream parser lets
+# it through as a player. It is not harmless: it becomes a node sitting in 48
+# club-seasons across ninety years, and every pair of real players in those
+# squads gets a two-step link through a thing that never played. The identity
+# splitter then made it worse by cutting it into four "people" at the gaps.
+#
+# "? Cavanagh" and friends are the opposite case -- a real player whose
+# forename the source never recorded. Each holds a single club-season, so it
+# bridges nothing, and dropping them would lose a man who did play. They stay.
+NOT_A_PERSON = re.compile(r'^\s*(own goals?|unknown|unknown scorers?|opponents?)\s*$',
+                          re.I)
+before = len(mem_all)
+mem_all = mem_all[~mem_all.name.astype(str).str.match(NOT_A_PERSON)].copy()
+if before != len(mem_all):
+    print(f'dropped {before - len(mem_all)} rows that are not a player '
+          f'(own goals and the like)')
+
 mem_all['team'] = mem_all.club.map(CLUB_CODE)
 mem_all['season'] = mem_all.year.astype(int)
 mem_all['uid'] = mem_all.player_id
