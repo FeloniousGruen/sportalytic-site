@@ -111,6 +111,36 @@ mem_all['team'] = mem_all.club.map(CLUB_CODE)
 mem_all['season'] = mem_all.year.astype(int)
 mem_all['uid'] = mem_all.player_id
 
+# ------------------------------------------------- hand-verified namesakes ---
+# The upstream heuristic only separates namesakes more than ten seasons apart.
+# Closer than that and two men stay one record who bridges eras he never played
+# in, which is the single worst thing that can happen to a graph whose whole
+# purpose is shortest routes. tools/build_splits.py turns an audit of the
+# highest-risk records into the file read here; every split in it assigns each
+# of the player's club-seasons to exactly one person, or it is not in the file.
+splits_path = os.path.join(HERE, 'tools', 'football_splits.json')
+if os.path.exists(splits_path):
+    splits = json.load(open(splits_path))
+    key = list(zip(mem_all.uid, mem_all.team, mem_all.season))
+    moved, people = 0, 0
+    for uid, spec in splits.items():
+        for k, person in enumerate(spec['people']):
+            want = {(uid, c, int(y)) for c, y in person['seasons']}
+            if not want:
+                continue
+            sel = np.array([kk in want for kk in key])
+            if not sel.any():
+                print(f'  WARNING: {spec["name"]} person {k} matched no rows')
+                continue
+            # the first person keeps the original uid, so anything else keyed
+            # on it (a portrait, a puzzle) still points at a real player
+            if k:
+                mem_all.loc[sel, 'uid'] = f'{uid}~{k}'
+                moved += int(sel.sum())
+            people += 1
+    print(f'applied {len(splits)} hand-verified splits: {people} people, '
+          f'{moved} club-seasons moved to a new node')
+
 # ------------------------------------------------------------- positions ----
 # ENFA's vocabulary is period-correct and worth keeping: a wing half is not a
 # midfielder and calling him one throws away the only thing the row says about

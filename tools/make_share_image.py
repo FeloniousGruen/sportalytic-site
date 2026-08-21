@@ -167,7 +167,7 @@ CARDS = {
      'Reels, carousels and stills that\nmake the numbers worth\nwatching.'),
   ],
   'football': [
-    ('share-football.jpg', '10 DEGREES OF', 'ERLING HAALAND',
+    ('share-football.jpg', '11 DEGREES OF', 'ERLING HAALAND',
      'Every player in the English top\nflight since 1888, joined wherever\ntwo of them shared a club.'),
   ],
 }[A.cards]

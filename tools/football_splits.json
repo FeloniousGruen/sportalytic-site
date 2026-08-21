@@ -1,0 +1,1725 @@
+{
+ "gerryfrancis#0": {
+  "node_when_audited": 5249,
+  "name": "Gerry Francis",
+  "confidence": "high",
+  "evidence": "Wikipedia has two separate articles. Gerry Francis (footballer, born 1933) \u2014 6 Dec 1933 Johannesburg, d. 10 May 2025 \u2014 was a right winger, amateur then professional at Leeds United from July 1957 to 1961, the first black player to appear for Leeds; Leeds confirmed his death aged 91 in 2025. Gerry Francis (footballer, born 6 December 1951, Chiswick) is the England captain/QPR midfielder who played ",
+  "people": [
+   {
+    "who": "Gerry Francis (South African winger, Leeds United's first black player)",
+    "seasons": [
+     [
+      "LEE",
+      1957
+     ],
+     [
+      "LEE",
+      1959
+     ]
+    ]
+   },
+   {
+    "who": "Gerry Francis (England international midfielder and manager)",
+    "seasons": [
+     [
+      "COV",
+      1981
+     ],
+     [
+      "COV",
+      1982
+     ],
+     [
+      "CRY",
+      1979
+     ],
+     [
+      "QPR",
+      1968
+     ],
+     [
+      "QPR",
+      1973
+     ],
+     [
+      "QPR",
+      1974
+     ],
+     [
+      "QPR",
+      1975
+     ],
+     [
+      "QPR",
+      1976
+     ],
+     [
+      "QPR",
+      1978
+     ]
+    ]
+   }
+  ]
+ },
+ "billymoore#0": {
+  "node_when_audited": 1809,
+  "name": "Billy Moore",
+  "confidence": "high",
+  "evidence": "Billy Moore (footballer, born 1894) = William Gray Bruce Moore, 6 Oct 1894 - 26 Sep 1968, inside-left: Seaton Delaval, Sunderland from 1913 (WWI interruption, regular after the war), West Ham United from 1922, retired as a player in 1929 and then served West Ham as assistant trainer and trainer-in-chief until 1960. He therefore cannot be at Stoke or Wolves in 1936/37. Separately, Bill Moore (footb",
+  "people": [
+   {
+    "who": "Billy Moore (William Gray Bruce Moore), England international inside-left",
+    "seasons": [
+     [
+      "SUN",
+      1913
+     ],
+     [
+      "SUN",
+      1914
+     ],
+     [
+      "SUN",
+      1919
+     ],
+     [
+      "SUN",
+      1920
+     ],
+     [
+      "SUN",
+      1921
+     ],
+     [
+      "WHU",
+      1923
+     ],
+     [
+      "WHU",
+      1924
+     ],
+     [
+      "WHU",
+      1925
+     ],
+     [
+      "WHU",
+      1926
+     ],
+     [
+      "WHU",
+      1927
+     ],
+     [
+      "WHU",
+      1928
+     ]
+    ]
+   },
+   {
+    "who": "Bill Moore, defender, later Walsall manager",
+    "seasons": [
+     [
+      "STK",
+      1936
+     ],
+     [
+      "STK",
+      1937
+     ],
+     [
+      "WOL",
+      1936
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified Billy/William Moore of the early 1920s",
+    "seasons": [
+     [
+      "BLB",
+      1922
+     ],
+     [
+      "LEE",
+      1924
+     ]
+    ]
+   }
+  ]
+ },
+ "billygeorge#0": {
+  "node_when_audited": 1695,
+  "name": "Billy George",
+  "confidence": "high",
+  "evidence": "Billy George (footballer, born 1874) \u2014 William George, 29 June 1874 Shrewsbury - 4 Dec 1933 Birmingham \u2014 was Aston Villa's goalkeeper from October 1897 to July 1911 (356 league apps, 3 England caps 1902), then joined Birmingham as player/trainer. He never played for Sunderland and was 46 in 1920/21. Billy George (footballer, born 1895) \u2014 William Samuel George, 27 July 1895 Aston - 29 Sep 1962 Sell",
+  "people": [
+   {
+    "who": "Billy George, Aston Villa goalkeeper, England international",
+    "seasons": [
+     [
+      "AVL",
+      1897
+     ],
+     [
+      "AVL",
+      1898
+     ],
+     [
+      "AVL",
+      1899
+     ],
+     [
+      "AVL",
+      1900
+     ],
+     [
+      "AVL",
+      1901
+     ],
+     [
+      "AVL",
+      1902
+     ],
+     [
+      "AVL",
+      1903
+     ],
+     [
+      "AVL",
+      1904
+     ],
+     [
+      "AVL",
+      1905
+     ],
+     [
+      "AVL",
+      1906
+     ],
+     [
+      "AVL",
+      1907
+     ],
+     [
+      "AVL",
+      1908
+     ],
+     [
+      "AVL",
+      1909
+     ],
+     [
+      "AVL",
+      1910
+     ]
+    ]
+   },
+   {
+    "who": "William Samuel George, wing half",
+    "seasons": [
+     [
+      "SUN",
+      1920
+     ]
+    ]
+   }
+  ]
+ },
+ "billywalker#1": {
+  "node_when_audited": 1885,
+  "name": "Billy Walker",
+  "confidence": "high",
+  "evidence": "The Aston Villa block is William Henry Walker, born 29 October 1897 in Wednesbury, died 28 November 1964 \u2014 Villa's all-time leading scorer with 244 goals, at Villa 1914-1934, later manager of Sheffield Wednesday and Nottingham Forest. He was 13-15 years old in 1911/12-1912/13 and cannot be the Bradford City player. Bradford City's Billy Walker in those seasons is Billy Walker (Scottish footballer)",
+  "people": [
+   {
+    "who": "William Henry Walker, Aston Villa and England",
+    "seasons": [
+     [
+      "AVL",
+      1919
+     ],
+     [
+      "AVL",
+      1920
+     ],
+     [
+      "AVL",
+      1921
+     ],
+     [
+      "AVL",
+      1922
+     ],
+     [
+      "AVL",
+      1923
+     ],
+     [
+      "AVL",
+      1924
+     ],
+     [
+      "AVL",
+      1925
+     ],
+     [
+      "AVL",
+      1926
+     ],
+     [
+      "AVL",
+      1927
+     ],
+     [
+      "AVL",
+      1928
+     ],
+     [
+      "AVL",
+      1929
+     ],
+     [
+      "AVL",
+      1930
+     ],
+     [
+      "AVL",
+      1931
+     ],
+     [
+      "AVL",
+      1932
+     ],
+     [
+      "AVL",
+      1933
+     ]
+    ]
+   },
+   {
+    "who": "William Baird Walker, Scottish forward",
+    "seasons": [
+     [
+      "BRC",
+      1911
+     ],
+     [
+      "BRC",
+      1912
+     ]
+    ]
+   }
+  ]
+ },
+ "williamhenderson#0": {
+  "node_when_audited": 18425,
+  "name": "William Henderson",
+  "confidence": "high",
+  "evidence": "At least three men, all Wikipedia-separate. Bill Henderson (born 1878, Broxburn, d. 1945), right-back: Everton 1902-04, 15 appearances (13 in 1902/03, 2 in 1903/04) \u2014 that is the Everton block. Bill Henderson (born 1898, Edinburgh, d. 1964), forward: Airdrieonians, then Manchester United 1921-25 (36 apps, 17 goals), then Preston North End from 1925 \u2014 that is the Manchester United 1921/22 row; his ",
+  "people": [
+   {
+    "who": "Bill Henderson, Scottish right-back (Reading/Southampton/Everton/Clapton Orient)",
+    "seasons": [
+     [
+      "EVE",
+      1902
+     ],
+     [
+      "EVE",
+      1903
+     ]
+    ]
+   },
+   {
+    "who": "Bill Henderson, Scottish forward (Airdrieonians/Manchester United/Preston)",
+    "seasons": [
+     [
+      "MUN",
+      1921
+     ]
+    ]
+   },
+   {
+    "who": "William James Henderson, outside-right",
+    "seasons": [
+     [
+      "ARS",
+      1921
+     ],
+     [
+      "ARS",
+      1922
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified William Henderson at Preston North End",
+    "seasons": [
+     [
+      "PRE",
+      1913
+     ],
+     [
+      "PRE",
+      1919
+     ]
+    ]
+   }
+  ]
+ },
+ "tommcdonald#0": {
+  "node_when_audited": 17516,
+  "name": "Tom McDonald",
+  "confidence": "high",
+  "evidence": "The Newcastle block is Tommy McDonald (footballer, born 1895), born 25 September 1895 in Inverness, died 1969 in Newcastle upon Tyne: Inverness Caledonian to 1919, Rangers 1919-21, Newcastle United 1921-31 (341 apps, 100 goals), York City 1931-33, Goole Town. He was 16 in 1911/12, was playing in Inverness, and Wikipedia records no Bury connection. Bury were in the First Division in 1911/12 (relega",
+  "people": [
+   {
+    "who": "Tommy McDonald, Scottish inside-forward, Newcastle United",
+    "seasons": [
+     [
+      "NEW",
+      1920
+     ],
+     [
+      "NEW",
+      1921
+     ],
+     [
+      "NEW",
+      1922
+     ],
+     [
+      "NEW",
+      1923
+     ],
+     [
+      "NEW",
+      1924
+     ],
+     [
+      "NEW",
+      1925
+     ],
+     [
+      "NEW",
+      1926
+     ],
+     [
+      "NEW",
+      1927
+     ],
+     [
+      "NEW",
+      1928
+     ],
+     [
+      "NEW",
+      1929
+     ],
+     [
+      "NEW",
+      1930
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified Tom McDonald at Bury",
+    "seasons": [
+     [
+      "BURY",
+      1911
+     ]
+    ]
+   }
+  ]
+ },
+ "jamessharp#0": {
+  "node_when_audited": 6954,
+  "name": "James Sharp",
+  "confidence": "high",
+  "evidence": "Two distinct Wikipedia subjects. James Sharp (b. 12 Feb 1870, Bonhill), forward/wing-half: Vale of Leven 1889-91, Preston North End 1891-95 (93 apps, 3 gls), Darwen 1896-97 - no Arsenal or Chelsea anywhere in his record. Jimmy Sharp (b. 11 Oct 1880, Alyth; d. 18 Nov 1949), left-back and Scotland international: Dundee 1899-1904, Fulham 1904-05, Woolwich Arsenal 1905-1908 (116 apps), Rangers 1908-09",
+  "people": [
+   {
+    "who": "James Sharp (forward / wing half, Vale of Leven and Darwen)",
+    "seasons": [
+     [
+      "PRE",
+      1891
+     ],
+     [
+      "PRE",
+      1893
+     ],
+     [
+      "PRE",
+      1894
+     ],
+     [
+      "PRE",
+      1895
+     ]
+    ]
+   },
+   {
+    "who": "Jimmy Sharp (left back, Scotland international, Dundee/Fulham/Rangers)",
+    "seasons": [
+     [
+      "ARS",
+      1905
+     ],
+     [
+      "ARS",
+      1906
+     ],
+     [
+      "ARS",
+      1907
+     ],
+     [
+      "CHE",
+      1912
+     ],
+     [
+      "CHE",
+      1913
+     ],
+     [
+      "CHE",
+      1914
+     ]
+    ]
+   }
+  ]
+ },
+ "bobbyferguson#0": {
+  "node_when_audited": 1979,
+  "name": "Bobby Ferguson",
+  "confidence": "high",
+  "evidence": "Two separate Wikipedia articles with dedicated disambiguation by birth year. Robert Burnitt Ferguson (b. 8 Jan 1938, Dudley, Northumberland; d. 28 Mar 2018), left back, Newcastle United 1955-1962, then Derby County, Cardiff City, Barry Town, Newport County; later Ipswich Town coach and manager. Bobby Ferguson (b. 1 Mar 1945, Ayrshire), goalkeeper, Kilmarnock then West Ham United 1967-1980, Scotlan",
+  "people": [
+   {
+    "who": "Bobby Ferguson (Robert Burnitt Ferguson), left back, later Ipswich Town manager",
+    "seasons": [
+     [
+      "NEW",
+      1955
+     ],
+     [
+      "NEW",
+      1958
+     ],
+     [
+      "NEW",
+      1959
+     ],
+     [
+      "NEW",
+      1960
+     ]
+    ]
+   },
+   {
+    "who": "Bobby Ferguson, goalkeeper, Scotland international, ex-Kilmarnock",
+    "seasons": [
+     [
+      "WHU",
+      1967
+     ],
+     [
+      "WHU",
+      1968
+     ],
+     [
+      "WHU",
+      1969
+     ],
+     [
+      "WHU",
+      1970
+     ],
+     [
+      "WHU",
+      1971
+     ],
+     [
+      "WHU",
+      1972
+     ],
+     [
+      "WHU",
+      1973
+     ],
+     [
+      "WHU",
+      1975
+     ],
+     [
+      "WHU",
+      1977
+     ]
+    ]
+   }
+  ]
+ },
+ "johncameron#0": {
+  "node_when_audited": 7997,
+  "name": "John Cameron",
+  "confidence": "high",
+  "evidence": "At least four different men named John Cameron have been fused. Wikipedia carries separate articles for John Cameron (b.1868, Glasgow, centre forward), John Cameron (b.1872, d.1935, the Everton forward who became Tottenham's player-manager), John Cameron (b.1875, Currie, d.1944, inside forward) and Jock Cameron / John Bell Cameron (b. 16 Feb 1879, d. 5 Jul 1950, Scotland international who signed f",
+  "people": [
+   {
+    "who": "John Cameron, centre forward (Renton, Hibernian, later Liverpool 1892-93)",
+    "seasons": [
+     [
+      "STK",
+      1891
+     ]
+    ]
+   },
+   {
+    "who": "John Cameron, forward; later Tottenham Hotspur player-manager and FA Cup winner 1901",
+    "seasons": [
+     [
+      "EVE",
+      1895
+     ],
+     [
+      "EVE",
+      1896
+     ],
+     [
+      "EVE",
+      1897
+     ]
+    ]
+   },
+   {
+    "who": "John Cameron, inside forward, from Currie, Scotland",
+    "seasons": [
+     [
+      "BLB",
+      1897
+     ],
+     [
+      "WBA",
+      1896
+     ]
+    ]
+   },
+   {
+    "who": "Jock Cameron (John Bell Cameron), Scotland international full back",
+    "seasons": [
+     [
+      "CHE",
+      1907
+     ],
+     [
+      "CHE",
+      1908
+     ],
+     [
+      "CHE",
+      1909
+     ],
+     [
+      "CHE",
+      1912
+     ]
+    ]
+   }
+  ]
+ },
+ "jackjohnson#0": {
+  "node_when_audited": 6502,
+  "name": "Jack Johnson",
+  "confidence": "high",
+  "evidence": "The documented Jack Johnson (John William Johnson, b. 12 Feb 1919, Newcastle upon Tyne; d. 1975) played Huddersfield Town 1936-1939 (18 apps) and Grimsby Town 1946-1948 (44 apps), then Shrewsbury Town. 18 + 44 = 62, exactly the merged record's league-appearance total, so the Sheffield Wednesday 1927/28 entry contributes zero appearances and is a separate registration. The b.1919 man was eight year",
+  "people": [
+   {
+    "who": "Unidentified Jack Johnson on Sheffield Wednesday's books in 1927/28 (0 league apps)",
+    "seasons": [
+     [
+      "SHW",
+      1927
+     ]
+    ]
+   },
+   {
+    "who": "Jack Johnson (John William Johnson), midfielder, from Newcastle upon Tyne",
+    "seasons": [
+     [
+      "GRI",
+      1946
+     ],
+     [
+      "GRI",
+      1947
+     ],
+     [
+      "HUD",
+      1936
+     ],
+     [
+      "HUD",
+      1937
+     ],
+     [
+      "HUD",
+      1938
+     ]
+    ]
+   }
+  ]
+ },
+ "tommytaylor#0": {
+  "node_when_audited": 17735,
+  "name": "Tommy Taylor",
+  "confidence": "high",
+  "evidence": "Wikipedia has a Tommy Taylor disambiguation page. The Manchester United centre-forward Tommy Taylor (b. 29 Jan 1932, Barnsley then Man Utd 1953-58) DIED in the Munich air disaster on 6 Feb 1958, so he cannot appear after 1957/58. The West Ham defender is Thomas Frederick Taylor (b. 26 Sep 1951, Hornchurch), who joined West Ham from Leyton Orient in October 1970 and made 340 league apps to 1979 - h",
+  "people": [
+   {
+    "who": "Tommy Taylor, England centre-forward, Munich victim",
+    "seasons": [
+     [
+      "MUN",
+      1952
+     ],
+     [
+      "MUN",
+      1953
+     ],
+     [
+      "MUN",
+      1954
+     ],
+     [
+      "MUN",
+      1955
+     ],
+     [
+      "MUN",
+      1956
+     ],
+     [
+      "MUN",
+      1957
+     ]
+    ]
+   },
+   {
+    "who": "Thomas Frederick 'Tommy' Taylor, defender, West Ham/Leyton Orient",
+    "seasons": [
+     [
+      "WHU",
+      1970
+     ],
+     [
+      "WHU",
+      1971
+     ],
+     [
+      "WHU",
+      1972
+     ],
+     [
+      "WHU",
+      1973
+     ],
+     [
+      "WHU",
+      1974
+     ],
+     [
+      "WHU",
+      1975
+     ],
+     [
+      "WHU",
+      1976
+     ],
+     [
+      "WHU",
+      1977
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified third Tommy Taylor (could not be confirmed in Spurs' 1963/64 squad; possibly a source error)",
+    "seasons": [
+     [
+      "TOT",
+      1963
+     ]
+    ]
+   }
+  ]
+ },
+ "jackjones#1": {
+  "node_when_audited": 6505,
+  "name": "Jack Jones",
+  "confidence": "high",
+  "evidence": "Two different Wikipedia footballers. Jack Jones (8 Feb 1891 - 20 Jul 1948), left back, Sunderland 1914-1920 and Birmingham 1920-1927 - matches the Sunderland 1914/15 and Birmingham 1921/22-1926/27 seasons. John Edward 'Jack' Jones (3 Jul 1913 - 26 Jan 1995) made his Everton debut in April 1934 (i.e. 1933/34), played 108 games for Everton and joined Sunderland in 1938 - matches Everton 1933/34-1937",
+  "people": [
+   {
+    "who": "Jack Jones, left back (Sunderland, Birmingham)",
+    "seasons": [
+     [
+      "BIR",
+      1921
+     ],
+     [
+      "BIR",
+      1922
+     ],
+     [
+      "BIR",
+      1923
+     ],
+     [
+      "BIR",
+      1924
+     ],
+     [
+      "BIR",
+      1925
+     ],
+     [
+      "BIR",
+      1926
+     ],
+     [
+      "SUN",
+      1914
+     ]
+    ]
+   },
+   {
+    "who": "John Edward 'Jack' Jones (Everton, later Sunderland)",
+    "seasons": [
+     [
+      "EVE",
+      1933
+     ],
+     [
+      "EVE",
+      1934
+     ],
+     [
+      "EVE",
+      1935
+     ],
+     [
+      "EVE",
+      1936
+     ],
+     [
+      "EVE",
+      1937
+     ]
+    ]
+   }
+  ]
+ },
+ "billymatthews#0": {
+  "node_when_audited": 1790,
+  "name": "Billy Matthews",
+  "confidence": "high",
+  "evidence": "Wikipedia carries at least three Billy Matthews footballers. Robert William 'Billy' Matthews (16 Apr 1897 - 18 Dec 1987), Welsh centre-half, debuted for Liverpool 3 Apr 1920 and played there in the early 1920s - matches Liverpool 1919/20-1921/22. Billy Matthews (b. 1882 Derby, d. 1 May 1916), forward, Aston Villa 1903-06 then Notts County 1906-1912 (177 apps) - matches Notts County 1906/07-1911/12",
+  "people": [
+   {
+    "who": "Robert William 'Billy' Matthews, Wales centre-half",
+    "seasons": [
+     [
+      "LIV",
+      1919
+     ],
+     [
+      "LIV",
+      1920
+     ],
+     [
+      "LIV",
+      1921
+     ]
+    ]
+   },
+   {
+    "who": "Billy Matthews, forward (Aston Villa, Notts County, Derby County)",
+    "seasons": [
+     [
+      "NOT",
+      1906
+     ],
+     [
+      "NOT",
+      1907
+     ],
+     [
+      "NOT",
+      1908
+     ],
+     [
+      "NOT",
+      1909
+     ],
+     [
+      "NOT",
+      1910
+     ],
+     [
+      "NOT",
+      1911
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified earlier Billy/William Matthews of Nottingham Forest",
+    "seasons": [
+     [
+      "NFO",
+      1899
+     ]
+    ]
+   }
+  ]
+ },
+ "billpunton#0": {
+  "node_when_audited": 1525,
+  "name": "Bill Punton",
+  "confidence": "medium",
+  "evidence": "William Hamilton Punton (b. 9 May 1934, Ormiston, Scotland), winger: Newcastle United Feb 1954-1958 (23 league apps), Norwich City 1959-1966 (200+ apps, all outside the top flight, which explains the 1957/58-1966/67 gap), Sheffield United 1966-1968, then Scunthorpe; he managed Great Yarmouth Town from 1969 to 1990. He therefore cannot be the Leeds United 1974/75 entry - he had been out of the prof",
+  "people": [
+   {
+    "who": "William Hamilton Punton, winger (Newcastle, Norwich, Sheffield United)",
+    "seasons": [
+     [
+      "NEW",
+      1953
+     ],
+     [
+      "NEW",
+      1955
+     ],
+     [
+      "NEW",
+      1956
+     ],
+     [
+      "NEW",
+      1957
+     ],
+     [
+      "SHU",
+      1966
+     ],
+     [
+      "SHU",
+      1967
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified/erroneous Leeds United entry - not the 1934-born Punton (he was managing Great Yarmouth Town from 1969) and not the 1957-born goalkeeper (Leeds reserves only, 1981)",
+    "seasons": [
+     [
+      "LEE",
+      1974
+     ]
+    ]
+   }
+  ]
+ },
+ "kentaylor#0": {
+  "node_when_audited": 8982,
+  "name": "Ken Taylor",
+  "confidence": "high",
+  "evidence": "At least three separate Wikipedia footballers, each matching exactly one club block. Ken Taylor (b. 21 Aug 1935, Huddersfield; also the England Test cricketer and artist) played for Huddersfield Town 1953-1965 - Huddersfield's only top-flight seasons in that window are 1953/54-1955/56. Kenneth Vincent Taylor (18 Jun 1936 - 5 Dec 2017, Manchester) made exactly ONE Football League appearance, for Ma",
+  "people": [
+   {
+    "who": "Ken Taylor, Huddersfield Town defender / Yorkshire and England cricketer",
+    "seasons": [
+     [
+      "HUD",
+      1953
+     ],
+     [
+      "HUD",
+      1954
+     ],
+     [
+      "HUD",
+      1955
+     ]
+    ]
+   },
+   {
+    "who": "Kenneth Vincent Taylor, full back, one league game for Manchester City",
+    "seasons": [
+     [
+      "MCI",
+      1957
+     ]
+    ]
+   },
+   {
+    "who": "Kenneth Gordon Taylor, full back, 200 league apps for Blackburn Rovers",
+    "seasons": [
+     [
+      "BLB",
+      1958
+     ],
+     [
+      "BLB",
+      1959
+     ],
+     [
+      "BLB",
+      1960
+     ],
+     [
+      "BLB",
+      1961
+     ],
+     [
+      "BLB",
+      1962
+     ],
+     [
+      "BLB",
+      1963
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified fourth Ken Taylor (no Taylor found in Ipswich Town's 1973/74 squad; possibly a source error)",
+    "seasons": [
+     [
+      "IPS",
+      1973
+     ]
+    ]
+   }
+  ]
+ },
+ "johnmcgrath#0": {
+  "node_when_audited": 8329,
+  "name": "John McGrath",
+  "confidence": "medium",
+  "evidence": "John Thomas McGrath (23 Aug 1938, Manchester - 25 Dec 1998), centre-half, covers the bulk of the record: he joined Newcastle United in February 1961 (170 league apps, left Feb 1968) and Southampton in February 1968 (168 apps to 1974). That fits Newcastle 1960/61-1967/68 and Southampton 1967/68-1973/74 exactly. But the Bolton Wanderers 1953/54 season cannot be his: he was 15 that season, and Wikipe",
+  "people": [
+   {
+    "who": "John Thomas McGrath, centre-half and later manager",
+    "seasons": [
+     [
+      "NEW",
+      1960
+     ],
+     [
+      "NEW",
+      1965
+     ],
+     [
+      "NEW",
+      1966
+     ],
+     [
+      "NEW",
+      1967
+     ],
+     [
+      "SOU",
+      1967
+     ],
+     [
+      "SOU",
+      1968
+     ],
+     [
+      "SOU",
+      1969
+     ],
+     [
+      "SOU",
+      1970
+     ],
+     [
+      "SOU",
+      1971
+     ],
+     [
+      "SOU",
+      1972
+     ],
+     [
+      "SOU",
+      1973
+     ]
+    ]
+   },
+   {
+    "who": "Unidentified earlier John McGrath at Bolton Wanderers (the 1938-born man was 15 and never played Bolton's first team)",
+    "seasons": [
+     [
+      "BOL",
+      1953
+     ]
+    ]
+   }
+  ]
+ },
+ "frankmoss#0": {
+  "node_when_audited": 4253,
+  "name": "Frank Moss",
+  "confidence": "high",
+  "evidence": "Wikipedia carries three separate footballers named Frank Moss, all active inside this span, and the record fuses all three. Frank Moss b.1895 (Aston Villa wing half, England cap) and Frank Moss b.1917 (Aston Villa midfielder) are the classic Sr/Jr Aston Villa pair; the Arsenal seasons belong to a third, unrelated man, the goalkeeper Frank Moss b.1909 of Leyland who won three straight titles with A",
+  "people": [
+   {
+    "who": "Frank Moss Sr (wing half, England international, Aston Villa captain)",
+    "seasons": [
+     [
+      "AVL",
+      1914
+     ],
+     [
+      "AVL",
+      1919
+     ],
+     [
+      "AVL",
+      1920
+     ],
+     [
+      "AVL",
+      1921
+     ],
+     [
+      "AVL",
+      1922
+     ],
+     [
+      "AVL",
+      1923
+     ],
+     [
+      "AVL",
+      1924
+     ],
+     [
+      "AVL",
+      1925
+     ],
+     [
+      "AVL",
+      1926
+     ],
+     [
+      "AVL",
+      1927
+     ],
+     [
+      "AVL",
+      1928
+     ],
+     [
+      "CAR",
+      1928
+     ]
+    ]
+   },
+   {
+    "who": "Frank Moss (goalkeeper, Arsenal; later Hearts manager) - no relation",
+    "seasons": [
+     [
+      "ARS",
+      1931
+     ],
+     [
+      "ARS",
+      1932
+     ],
+     [
+      "ARS",
+      1933
+     ],
+     [
+      "ARS",
+      1934
+     ],
+     [
+      "ARS",
+      1935
+     ]
+    ]
+   },
+   {
+    "who": "Frank Moss Jr (midfielder/defender, Aston Villa)",
+    "seasons": [
+     [
+      "AVL",
+      1938
+     ],
+     [
+      "SHW",
+      1936
+     ],
+     [
+      "WOL",
+      1935
+     ]
+    ]
+   }
+  ]
+ },
+ "joemercer#1": {
+  "node_when_audited": 7810,
+  "name": "Joe Mercer",
+  "confidence": "medium",
+  "evidence": "The Everton and Arsenal seasons are unambiguously Joe Mercer b.1914 (Ellesmere Port), and they fit him exactly: he joined Everton in September 1932 and moved to Arsenal in November 1946, which is why 1946/47 shows at both clubs, and the 1938/39-1946/47 gap is the WWII shutdown. But in 1931/32 he was 17 years old and playing junior football for Ellesmere Port Town - no source for him (Wikipedia, Sp",
+  "people": [
+   {
+    "who": "Joe Mercer (left half, Everton/Arsenal, later England-level manager)",
+    "seasons": [
+     [
+      "ARS",
+      1946
+     ],
+     [
+      "ARS",
+      1947
+     ],
+     [
+      "ARS",
+      1948
+     ],
+     [
+      "ARS",
+      1949
+     ],
+     [
+      "ARS",
+      1950
+     ],
+     [
+      "ARS",
+      1951
+     ],
+     [
+      "ARS",
+      1952
+     ],
+     [
+      "ARS",
+      1953
+     ],
+     [
+      "EVE",
+      1932
+     ],
+     [
+      "EVE",
+      1934
+     ],
+     [
+      "EVE",
+      1935
+     ],
+     [
+      "EVE",
+      1936
+     ],
+     [
+      "EVE",
+      1937
+     ],
+     [
+      "EVE",
+      1938
+     ],
+     [
+      "EVE",
+      1946
+     ]
+    ]
+   },
+   {
+    "who": "A second, unidentified Joe Mercer active in 1931/32",
+    "seasons": [
+     [
+      "BLB",
+      1931
+     ],
+     [
+      "BOL",
+      1931
+     ]
+    ]
+   }
+  ]
+ },
+ "albertiremonger#0": {
+  "node_when_audited": 264,
+  "name": "Albert Iremonger",
+  "confidence": "medium",
+  "evidence": "The Notts County span is correct and is Albert Iremonger, b.1884, the giant goalkeeper: he signed from Notts Jardines and made his debut against Sheffield Wednesday on 1 April 1905 (i.e. in 1904/05, matching the record), then played 564 games for Notts County to 1926 before Lincoln City. The Nottingham Forest 1903/04 row is not him. Forest's own club database (thecityground.com) states explicitly ",
+  "people": [
+   {
+    "who": "Albert Iremonger (goalkeeper, Notts County)",
+    "seasons": [
+     [
+      "NOT",
+      1904
+     ],
+     [
+      "NOT",
+      1905
+     ],
+     [
+      "NOT",
+      1906
+     ],
+     [
+      "NOT",
+      1907
+     ],
+     [
+      "NOT",
+      1908
+     ],
+     [
+      "NOT",
+      1909
+     ],
+     [
+      "NOT",
+      1910
+     ],
+     [
+      "NOT",
+      1911
+     ],
+     [
+      "NOT",
+      1912
+     ],
+     [
+      "NOT",
+      1914
+     ],
+     [
+      "NOT",
+      1919
+     ],
+     [
+      "NOT",
+      1923
+     ],
+     [
+      "NOT",
+      1924
+     ],
+     [
+      "NOT",
+      1925
+     ]
+    ]
+   },
+   {
+    "who": "The Nottingham Forest 1903/04 player - almost certainly James 'Jimmy' Iremonger, Albert's elder brother, mislabelled",
+    "seasons": [
+     [
+      "NFO",
+      1903
+     ]
+    ]
+   }
+  ]
+ },
+ "billymorris#0": {
+  "node_when_audited": 1812,
+  "name": "Billy Morris",
+  "confidence": "high",
+  "evidence": "Two different men, one English and one Welsh, with no overlap of clubs. Bill Morris b. 26 March 1913 in Handsworth was an English defender who started in the West Bromwich Albion colts, signed for Wolverhampton Wanderers in May 1933, debuted February 1934, played 178 games for Wolves, won three England caps in 1938-39 and played in the 1939 FA Cup final, leaving for Dudley Town in 1947. Billy Morr",
+  "people": [
+   {
+    "who": "Bill Morris (English defender, Wolves, 3 England caps)",
+    "seasons": [
+     [
+      "WBA",
+      1931
+     ],
+     [
+      "WOL",
+      1933
+     ],
+     [
+      "WOL",
+      1934
+     ],
+     [
+      "WOL",
+      1935
+     ],
+     [
+      "WOL",
+      1936
+     ],
+     [
+      "WOL",
+      1937
+     ],
+     [
+      "WOL",
+      1938
+     ],
+     [
+      "WOL",
+      1946
+     ]
+    ]
+   },
+   {
+    "who": "Billy Morris (Welsh inside forward, Burnley, 5 Wales caps, later Wrexham manager)",
+    "seasons": [
+     [
+      "BUR",
+      1947
+     ],
+     [
+      "BUR",
+      1948
+     ],
+     [
+      "BUR",
+      1949
+     ],
+     [
+      "BUR",
+      1950
+     ],
+     [
+      "BUR",
+      1951
+     ],
+     [
+      "BUR",
+      1952
+     ]
+    ]
+   }
+  ]
+ },
+ "tombrandon#0": {
+  "node_when_audited": 17399,
+  "name": "Tom Brandon",
+  "confidence": "high",
+  "evidence": "Father and son, both registered as William Thomas 'Tom' Brandon at Blackburn Rovers. The father, b. 3 October 1867 in Ayrshire, d. 24 November 1941 in Edinburgh, signed for Blackburn in 1889, won the 1891 FA Cup, moved to Sheffield Wednesday for 1892-93 (30 apps), returned to Blackburn 1893-1900 (177 apps) and was capped by Scotland in 1896 while at an English club; his league career ended with St",
+  "people": [
+   {
+    "who": "Tom Brandon Sr (Scotland international full back)",
+    "seasons": [
+     [
+      "BLB",
+      1889
+     ],
+     [
+      "BLB",
+      1890
+     ],
+     [
+      "BLB",
+      1893
+     ],
+     [
+      "BLB",
+      1894
+     ],
+     [
+      "BLB",
+      1895
+     ],
+     [
+      "BLB",
+      1896
+     ],
+     [
+      "BLB",
+      1897
+     ],
+     [
+      "BLB",
+      1898
+     ],
+     [
+      "BLB",
+      1899
+     ],
+     [
+      "SHW",
+      1892
+     ]
+    ]
+   },
+   {
+    "who": "Tom Brandon Jr (full back, son of the above)",
+    "seasons": [
+     [
+      "BLB",
+      1909
+     ]
+    ]
+   }
+  ]
+ },
+ "waltersmith#0": {
+  "node_when_audited": 18180,
+  "name": "Walter Smith",
+  "confidence": "high",
+  "evidence": "The Manchester City span belongs to Walter Ernest Smith, goalkeeper, b. 25 March 1884, d. 1972, who played for Leicester Fosse 1903-06 and then joined Manchester City for GBP 600 in June 1906, staying to 1920 and helping them win the Second Division title in 1909-10 (which is why his top-flight seasons in that span are only 10 of 14). He was 15 years old in the 1899/00 season and had not yet playe",
+  "people": [
+   {
+    "who": "Walter Ernest Smith (goalkeeper, Manchester City)",
+    "seasons": [
+     [
+      "MCI",
+      1906
+     ],
+     [
+      "MCI",
+      1907
+     ],
+     [
+      "MCI",
+      1908
+     ],
+     [
+      "MCI",
+      1910
+     ],
+     [
+      "MCI",
+      1911
+     ],
+     [
+      "MCI",
+      1912
+     ],
+     [
+      "MCI",
+      1913
+     ],
+     [
+      "MCI",
+      1914
+     ],
+     [
+      "MCI",
+      1919
+     ]
+    ]
+   },
+   {
+    "who": "A second, unidentified Walter Smith at Notts County",
+    "seasons": [
+     [
+      "NOT",
+      1899
+     ]
+    ]
+   }
+  ]
+ },
+ "donhowe#1": {
+  "node_when_audited": 3593,
+  "name": "Don Howe",
+  "confidence": "high",
+  "evidence": "Two entirely separate men. Don Howe b. 26 November 1917, d. 23 August 1978, spent his whole career at Bolton Wanderers (1934-1952, 286 league and cup games, 35 goals), played in the 1946 FA Cup semi-final and was ever-present in 1950-51 before retiring at the end of 1951/52. Don Howe b. 12 October 1935 in Wolverhampton, d. 23 December 2015, the England right back and later Arsenal coach/manager, j",
+  "people": [
+   {
+    "who": "Don Howe (Bolton Wanderers, one-club man)",
+    "seasons": [
+     [
+      "BOL",
+      1946
+     ],
+     [
+      "BOL",
+      1947
+     ],
+     [
+      "BOL",
+      1948
+     ],
+     [
+      "BOL",
+      1949
+     ],
+     [
+      "BOL",
+      1950
+     ],
+     [
+      "BOL",
+      1951
+     ]
+    ]
+   },
+   {
+    "who": "Don Howe (England right back, WBA and Arsenal, later coach/manager)",
+    "seasons": [
+     [
+      "ARS",
+      1964
+     ],
+     [
+      "ARS",
+      1965
+     ],
+     [
+      "ARS",
+      1966
+     ],
+     [
+      "WBA",
+      1956
+     ],
+     [
+      "WBA",
+      1957
+     ],
+     [
+      "WBA",
+      1958
+     ],
+     [
+      "WBA",
+      1959
+     ],
+     [
+      "WBA",
+      1961
+     ],
+     [
+      "WBA",
+      1962
+     ],
+     [
+      "WBA",
+      1963
+     ]
+    ]
+   },
+   {
+    "who": "Unresolved - Wolverhampton Wanderers 1950/51 belongs to neither of the above and could not be verified against the Wolves 1950-51 playing staff",
+    "seasons": [
+     [
+      "WOL",
+      1950
+     ]
+    ]
+   }
+  ]
+ },
+ "pl:322": {
+  "node_when_audited": 13436,
+  "name": "Bryan Robson",
+  "confidence": "high",
+  "evidence": "Two contemporaries both named Bryan Robson. Bryan Robson b. 11 January 1957 in Chester-le-Street - 'Captain Marvel' - played West Bromwich Albion 1974-81, Manchester United 1981-94 and Middlesbrough 1994-97 as player-manager, and never played for West Ham United in his life. The West Ham seasons belong to Bryan Stanley 'Pop' Robson, b. 11 November 1945 in Sunderland, a centre forward: Newcastle Un",
+  "people": [
+   {
+    "who": "Bryan Robson 'Captain Marvel' (midfielder, England captain)",
+    "seasons": [
+     [
+      "MID",
+      1995
+     ],
+     [
+      "MID",
+      1996
+     ],
+     [
+      "MUN",
+      1981
+     ],
+     [
+      "MUN",
+      1982
+     ],
+     [
+      "MUN",
+      1983
+     ],
+     [
+      "MUN",
+      1984
+     ],
+     [
+      "MUN",
+      1985
+     ],
+     [
+      "MUN",
+      1986
+     ],
+     [
+      "MUN",
+      1987
+     ],
+     [
+      "MUN",
+      1988
+     ],
+     [
+      "MUN",
+      1989
+     ],
+     [
+      "MUN",
+      1990
+     ],
+     [
+      "MUN",
+      1991
+     ],
+     [
+      "MUN",
+      1992
+     ],
+     [
+      "MUN",
+      1993
+     ],
+     [
+      "WBA",
+      1976
+     ],
+     [
+      "WBA",
+      1978
+     ],
+     [
+      "WBA",
+      1979
+     ],
+     [
+      "WBA",
+      1981
+     ]
+    ]
+   },
+   {
+    "who": "Bryan 'Pop' Robson (centre forward)",
+    "seasons": [
+     [
+      "WHU",
+      1976
+     ],
+     [
+      "WHU",
+      1977
+     ]
+    ]
+   }
+  ]
+ }
+}
