@@ -50,6 +50,11 @@ ap.add_argument('--per-source', type=int, default=6,
                 help='cap pairs taken from one player per bucket, so the pool '
                      'is not five variations on the same career')
 ap.add_argument('--seed', type=int, default=20260821)
+ap.add_argument('--pl-from', type=int, default=1992,
+                help='the Premier League pools are built over these seasons '
+                     'alone, because the page now defaults to them: a puzzle '
+                     'whose answer runs through a 1975 dressing room has no '
+                     'route at all once the graph is cut to 1992 on')
 a = ap.parse_args()
 
 # ------------------------------------------------------------------ data ----
@@ -68,6 +73,9 @@ p_ip = i32(P + 1); p_ix = i32(int(p_ip[P]))
 t_ip = i32(T + 1); t_ix = i32(int(t_ip[T]))
 first = np.frombuffer(buf, np.int16, P, o).copy(); o += P * 2
 last = np.frombuffer(buf, np.int16, P, o).copy(); o += P * 2
+o += P                                        # positions
+ts_team = np.frombuffer(buf, np.uint16, T, o).copy(); o += T * 2
+ts_season = np.frombuffer(buf, np.int16, T, o).copy()
 
 names = gzip.open(os.path.join(NET, 'names.txt.gz'), 'rb').read().decode().split('\n')
 
@@ -141,10 +149,19 @@ def gather(arr, starts, ends):
 seen_ts = np.zeros(T, bool)
 
 
-def distances(src):
+def distances(src, era=None):
     """Player-to-player distances from src. Same rule the page uses: a squad is
-    absorbed once and then skipped, so a club-season is never walked twice."""
-    seen_ts[:] = False
+    absorbed once and then skipped, so a club-season is never walked twice.
+
+    `era` bars club-seasons outside a season range, exactly as NET.setEra does
+    in the browser -- marking them already-seen is the same thing as their not
+    existing.
+    """
+    # in place, not `seen_ts |= ...`: rebinding the name would make it local
+    if era is None:
+        seen_ts[:] = False
+    else:
+        np.logical_not(era, out=seen_ts)
     dist = np.full(P, -1, np.int16)
     dist[src] = 0
     frontier = np.array([src], np.int32)
@@ -178,6 +195,28 @@ BUCKETS = [('r2', 2, 'recent'), ('r3', 3, 'recent'),
            ('g3', 3, 'great'), ('g4', 4, 'great'),
            ('i5', 5, 'icon'), ('i6', 6, 'icon')]
 FAR = {'great': great, 'icon': icon}
+
+# ------------------------------------------------------- Premier League ----
+# The page defaults to the Premier League, so the default games have to be
+# playable there. These pools are built over 1992 on ALONE -- an all-time
+# puzzle whose answer runs through a 1975 dressing room simply has no route
+# once the graph is cut, and the round would hand you an unsolvable hole.
+#
+# The shape is quite different. Thirty-odd seasons of twenty clubs is small and
+# tightly connected: nobody is more than four from anyone, so there is no par 5
+# or 6 to be had and the far tiers collapse into one. p* pools, one endpoint
+# tier, distances 2 to 4.
+pl_era = ts_season >= a.pl_from
+in_pl = np.zeros(P, bool)
+for i in range(P):
+    for k in range(p_ip[i], p_ip[i + 1]):
+        if pl_era[p_ix[k]]:
+            in_pl[i] = True
+            break
+pl_known = in_pl & (recent | great | icon)
+print(f'{int(in_pl.sum())} players appear in {a.pl_from}/'
+      f'{str(a.pl_from+1)[2:]} or later, {int(pl_known.sum())} of them notable')
+PL_BUCKETS = [('p2', 2), ('p3', 3), ('p4', 4)]
 buckets = {k: [] for k, _, _ in BUCKETS}
 rng = np.random.default_rng(a.seed)
 sources = pool.copy()
@@ -219,6 +258,28 @@ for n, s_ in enumerate(sources, 1):
     if n % 200 == 0:
         print('  ' + f'{n} sources: ' +
               ' '.join(f'{k}={len(v)}' for k, v in buckets.items()), flush=True)
+
+# ---- and again, restricted to the Premier League ----
+pl_pool = np.where(pl_known)[0]
+rng.shuffle(pl_pool)
+for key, _ in PL_BUCKETS:
+    buckets[key] = []
+for n, s_ in enumerate(pl_pool, 1):
+    if all(len(buckets[k]) >= a.per_bucket for k, _ in PL_BUCKETS):
+        print(f'  every Premier League bucket full after {n - 1} sources')
+        break
+    dist = distances(int(s_), pl_era)
+    for key, d in PL_BUCKETS:
+        if len(buckets[key]) >= a.per_bucket:
+            continue
+        hits = np.where((dist == d) & pl_known)[0]
+        hits = hits[hits > int(s_)]
+        if hits.size > a.per_source:
+            hits = rng.choice(hits, a.per_source, replace=False)
+        for t in hits:
+            buckets[key].append([int(s_), int(t)])
+            if len(buckets[key]) >= a.per_bucket:
+                break
 
 out = {'players': {}, 'buckets': {}}
 for key, pairs in buckets.items():

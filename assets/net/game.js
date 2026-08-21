@@ -47,9 +47,18 @@ const GAME = (() => {
     unit: 'squad',                         // "shared a squad" / "shared a club"
   }, (typeof window !== 'undefined' && window.SPORT) || {});
 
-  const HOLES = CFG.holes;
-  const PAR_TOTAL = HOLES.reduce((n, h) => n + h.par, 0);
-  const DAILY_TARGET = CFG.dailyTarget;    // beat this on the daily
+  /* Two rule sets. The page defaults to the Premier League, so the default
+     games must be playable there -- an all-time puzzle whose answer runs
+     through a 1975 dressing room has no route at all once the graph is cut to
+     1992 on. Expert mode widens both the graph and the pools back to 1888.
+     A sport that declares only `holes` gets one set and no expert mode. */
+  let expert = false;
+  const RULES = () => (expert && CFG.expert) ? CFG.expert : CFG;
+  const HOLES = () => RULES().holes;
+  const PAR_TOTAL = () => HOLES().reduce((n, h) => n + h.par, 0);
+  const DAILY_TARGET = () => RULES().dailyTarget;
+  const hasExpert = () => !!CFG.expert;
+  function setExpert(v) { expert = !!v; }
   /* Giving up is a fixed ten, not the par. Handing you the shortest route and
      then scoring it as if you had found it made surrender the best play on any
      hole you could not see -- you would card a par for pressing a button. */
@@ -121,17 +130,18 @@ const GAME = (() => {
   const history = {
     // v2: an earlier build replaced your chain with the answer when you gave
     // up, so those records claim you found a route you never found
-    dailies() { return store.get('dailies2', {}); },
-    rounds() { return store.get('rounds', []); },
+    key(k) { return expert && CFG.expert ? k + 'X' : k; },
+    dailies() { return store.get(history.key('dailies2'), {}); },
+    rounds() { return store.get(history.key('rounds'), []); },
     saveDaily(day, rec) {
       const all = history.dailies();
       all[day] = rec;
-      store.set('dailies2', all);
+      store.set(history.key('dailies2'), all);
     },
     saveRound(rec) {
       const all = history.rounds();
       all.push(rec);
-      store.set('rounds', all.slice(-200));
+      store.set(history.key('rounds'), all.slice(-200));
     },
   };
 
@@ -207,7 +217,18 @@ const GAME = (() => {
         return `${NET.names[last]} and ${NET.names[i]} were never teammates.`;
       L.chain.push(i);
       L.clue = null; L.clueLevel = 0; L.clueSpent = false;
-      if (i === b) L.done = true;
+      if (i === b) {
+        L.done = true;
+      } else if (NET.sharedTeamSeasons(i, b).length) {
+        /* Naming someone who played with the target finishes the chain. The
+           last link is the one you have just proved, and making you then type
+           a name you were given at the start tests nothing -- it was only ever
+           a formality standing between you and the result. The target is
+           pushed on so the chain, the score and the drawing all stay one
+           shape. */
+        L.chain.push(b);
+        L.done = true;
+      }
       return null;
     };
 
@@ -333,12 +354,12 @@ const GAME = (() => {
     const rng = Math.random;
     state = {
       mode: 'round', hole: 0,
-      holes: HOLES.map(h => {
+      holes: HOLES().map(h => {
         const [x, y] = pick(h.pool, rng);
         return { par: h.par, a: x, b: y };
       }),
     };
-    state.leg = leg(state.holes[0].a, state.holes[0].b, { par: HOLES[0].par });
+    state.leg = leg(state.holes[0].a, state.holes[0].b, { par: HOLES()[0].par });
     centreOn(state.holes[0].a, state.holes[0].b);
     render();
   }
@@ -372,7 +393,7 @@ const GAME = (() => {
       const mark = h.gave ? '❌' : over === 0 ? '🟢' : over <= 2 ? '🟡' : '🔴';
       return `${mark} par ${h.par} — ${NET.names[h.a]} → ${NET.names[h.b]}: ${h.score}`;
     }).join('\n');
-    return `${CFG.title} — The Round\n${t.shot} strokes, par ${t.par} (${
+    return `${CFG.title}${expert && CFG.expert ? ' (all time)' : ''} — The Round\n${t.shot} strokes, par ${t.par} (${
       diff === 0 ? 'level' : '+' + diff})\n\n${rows}\n\nHave a go:\n${SHARE_URL}`;
   }
 
@@ -383,7 +404,7 @@ const GAME = (() => {
   function dailyShareText() {
     const L = state.leg, links = L.links(), par = L.best;
     const who = `${NET.names[L.a]} → ${NET.names[L.b]}`;
-    const head = `${CFG.title} — daily #${state.day}\n${who}`;
+    const head = `${CFG.title}${expert && CFG.expert ? ' (all time)' : ''} — daily #${state.day}\n${who}`;
     if (L.revealed) {
       return `${head}\n❌ Beat me today. See if you can do better.\n${SHARE_URL}`;
     }
@@ -415,7 +436,7 @@ const GAME = (() => {
      any era into it without the linking players becoming unnameable. */
   function dailyPuzzle(day) {
     const rng = seeded(day * 2654435761);
-    const cyc = CFG.dailyPools;
+    const cyc = RULES().dailyPools;
     return pick(cyc[((day % cyc.length) + cyc.length) % cyc.length], rng);
   }
 
@@ -423,9 +444,9 @@ const GAME = (() => {
     setSkin('daily');
     const [a, b] = dailyPuzzle(day);
     const saved = history.dailies()[day];
-    state = { mode: 'daily', day, target: DAILY_TARGET, par: CFG.dailyPar,
+    state = { mode: 'daily', day, target: DAILY_TARGET(), par: RULES().dailyPar,
               today: day === dayNumber() };
-    state.leg = leg(a, b, { par: CFG.dailyPar });
+    state.leg = leg(a, b, { par: RULES().dailyPar });
     if (saved && saved.chain) {
       // what you actually played, which after giving up is however far you got
       state.leg.chain = saved.chain;
@@ -461,8 +482,8 @@ const GAME = (() => {
       `<h2>Archive</h2>
        <div class="lead">Every daily since the start is still there. Your record
          is kept on this device only.</div>
-       ${scores.length ? distribution(scores, -1, CFG.dailyPar, GIVE_UP, 'Your dailies') : ''}
-       ${rounds.length ? distribution(rounds.map(r => r.shot), -1, PAR_TOTAL, PAR_TOTAL + 12, 'Your rounds') : ''}
+       ${scores.length ? distribution(scores, -1, RULES().dailyPar, GIVE_UP, 'Your dailies') : ''}
+       ${rounds.length ? distribution(rounds.map(r => r.shot), -1, PAR_TOTAL(), PAR_TOTAL() + 12, 'Your rounds') : ''}
        <div class="gmeta">Pick a day</div>
        <div class="arch">${days.map(d => {
          const r = all[d];
@@ -533,7 +554,7 @@ const GAME = (() => {
          <div class="lead">${state.par} links apart at best. Join them in under
            <b>${state.target}</b> — puzzle #${state.day}${
            state.today ? '' : ' (from the archive)'}.</div>`
-      : `<h2>Hole ${state.hole + 1} of ${HOLES.length}</h2>
+      : `<h2>Hole ${state.hole + 1} of ${HOLES().length}</h2>
          <div class="lead">Par <b>${L.par}</b>. Join
            <b>${NET.names[L.a]}</b> to <b>${NET.names[L.b]}</b>.</div>`;
 
@@ -579,7 +600,7 @@ const GAME = (() => {
       saveDaily();
       const all = history.dailies();
       const scores = Object.values(all).map(r => r.score).filter(n => n != null);
-      chart = distribution(scores, L.score(), CFG.dailyPar, GIVE_UP, 'Your dailies');
+      chart = distribution(scores, L.score(), RULES().dailyPar, GIVE_UP, 'Your dailies');
     }
     const t = state.mode === 'round' ? roundTotals() : null;
     host.innerHTML = exitBtn() + head +
@@ -590,7 +611,7 @@ const GAME = (() => {
       (L.done
         ? (state.mode === 'round'
             ? `<button class="btn" id="gnexth">${
-                state.hole === HOLES.length - 1 ? 'See the card' : 'Next hole'}</button>`
+                state.hole === HOLES().length - 1 ? 'See the card' : 'Next hole'}</button>`
             : `<button class="btn" id="gshare">Share your result</button>
                <button class="btn ghost" id="gagain">Back</button>`)
         : `${L.clueSpent ? '' : `<button class="btn ghost" id="gclue">${
@@ -677,6 +698,7 @@ const GAME = (() => {
 
   return { load, init, startRound, startDaily, startExpedition, dayNumber,
            renderArchive, setSkin,
+           setExpert, hasExpert, get expert() { return expert; },
            get state() { return state; },
            stop() { state = null; VIEW.lit = null; setSkin(null); } };
 })();

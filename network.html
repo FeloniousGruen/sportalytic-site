@@ -497,10 +497,10 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821e';</script>
-<script src="assets/net/app.js?v=20260821e"></script>
-<script src="assets/net/view.js?v=20260821e"></script>
-<script src="assets/net/game.js?v=20260821e"></script>
+<script>window.ASSET_V='20260821f';</script>
+<script src="assets/net/app.js?v=20260821f"></script>
+<script src="assets/net/view.js?v=20260821f"></script>
+<script src="assets/net/game.js?v=20260821f"></script>
 <script>
 const $=s=>document.querySelector(s);
 /* A dead page tells whoever is looking at it nothing. Anything thrown before
@@ -654,7 +654,11 @@ function clearShare(){
     VIEW.captureFrom(); NET.recentre(CENTRE); VIEW.beginMorph(700);
   }
   VIEW.setThrough(null);
-  $('#shareOut').innerHTML='';
+  /* Both of these live inside the player card, which may never have been
+     rendered -- clearShare is now called on start-up, when the era is set
+     before anyone has clicked a dot. An unguarded lookup here threw and took
+     the rest of the page's setup with it. */
+  const out=$('#shareOut'); if(out) out.innerHTML='';
   const b=$('#share'); if(b) b.hidden=false;
 }
 

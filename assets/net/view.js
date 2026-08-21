@@ -245,6 +245,16 @@ const VIEW = (() => {
       ctx.strokeStyle = NET.EDGE;
       ctx.lineWidth = 1;
       ctx.beginPath();
+      /* Screen-space culling, in layout units so the test is two comparisons
+         per endpoint rather than two projections. The all-time football chart
+         is 18,876 edges and every one of them was being pushed into the path
+         however far off screen it was; zoomed in, that is almost all of them.
+         The nodes have always been culled -- this brings the expensive half
+         into line. A generous margin keeps edges that cross the viewport
+         without either end being inside it. */
+      const mx = W / cam.scale, my = H / cam.scale;
+      const clipL = cam.x - mx, clipR = cam.x + mx;
+      const clipT = cam.y - my, clipB = cam.y + my;
       const step = 1;
       for (let i = 0; i < n; i += step) {
         // while a share is up, the highlighted players hang off the player in
@@ -260,6 +270,9 @@ const VIEW = (() => {
           bx = fromX[p] + (bx - fromX[p]) * t; by = fromY[p] + (by - fromY[p]) * t;
         }
         if (!(ax === ax) || !(bx === bx)) continue;
+        // both ends outside the same edge of the viewport: it cannot cross it
+        if ((ax < clipL && bx < clipL) || (ax > clipR && bx > clipR) ||
+            (ay < clipT && by < clipT) || (ay > clipB && by > clipB)) continue;
         ctx.moveTo(sx(ax), sy(ay)); ctx.lineTo(sx(bx), sy(by));
       }
       ctx.stroke();
