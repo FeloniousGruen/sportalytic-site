@@ -237,6 +237,18 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 /* While a round is running the quiz owns the right-hand corner, so a player
    card opened by clicking a dot moves along rather than landing on top of it. */
 #panel.aside{right:320px}
+/* On a laptop the card lives on the LEFT, under the controls, opposite the
+   Play menu -- so the two never fight for the same corner and the chart is
+   framed by both rather than pushed off to one side. It opens on the centre
+   with the page, so the share and recentre buttons are there to be found
+   rather than waiting behind a click nobody knows to make.
+   Scoped to desktop: on a phone the card is a sheet across the bottom and
+   this must not touch it. */
+@media(min-width:821px){
+  #panel{left:12px;right:auto;top:calc(var(--top,120px) + 4px);
+    max-height:calc(100vh - var(--top,120px) - 120px);overflow:auto}
+  #panel.aside{left:12px;right:auto}
+}
 #game{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
   border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px;z-index:7;
   max-height:calc(100vh - 140px);overflow:auto}
@@ -540,7 +552,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821m';
+<script>window.ASSET_V='20260821q';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -575,9 +587,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821m"></script>
-<script src="assets/net/view.js?v=20260821m"></script>
-<script src="assets/net/game.js?v=20260821m"></script>
+<script src="assets/net/app.js?v=20260821q"></script>
+<script src="assets/net/view.js?v=20260821q"></script>
+<script src="assets/net/game.js?v=20260821q"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -612,7 +624,51 @@ PHONE.addEventListener('change',()=>{
 });
 
 let PANEL_FOR=-1;
+/* Search finds every player in the record, but an era only draws the ones
+   inside it -- so picking a pre-1992 name while the chart is on the Premier
+   League used to do nothing at all. Their dot has no position to move to and
+   no route to trace, so the page simply sat there looking broken.
+   Say so, and offer the one thing that would help. */
+function outOfEra(i){
+  if(typeof PENDING_ERA!=='undefined' && PENDING_ERA) return false;
+  return NET.era().restricted && !NET.playsInEra(i);
+}
+function renderOutOfEra(i){
+  const d=NET.info(i), E=NET.era();
+  const span=`${NET.seasonLabel(E.lo)}–${NET.seasonLabel(Math.min(E.hi,NET.tables.seasonMax))}`;
+  $('#panel').hidden=false;
+  $('#panel').classList.toggle('aside', !$('#quiz').hidden);
+  $('#panel').innerHTML=
+    `<button class="xclose" id="pclose" title="Back to the chart">&times;</button>
+     <h2>${d.name}</h2>
+     <div class="meta">${d.position||'—'} · ${NET.seasonLabel(d.first)}–${NET.seasonLabel(d.last)}</div>
+     <div class="note" style="border-top:0;padding-top:0;margin-top:0">
+       Not on this chart. It is showing <b>${span}</b>, and ${d.name} played
+       ${NET.seasonLabel(d.first)}–${NET.seasonLabel(d.last)}.</div>
+     <button class="btn" id="eraGo">Show the whole record and find them</button>`;
+  $('#pclose').onclick=closePanel;
+  $('#eraGo').onclick=()=>{
+    const sel=document.getElementById('era');
+    sel.value='all';
+    /* applyEra tears the panel down and may move the centre home, so the pick
+       is remembered across it and re-opened once the wider graph exists. */
+    if(!APPLY_ERA) return;
+    PENDING_ERA=i;
+    APPLY_ERA('all',{announce:false});
+    PENDING_ERA=0;
+    recentre(i);
+  };
+  VIEW.selected=-1; VIEW.path=[];
+}
+let PENDING_ERA=0;
+/* applyEra is defined inside the start-up closure; this card is rendered from
+   outside it, so the function has to be handed out. Without this the button
+   threw a ReferenceError into an onclick, which is silent -- it simply did
+   nothing, which is the very failure it was added to fix. */
+let APPLY_ERA=null;
+
 function renderPanel(i){
+  if(outOfEra(i)) return renderOutOfEra(i);
   PANEL_FOR=i;
   const d=NET.info(i), p=NET.pathToCentre(i);
   const c=NET.info(CENTRE);
@@ -622,7 +678,7 @@ function renderPanel(i){
   $('#panel').innerHTML=
     `<button class="xclose" id="pclose" title="Back to the chart">&times;</button>
      <h2>${d.name}</h2>
-     <div class="meta">${d.position||'—'} · ${d.first}–${d.last}${
+     <div class="meta">${d.position||'—'} · ${NET.seasonLabel(d.first)}–${NET.seasonLabel(d.last)}${
         small?(i===CENTRE?' · the centre':` · <b class="deg">${d.degree}°</b> from ${c.name}`):''}</div>
      ${small?'':i===CENTRE?`<div class="deg">This is the centre</div>`
        :`<div><span class="deg">${d.degree}°</span> from ${c.name}</div>
@@ -1052,6 +1108,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   let ORIGIN=0;
   let borrowed=false;               // is the centre one an era lent us?
 
+  APPLY_ERA=(id,opts)=>applyEra(id,opts);
   function applyEra(id,{announce=true,teardown=true}={}){
     const e=eraById(id);
     const res=NET.setEra(e.from,e.to);
@@ -1176,9 +1233,13 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
       out.push(i);
     }
     $('#results').hidden=false;
-    $('#results').innerHTML=out.length?out.map(i=>
-      `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${NET.firstSeason[i]}–${NET.lastSeason[i]}</span></div>`
-    ).join(''):'<div style="color:var(--grey)">No players match</div>';
+    $('#results').innerHTML=out.length?out.map(i=>{
+      const off=outOfEra(i);
+      return `<div data-i="${i}"${off?' style="opacity:.55"':''}>${NET.names[i]}
+        <span style="color:var(--grey)">${NET.seasonLabel(NET.firstSeason[i])}–${
+        NET.seasonLabel(NET.lastSeason[i])}</span>${
+        off?' <span style="color:var(--amber);font-size:11px">outside this era</span>':''}</div>`;
+    }).join(''):'<div style="color:var(--grey)">No players match</div>';
   }
   /* ---------------------------------------------------------- the quiz ----
    * Two players; join them yourself in as few steps as you can. Every step you
@@ -1494,6 +1555,9 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
   applyEra('pl',{announce:false});
   // the games are the point of the page now, so lead with them
   openGame().then(()=>{
+    /* After, not before: openGame hides the player card on its way in, so a
+       card opened first is closed again a frame later. */
+    if(!onPhone()) renderPanel(CENTRE);
     /* Straight away, not on the next frame. The batching exists to stop a
        ResizeObserver loop, but the very first pass has to land before the
        first paint or the chart draws full height and then jumps when the card
