@@ -540,7 +540,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821i';
+<script>window.ASSET_V='20260821j';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -575,9 +575,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821i"></script>
-<script src="assets/net/view.js?v=20260821i"></script>
-<script src="assets/net/game.js?v=20260821i"></script>
+<script src="assets/net/app.js?v=20260821j"></script>
+<script src="assets/net/view.js?v=20260821j"></script>
+<script src="assets/net/game.js?v=20260821j"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -934,7 +934,8 @@ async function showCredits(){
        <a href="https://commons.wikimedia.org/" target="_blank" rel="noopener noreferrer">Wikimedia
        Commons</a> — ${CREDITS.length-cc} in the public domain, ${cc} under a
        Creative Commons licence and credited below. Each name links to the file
-       and its full licence terms. Club badges are the trademarks of their clubs.</p>
+       and its full licence terms. Club crests are the trademarks of their
+       clubs, shown to identify the club whose players are in a wedge.</p>
      <div class="credlist">${CREDITS.map(r=>
        `<div><b>${r.n}</b><a href="${url(r.f)}" target="_blank" rel="noopener noreferrer">${r.f}</a>`+
        `<span>${r.l}${r.a?' · '+r.a:(r.l==='Public domain'||r.l==='CC0'?'':' · author not stated')}</span></div>`
