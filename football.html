@@ -140,6 +140,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 /* The era picker changes the graph rather than the search, so it reads as the
    odd one out on purpose: it carries the accent the other two do not. */
 #era{flex:0 0 auto;min-width:160px;border-color:rgba(251,194,71,.45)}
+/* Sized to the hud rather than the tool bar it borrows its class from */
+#reset{flex:0 0 auto;padding:9px 13px;font-size:13px;box-shadow:none}
 #era.narrowed{border-color:var(--amber);color:var(--amber)}
 :root[data-theme="light"] #era{border-color:rgba(217,119,6,.5)}
 :root[data-theme="light"] #era.narrowed{border-color:var(--amber);color:var(--amber)}
@@ -518,6 +520,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   <div id="topbar">
   <div class="hud">
     <input id="q" placeholder="Search a player…" autocomplete="off">
+    <button id="reset" class="tbtn" title="Put the chart back: the last player you picked, centred, with nothing else on">Reset</button>
     <select id="era" title="Which seasons count as a link"></select>
     <select id="club"><option value="">Any club</option></select>
     <select id="season"><option value="">Any season</option></select>
@@ -552,7 +555,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260821q';
+<script>window.ASSET_V='20260821r';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -587,9 +590,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260821q"></script>
-<script src="assets/net/view.js?v=20260821q"></script>
-<script src="assets/net/game.js?v=20260821q"></script>
+<script src="assets/net/app.js?v=20260821r"></script>
+<script src="assets/net/view.js?v=20260821r"></script>
+<script src="assets/net/game.js?v=20260821r"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -624,6 +627,11 @@ PHONE.addEventListener('change',()=>{
 });
 
 let PANEL_FOR=-1;
+/* The last player deliberately chosen -- clicked, searched or recentred on.
+   Reset returns the chart to them, which is a different thing from Fit: Fit
+   only changes the zoom, this undoes a share view, a first-ring view, a half
+   built chain and whatever the games left behind. */
+let LAST_PICK=-1;
 /* Search finds every player in the record, but an era only draws the ones
    inside it -- so picking a pre-1992 name while the chart is on the Premier
    League used to do nothing at all. Their dot has no position to move to and
@@ -669,7 +677,7 @@ let APPLY_ERA=null;
 
 function renderPanel(i){
   if(outOfEra(i)) return renderOutOfEra(i);
-  PANEL_FOR=i;
+  PANEL_FOR=i; LAST_PICK=i;
   const d=NET.info(i), p=NET.pathToCentre(i);
   const c=NET.info(CENTRE);
   $('#panel').hidden=false;
@@ -1565,6 +1573,19 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     syncSheetNow();
     VIEW.invalidate();
   });
+  /* Everything back to one player, alone in the middle. Not the same as Fit,
+     which only changes the zoom -- this clears a share view, the first-ring
+     wedges, a half-built chain and anything a game left on the chart. */
+  document.getElementById('reset').onclick=()=>{
+    const who = LAST_PICK>=0 && NET.playsInEra(LAST_PICK) ? LAST_PICK
+              : (NET.playsInEra(HOME) ? HOME : CENTRE);
+    quizClose(); closeGame(); clearShare(); setRing(false);
+    $('#results').hidden=true; $('#q').value='';
+    club.value=''; season.value=''; fillSeasons('');
+    VIEW.lit=null; VIEW.labels=!onPhone(); VIEW.interactive=true;
+    recentre(who);
+    VIEW.fit();
+  };
   document.getElementById('ring').onclick=()=>setRing(!VIEW.ringMode);
   document.getElementById('zin').onclick=()=>VIEW.zoomBy(1.35);
   document.getElementById('zout').onclick=()=>VIEW.zoomBy(1/1.35);

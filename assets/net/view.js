@@ -352,7 +352,10 @@ const VIEW = (() => {
 
     // ---- nodes, batched by degree so fillStyle changes 12 times, not 28,842 ----
     const tn = performance.now();
-    const r = Math.max(1, Math.min(4.5, cam.scale * 0.030));
+    // Zoomed into a single club's wedge there are only a few dozen dots on
+    // screen and they stayed pinpricks. The floor is what keeps the whole
+    // chart legible; the ceiling only ever bites when you are already close.
+    const r = Math.max(1, Math.min(8, cam.scale * 0.034));
     const d2 = r * 2;
     for (let deg = 0; deg < buckets.length; deg++) {
       if (ringSegs && deg > 1) break;          // first-ring view: centre + ring 1
@@ -448,7 +451,7 @@ const VIEW = (() => {
         ctx.closePath();
         // the club's own colour, taken from its badge, so the band and the
         // mark on it always agree
-        ctx.fillStyle = hexRgba(logoColours[sg.team], 0.20);
+        ctx.fillStyle = hexRgba(logoColours[sg.team], 0.13);
         ctx.fill();
         const lg = logoFor(sg.team);
         if (lg && lg.complete && lg.naturalWidth) {
@@ -461,7 +464,7 @@ const VIEW = (() => {
           ctx.drawImage(lg, sx(lr * Math.cos(mid)) - d / 2, sy(lr * Math.sin(mid)) - d / 2, d, d);
           ctx.restore();
         }
-        ctx.strokeStyle = hexRgba(logoColours[sg.team], 0.45) ; ctx.lineWidth = 1;
+        ctx.strokeStyle = hexRgba(logoColours[sg.team], 0.34); ctx.lineWidth = 1;
         for (const edge of [sg.a0, sg.a1]) {
           ctx.beginPath();
           ctx.moveTo(sx(sg.rIn * 0.86 * Math.cos(edge)), sy(sg.rIn * 0.86 * Math.sin(edge)));
@@ -496,7 +499,15 @@ const VIEW = (() => {
     // Each one records the radius it took so the highlight below can ring the
     // picture instead of the dot buried underneath it.
     faceR.clear();
-    if (!moving) {
+    /* The centre's portrait is drawn on EVERY frame, including while the
+       layout is moving. It used to be skipped during a morph, which is why it
+       vanished the moment you pressed "Share of connections" -- that view
+       re-hangs a third of the chart and morphs for the best part of a second,
+       and any frame the morph does not cleanly finish leaves the face gone for
+       good. It is one image at a known point; there was never a reason to
+       drop it, and keeping it also stops the face flickering out on every
+       ordinary recentre. */
+    {
       const cIm = ready(centreImg) ? centreImg : faceFor(centre);
       if (ready(cIm)) {
         const [cxw, cyw] = frameXY(centre);
