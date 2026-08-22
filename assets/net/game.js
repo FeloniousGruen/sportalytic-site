@@ -45,6 +45,13 @@ const GAME = (() => {
     dailyPar: 3,
     dailyTarget: 10,
     unit: 'squad',                         // "shared a squad" / "shared a club"
+    /* How the third clue rung reads. The byte the graph format reserves per
+       player holds a position in the two older datasets and a jumper number in
+       the Australian one, because Australian rules does not record positions
+       the way the others do -- so the wording has to come from the sport
+       rather than be baked in. Defaulting to "as a" leaves both existing
+       pages exactly where they were. */
+    trait: 'as a',
   }, (typeof window !== 'undefined' && window.SPORT) || {});
 
   /* Two rule sets. The page defaults to the Premier League, so the default
@@ -285,7 +292,7 @@ const GAME = (() => {
       const sh = NET.sharedTeamSeasons(last, next);
       if (!sh.length) { L.clue = 'No clue available.'; return; }
       const f = sh[0];
-      const club = (NET.tables.teamMeta[f.team] || {}).name || f.team;
+      const club = NET.clubName(f.team, f.season);
       const info = NET.info(next);
       // no trailing stop: the sentence supplies one, and "A.B.." looks broken
       const initials = NET.names[next].split(/\s+/)
@@ -298,7 +305,7 @@ const GAME = (() => {
       const rungs = [
         `played for <b>${club}</b>`,
         `in <b>${NET.seasonLabel(f.season)}</b>`,
-        info.position ? `as a <b>${info.position}</b>` : null,
+        info.position ? `${CFG.trait} <b>${info.position}</b>` : null,
         initials ? `initials <b>${initials}</b>` : null,
       ].filter(Boolean);
       if (L.clueLevel >= rungs.length) { L.clueSpent = true; return; }
@@ -360,67 +367,97 @@ const GAME = (() => {
     return `<ul class="qchain ${cls}">${rows}</ul>`;
   }
 
-  function chainHtml(L, showInput) {
+  /* The ids of the box you type a name into. Free play draws its chain into a
+     different card and cannot reuse #gnext -- the game card keeps its markup
+     while hidden, so two live elements would share one id. */
+  const IDS = { input: 'gnext', box: 'gres' };
+
+  function chainHtml(L, showInput, ids = IDS) {
     const rows = L.chain.map((n, k) =>
       `<li class="qstep ${k === 0 ? 'fix' : ''}"><span class="dot"></span>${NET.names[n]}</li>`
       + (k < L.chain.length - 1 ? via(n, L.chain[k + 1]) : '')).join('');
     const gap = showInput && !L.done
-      ? `<li class="qstep gap"><input id="gnext" placeholder="Next teammate…" autocomplete="off">
-           <div id="gres" hidden></div>
+      ? `<li class="qstep gap"><input id="${ids.input}" placeholder="Next teammate…" autocomplete="off">
+           <div id="${ids.box}" hidden></div>
            ${L.clue ? `<div class="qclue">${L.clue}</div>` : ''}</li>` : '';
     const target = L.done ? ''
       : `<li class="qstep fix"><span class="dot"></span>${NET.names[L.b]}</li>`;
     return `<ul class="qchain">${rows}${gap}${target}</ul>`;
   }
 
-  function wireInput(L, after) {
-    const inp = $('#gnext');
-    if (!inp) return;
+  /* Ranked, not just filtered.
+     The match is a substring anywhere in the name, which was harmless at
+     five letters and useless at two: "sa" put Alan Halsall above Mohamed
+     Salah, and "robe" led with a Robertson who played twice in 1902. So
+     Surname first, because that is how anyone looks for a footballer --
+     you type Salah or Haaland, not Mohamed or Erling. Then forename, then
+     a middle name, then anywhere at all; and within each the most recent
+     player, who is overwhelmingly the one being reached for.
+     Scanned once with a fixed-size shortlist rather than sorting 18,876
+     rows on every keystroke. */
+  function shortlist(q) {
+    const L2 = lower(), CAP = 25;
+    const hits = [];
+    for (let i = 0; i < NET.P; i++) {
+      const nm = L2[i];
+      const sp = nm.lastIndexOf(' ');
+      const sur = sp < 0 ? 0 : sp + 1;       // one-word names are their own surname
+      let rank;
+      if (nm.startsWith(q, sur)) rank = 0;            // surname
+      else if (nm.startsWith(q)) rank = 1;            // forename
+      else {
+        const at = nm.indexOf(q);
+        if (at < 0) continue;
+        rank = nm[at - 1] === ' ' ? 2 : 3;            // middle name, then mid-word
+      }
+      hits.push({ i, rank, last: NET.lastSeason[i] });
+      if (hits.length > 600) break;          // enough to rank well
+    }
+    hits.sort((a, b) => a.rank - b.rank || b.last - a.last);
+    return hits.slice(0, CAP).map(h => h.i);
+  }
+
+  /* One suggestion list, wherever a player is named: the round's next-teammate
+     box, expedition, and free play's two setup boxes. Free play used to carry
+     its own plainer copy of this, which is how it ended up unranked in the
+     round and missing altogether when you were choosing the two ends. */
+  function suggest(inp, box, pick) {
+    if (!inp || !box) return;
     inp.oninput = () => {
       const q = NET.fold(inp.value.trim());
-      const box = $('#gres');
       if (q.length < MIN_QUERY) { box.hidden = true; return; }
-      /* Ranked, not just filtered.
-         The match is a substring anywhere in the name, which was harmless at
-         five letters and useless at two: "sa" put Alan Halsall above Mohamed
-         Salah, and "robe" led with a Robertson who played twice in 1902. So
-         Surname first, because that is how anyone looks for a footballer --
-         you type Salah or Haaland, not Mohamed or Erling. Then forename, then
-         a middle name, then anywhere at all; and within each the most recent
-         player, who is overwhelmingly the one being reached for.
-         Scanned once with a fixed-size shortlist rather than sorting 18,876
-         rows on every keystroke. */
-      const L2 = lower(), CAP = 25;
-      const hits = [];
-      for (let i = 0; i < NET.P; i++) {
-        const nm = L2[i];
-        const sp = nm.lastIndexOf(' ');
-        const sur = sp < 0 ? 0 : sp + 1;     // one-word names are their own surname
-        let rank;
-        if (nm.startsWith(q, sur)) rank = 0;          // surname
-        else if (nm.startsWith(q)) rank = 1;          // forename
-        else {
-          const at = nm.indexOf(q);
-          if (at < 0) continue;
-          rank = nm[at - 1] === ' ' ? 2 : 3;          // middle name, then mid-word
-        }
-        hits.push({ i, rank, last: NET.lastSeason[i] });
-        if (hits.length > 600) break;        // enough to rank well
-      }
-      hits.sort((a, b) => a.rank - b.rank || b.last - a.last);
-      const out = hits.slice(0, CAP).map(h => h.i);
+      const out = shortlist(q);
       box.hidden = false;
       box.innerHTML = out.length ? out.map(i =>
         `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${
           NET.firstSeason[i]}–${NET.lastSeason[i]}</span></div>`).join('')
         : '<div style="color:var(--grey)">No players match</div>';
+      keepVisible(inp);
     };
-    inp.focus();
-    $('#gres').onclick = e => {
+    box.onclick = e => {
       const d = e.target.closest('[data-i]');
       if (!d) return;
-      after(L.add(+d.dataset.i));
+      pick(+d.dataset.i);
     };
+  }
+
+  function wireInput(L, after, ids = IDS) {
+    const inp = $('#' + ids.input);
+    if (!inp) return;
+    suggest(inp, $('#' + ids.box), i => after(L.add(i)));
+    inp.focus();
+    keepVisible(inp);
+  }
+
+  /* The box you type into lives inside a card that scrolls, and on a phone with
+     the keyboard up that card is only a couple of hundred pixels tall. Every
+     name you add redraws it, and the chain above the box grows by two rows each
+     time -- so without this the box walks down out of its own card and you end
+     up typing somewhere you cannot see. Called after each redraw and again when
+     the suggestion list opens, since the list is what fills the card. */
+  function keepVisible(inp) {
+    if (!inp) return;
+    requestAnimationFrame(() => inp.scrollIntoView({ block: 'nearest' }));
   }
 
   function exitBtn() {
@@ -828,7 +865,10 @@ const GAME = (() => {
       const ag = $('#gagain'); if (ag) ag.onclick = () => onExit();
     }
     $('#gclose').onclick = () => onExit();
-    host.scrollTop = 0;          // a long result should not open half-read
+    /* Only once there is something to read. This used to run on every redraw,
+       which meant each name you added yanked the card back to the top and left
+       the box you were typing into somewhere below the fold. */
+    if (L.done) host.scrollTop = 0;
     L.draw();
   }
 
@@ -892,8 +932,14 @@ const GAME = (() => {
     setTimeout(() => el.remove(), 2600);
   }
 
+  /* Free play lives on the page rather than in here -- it is the one mode with
+     no puzzle behind it, since you choose both ends yourself -- but it is the
+     same game, so it borrows the same leg, the same chain, the same suggestion
+     list and the same give-up figure rather than keeping copies that drift. */
   return { load, init, startRound, startDaily, startExpedition, dayNumber,
            renderArchive, setSkin,
+           leg, chainHtml, routeHtml, suggest, wireInput, plural,
+           giveUp: GIVE_UP,
            setExpert, hasExpert, get expert() { return expert; },
            get state() { return state; },
            stop() { state = null; VIEW.lit = null; setSkin(null); } };

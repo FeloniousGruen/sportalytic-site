@@ -73,7 +73,13 @@ header{
   border-bottom:1px solid rgba(255,255,255,.07);
 }
 .bar{display:flex;align-items:center;gap:28px;height:70px}
-.brand{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
+/* Never shrunk. As a flex item the brand was shrinkable, but the wordmark
+   inside it is text and cannot shrink below its own width -- so a full bar did
+   not overflow visibly, it quietly squeezed the brand's BOX and let the letters
+   run out over whatever sat next to them. Refusing to shrink turns that class
+   of bug into ordinary overflow, which is at least visible. */
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto;
+  flex:0 0 auto}
 .brand img{width:30px;height:30px}
 .brand span{font-family:var(--display);font-size:17px;letter-spacing:.02em;text-transform:uppercase}
 nav{display:flex;flex-wrap:nowrap;white-space:nowrap}
@@ -260,7 +266,17 @@ footer a:hover{color:var(--ink)}
 .rev{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
 .rev.in{opacity:1;transform:none}
 
-@media(max-width:1150px){nav{display:none}}
+/* The nav folds away below the full-width bar -- but not all of it. Every other
+   link is a section further down this same page, so hiding them costs a scroll;
+   Play is a different page, and with the whole nav gone a phone had no way to
+   reach the games at all. It stays, as a pill: outlined rather than filled, so
+   it reads as an action without competing with Get in touch beside it. */
+@media(max-width:1150px){
+  nav a:not(.nav-play){display:none}
+  nav a.nav-play{margin-left:0;padding:9px 14px;border-radius:6px;font-size:12px;
+    letter-spacing:.08em;box-shadow:inset 0 0 0 1px rgba(251,194,71,.5)}
+  nav a.nav-play:hover{background:rgba(251,194,71,.12)}
+}
 @media(max-width:1000px){
   .team{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;max-width:none}
   .person h3{font-size:13.5px;margin-top:14px}
@@ -278,7 +294,6 @@ footer a:hover{color:var(--ink)}
   .steps{grid-template-columns:repeat(2,1fr)}
   .facts .wrap{grid-template-columns:repeat(2,1fr);gap:22px}
   .cwrap{grid-template-columns:1fr;gap:36px}
-  nav{display:none}
   .lb-inner{flex-direction:column;gap:20px}
   .lb video{width:210px}
 }
@@ -288,8 +303,13 @@ footer a:hover{color:var(--ink)}
   .grid{grid-template-columns:repeat(2,1fr)}
   .row2{grid-template-columns:1fr}
   .hero{padding:34px 0 56px}
-  .bar{height:62px;gap:12px}
-  .nav-cta{margin-left:0;padding:10px 14px;font-size:11px;letter-spacing:.04em}
+  /* Three things now share the bar -- wordmark, Play, Get in touch -- and
+     between them they wanted 360px, which is exactly the narrowest common
+     handset. Trimmed here so there is real slack at that width rather than
+     none. */
+  .bar{height:62px;gap:10px}
+  .nav-cta{margin-left:0;padding:10px 12px;font-size:11px;letter-spacing:.04em}
+  nav a.nav-play{padding:9px 12px}
   .brand span{font-size:15px}
   .team{grid-template-columns:1fr;gap:24px}
   .person{display:flex;gap:16px;align-items:flex-start}
@@ -301,6 +321,14 @@ footer a:hover{color:var(--ink)}
   .marquee{height:min(44vh,380px)}
   .hero-grid{gap:26px}
   .fact b{font-size:27px}
+}
+/* On a phone the bar holds three things, and all three want about 400px between
+   them -- more than any handset in portrait. Play has to survive: it is the only
+   header link that goes anywhere else, and the games were unreachable without
+   it. So the wordmark gives way instead. The logo is still there and still goes
+   home, which is the same trade the game pages already make. */
+@media(max-width:479px){
+  .brand span{display:none}
 }
 @media(prefers-reduced-motion:reduce){
   .mtrack{animation:none!important}
@@ -315,7 +343,7 @@ footer a:hover{color:var(--ink)}
     <a class="brand" href="#top"><img src="assets/logo.png" alt=""><span>Sportalytic</span></a>
     <nav>
       <a href="#/reels" data-route>Our work</a>
-      <a href="/play">Play</a>
+      <a href="/play" class="nav-play">Play</a>
       <a href="#/graphics" data-route>Graphics</a>
       <a href="#services">What we do</a>
       <a href="#audience">Who we work with</a>

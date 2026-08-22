@@ -49,7 +49,14 @@
 :root[data-theme="light"] #panel,:root[data-theme="light"] #quiz,
 :root[data-theme="light"] #game,:root[data-theme="light"] #results,
 :root[data-theme="light"] #tools,:root[data-theme="light"] #gres,
-:root[data-theme="light"] #quizRes{box-shadow:var(--shadow);border-color:#E2E8F0}
+:root[data-theme="light"] #quizRes,
+:root[data-theme="light"] .qsug{box-shadow:var(--shadow);border-color:#E2E8F0}
+/* The three suggestion lists are painted near-black to sit inside a dark card.
+   Light mode redid their borders, their shadow and their hover but never the
+   fill, so the rows were --ink -- a deep slate -- on #0B1117, and the list you
+   type a name into could not be read at all. */
+:root[data-theme="light"] #gres,:root[data-theme="light"] #quizRes,
+:root[data-theme="light"] .qsug{background:#FFFFFF}
 :root[data-theme="light"] #tools{background:rgba(255,255,255,.86)}
 :root[data-theme="light"] .tbtn{background:#fff;border-color:#D8E0E8;color:#1A202C}
 :root[data-theme="light"] .tbtn:hover{background:#F4F6F8}
@@ -61,10 +68,15 @@
 :root[data-theme="light"] .shareBox,:root[data-theme="light"] .qdone,
 :root[data-theme="light"] .qclue,:root[data-theme="light"] #gres div:hover,
 :root[data-theme="light"] #results div:hover,
-:root[data-theme="light"] #quizRes div:hover{background:#F1F5F9}
+:root[data-theme="light"] #quizRes div:hover,
+:root[data-theme="light"] .qsug div:hover{background:#F1F5F9}
 :root[data-theme="light"] .dbar{background:#E2E8F0;color:#1A202C}
 :root[data-theme="light"] .aday{background:#F1F5F9;color:#64748B;border-color:#E2E8F0}
 :root[data-theme="light"] .qstep.gap input{background:#fff}
+/* and the same for the .slot pair -- free play's two ends, and expedition's
+   box. Only the one inside the chain was ever given a light fill. */
+:root[data-theme="light"] .slot input,
+:root[data-theme="light"] .slot button{background:#fff;border-color:#D8E0E8}
 :root[data-theme="light"] .gmenu{background:#F8FAFC;border-color:#E2E8F0;color:#1A202C}
 /* The mode colours are picked for a near-black panel and go pale and weak on
    white -- and the archive, being near-white, disappears entirely. Light mode
@@ -339,7 +351,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   text-transform:uppercase;color:var(--ink);margin:2px 0 2px}
 .routes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
 .routes .qchain{margin:4px 0 0}
-#game:has(.routes){width:430px}
+#game:has(.routes),#quiz:has(.routes){width:430px}
 /* The heading does not move for anything. An earlier version re-centred it
    whenever a card opened, to avoid a wide card clipping it -- but that meant
    the heading slid left every time you pressed Play, which is far more
@@ -363,9 +375,12 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   border-bottom:1px solid rgba(255,255,255,.05)}
 #gres div:last-child{border-bottom:0}
 #gres div:hover{background:#1d2833}
-#results div,#quizRes div{user-select:none}
-/* One accent per mode, so which game you are in is obvious without reading. */
-#game{--accent:var(--amber)}
+#results div,#quizRes div,.qsug div{user-select:none}
+/* One accent per mode, so which game you are in is obvious without reading.
+   Free play keeps the brand yellow, but it has to SAY so: it now draws the
+   round's result card, and the rules below reach for --accent -- undefined, a
+   dot painted with it comes out transparent rather than falling back. */
+#game,#quiz{--accent:var(--amber)}
 #game.skin-round{--accent:#2DD4BF}
 #game.skin-daily{--accent:#FBC247}
 #game.skin-expedition{--accent:#E879F9}
@@ -405,7 +420,8 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
 /* Test your knowledge. Sits where the player panel does, and takes over from
    it while a round is running. */
 #quiz{position:absolute;right:12px;top:12px;width:296px;background:var(--panel);
-  border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px;z-index:6}
+  border:1px solid var(--greyd);border-radius:12px;padding:16px;font-size:14px;z-index:6;
+  max-height:calc(100vh - 140px);overflow:auto}
 #quiz h2{font-family:var(--display);font-size:17px;margin:0 0 10px;text-transform:uppercase}
 #quiz .lead{color:var(--grey);font-size:12px;line-height:1.5;margin-bottom:12px}
 .slot{display:flex;gap:6px;align-items:center;margin-bottom:7px}
@@ -415,10 +431,14 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   padding:8px 9px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
 .slot button:hover{border-color:var(--amber)}
 .slot .tag{font-size:10px;color:var(--grey);width:16px;text-align:center;font-weight:bold}
-#quizRes{background:#0B1117;border:1px solid var(--greyd);border-radius:9px;
+/* .qsug is the same list under the two boxes that choose the ends of a free
+   play chain. It sits outside the .slot rather than in it: the slot is a flex
+   row, and a list inside it would try to share the line with the input. */
+#quizRes,.qsug{background:#0B1117;border:1px solid var(--greyd);border-radius:9px;
   max-height:190px;overflow:auto;margin-top:6px}
-#quizRes div{padding:7px 10px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
-#quizRes div:hover{background:#1d2833}
+.qsug{margin:-2px 0 7px}
+#quizRes div,.qsug div{padding:7px 10px;cursor:pointer;font-size:13px;border-bottom:1px solid rgba(255,255,255,.05)}
+#quizRes div:hover,.qsug div:hover{background:#1d2833}
 .qchain{list-style:none;margin:10px 0;padding-left:16px;position:relative;max-height:30vh;overflow:auto}
 .qchain::before{content:'';position:absolute;left:4px;top:8px;bottom:8px;width:2px;background:var(--greyd)}
 .qstep{position:relative;padding:3px 0;font-size:13px}
@@ -465,7 +485,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   /* the round is the screen on a phone; the chart above it is context */
   #quiz,#game{max-height:72vh}
   /* no room to sit them side by side on a phone */
-  #game:has(.routes){width:auto}
+  #game:has(.routes),#quiz:has(.routes){width:auto}
   .routes{grid-template-columns:1fr;gap:8px}
   #game{right:8px;left:8px;top:auto;bottom:56px;width:auto;padding:13px}
   #quiz .lead{font-size:11.5px;margin-bottom:9px}
@@ -496,6 +516,18 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
     max-height:calc(100% - var(--kb,0px) - 74px)}
   :root.kb-open #tools,:root.kb-open #toolwrap{display:none}
   :root.kb-open #title{display:none}
+  /* What is left of the card once the keyboard has taken two thirds of the
+     screen is about 240px, and it has to hold the chain, the box you are
+     typing into and enough of the list to pick from. So while the keyboard is
+     up the card spends that space on the game:
+       - the standing explanation goes. It is the same two sentences every
+         redraw and costs four lines of a card that has about seven.
+       - the list is capped to roughly three rows. At its full 190px it was
+         taller than the room left over, so it pushed the box off the bottom --
+         you were typing into something you could not see, which is the whole
+         complaint. */
+  :root.kb-open #quiz .lead,:root.kb-open #game .lead{display:none}
+  :root.kb-open #gres,:root.kb-open #quizRes,:root.kb-open .qsug{max-height:118px}
   #panel.aside{right:8px}                 /* nowhere sideways to go */
   #panel h2{font-size:17px}
   #quiz h2{font-size:15px}
@@ -536,6 +568,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
   <nav>
     <a href="index.html">Home</a>
     <a href="/play">Play</a>
+    <a href="/click-to-click">Aussie Rules</a>
     <a href="network.html">NFL</a>
     <a href="index.html#/reels">Our work</a>
   </nav>
@@ -583,7 +616,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260823d';
+<script>window.ASSET_V='20260823f';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -594,7 +627,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
    notable pool), so a proper round of golf fits the data. The par 5 and 6
    holes draw their far end from a much stricter list of names — at that
    distance the only thing holding the puzzle up is knowing who you are being
-   asked to reach. See tools/build_football_puzzles.py. */
+   asked to reach. See tools/build_link_puzzles.py. */
 window.SPORT={
   base:'assets/foot',
   store:'spf.',                 // separate from the NFL history, or both are nonsense
@@ -627,9 +660,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260823d"></script>
-<script src="assets/net/view.js?v=20260823d"></script>
-<script src="assets/net/game.js?v=20260823d"></script>
+<script src="assets/net/app.js?v=20260823f"></script>
+<script src="assets/net/view.js?v=20260823f"></script>
+<script src="assets/net/game.js?v=20260823f"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -738,7 +771,7 @@ function renderPanel(i,opts){
               if(sh.length){
                 const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
                 const full=sh.map(x=>`${x.team} ${NET.seasonLabel(x.season)}`).join(', ');
-                const nm=(NET.tables.teamMeta[f.team]||{}).name||f.team;
+                const nm=NET.clubName(f.team,f.season);
                 row+=`<div class="via" title="${nm} — ${full}"><span class="chip">${f.team}</span> ${NET.seasonLabel(f.season)}${more}</div>`;
               }
             }
@@ -917,6 +950,16 @@ function syncKeyboard(){
   document.documentElement.style.setProperty('--kb', kb + 'px');
   const up = kb > 80;
   document.documentElement.classList.toggle('kb-open', up);
+  /* iOS scrolls the DOCUMENT to bring a focused input into view, and it does it
+     even here, where the body cannot scroll and there is nowhere to go. A
+     position:fixed element goes with the layout viewport when that happens, so
+     the whole stage -- and the card with it -- ends up shifted under the
+     keyboard and stays there: the card looks stuck, and the box you are typing
+     into is off the bottom of the screen. Nothing on this page is meant to
+     scroll, so any offset at all is the keyboard's doing and goes straight
+     back. */
+  if(up && (window.scrollY || document.documentElement.scrollTop))
+    window.scrollTo(0,0);
   // do not refit the chart under someone who is typing
   if (typeof VIEW !== 'undefined') VIEW.autoFit = !up;
 }
@@ -924,6 +967,10 @@ if(vv){
   vv.addEventListener('resize', syncKeyboard);
   vv.addEventListener('scroll', syncKeyboard);
 }
+/* The keyboard closing on Android shrinks the layout viewport back, which is a
+   window resize rather than a visualViewport one. Without this the card can be
+   left holding a --kb from a keyboard that has gone. */
+addEventListener('resize', syncKeyboard);
 /* and keep whatever you are typing into on screen inside its own card */
 addEventListener('focusin', e => {
   if(!e.target.matches || !e.target.matches('input')) return;
@@ -1344,9 +1391,19 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
    *
    * The answer is worked out up front with NET.route, which does not disturb
    * the chart: recentring on one of the two would give the other's degree away
-   * just by which ring it landed in. */
-  const QUIZ={on:false,a:-1,b:-1,chain:[],best:null,done:false,revealed:false,
-            clue:null,clueLevel:0};
+   * just by which ring it landed in.
+   *
+   * Only the choosing of the two ends is written here. Once a pair is settled
+   * this is the same game as the round -- so it runs on GAME.leg, and gets the
+   * round's clue ladder, its stroke count and its scoring rather than the
+   * near-copies of all three it used to keep. */
+  const QUIZ={on:false,a:-1,b:-1,aText:null,bText:null,leg:null};
+  // the round's next-teammate box, drawn into this card instead of the game one
+  const QIDS={input:'qnext',box:'quizRes'};
+  const plural=(n,w)=>`${n} ${w}${n===1?'':'s'}`;
+  // the boxes carry whatever was typed into them, and it is going into an
+  // attribute
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 
   // Random players are drawn from those with a portrait. That set is the
   // modern and the famous, which is the difference between a game and an
@@ -1387,7 +1444,7 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
        half of that pair. */
     if(!gameEl.hidden) closeGame();
     fullRecordToPlay();
-    QUIZ.on=true; QUIZ.done=false; QUIZ.chain=[]; QUIZ.best=null;
+    QUIZ.on=true; QUIZ.leg=null;
     // a share answer left over from the last player is not about this round
     clearShare();
     $('#panel').hidden=true; $('#results').hidden=true;
@@ -1405,8 +1462,25 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     renderPanel(CENTRE);
   }
 
+  const qname=i=>i>=0?`${NET.names[i]} (${NET.firstSeason[i]}–${NET.lastSeason[i]})`:'';
+
+  /* What the two boxes currently say, resolved to players. Read before the card
+     is redrawn -- pressing Random for one end used to rebuild the card from
+     QUIZ alone and so threw away whatever had been typed into the other. */
+  function quizReadSlots(){
+    for(const [id,k] of [['qa','a'],['qb','b']]){
+      const el=$('#'+id); if(!el) continue;
+      const v=el.value.trim();
+      if(el.dataset.i){ QUIZ[k]=+el.dataset.i; QUIZ[k+'Text']=null; }
+      else if(!v){ QUIZ[k]=-1; QUIZ[k+'Text']=null; }
+      else { QUIZ[k]=findByName(v); QUIZ[k+'Text']=v; }
+    }
+  }
+
   function quizSetup(){
-    const nm=i=>i>=0?`${NET.names[i]} (${NET.firstSeason[i]}–${NET.lastSeason[i]})`:'';
+    // a name picked off the list wins over the text; a name half typed is kept
+    // as text, so it is still there when the card is redrawn
+    const val=(i,txt)=>txt!=null?txt:qname(i);
     $('#quiz').innerHTML=
       `<button class="xclose" id="qclose" title="Back to the chart">&times;</button>
        <h2>Test your knowledge</h2>
@@ -1414,190 +1488,129 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
          teammates as you can — every pair you name has to have played for the
          same club in the same season.</div>
        <div class="slot"><span class="tag">A</span>
-         <input id="qa" placeholder="Anyone…" value="${QUIZ.a>=0?nm(QUIZ.a):''}">
+         <input id="qa" placeholder="Anyone…" autocomplete="off"
+                value="${esc(val(QUIZ.a,QUIZ.aText))}">
          <button id="qad">Random</button></div>
+       <div id="qaRes" class="qsug" hidden></div>
        <div class="slot"><span class="tag">B</span>
-         <input id="qb" placeholder="Anyone…" value="${QUIZ.b>=0?nm(QUIZ.b):''}">
+         <input id="qb" placeholder="Anyone…" autocomplete="off"
+                value="${esc(val(QUIZ.b,QUIZ.bText))}">
          <button id="qbd">Random</button></div>
+       <div id="qbRes" class="qsug" hidden></div>
        <div id="qmsg" class="qerr" hidden></div>
        <button class="btn" id="qgo">Start</button>
        <button class="btn ghost" id="qx">Close</button>`;
+    /* The same shortlist the round offers, on both ends. Without it you had to
+       spell a name exactly right -- and findByName falls back to a substring,
+       so a near miss did not say so, it silently started somebody else's
+       puzzle. */
+    for(const [id,box,k] of [['qa','qaRes','a'],['qb','qbRes','b']]){
+      const inp=$('#'+id), list=$('#'+box);
+      GAME.suggest(inp,list,i=>{
+        QUIZ[k]=i; QUIZ[k+'Text']=null;
+        inp.value=qname(i); inp.dataset.i=i; list.hidden=true;
+      });
+      // typing again is a new search, so the picked player no longer stands
+      inp.addEventListener('input',()=>{ delete inp.dataset.i; });
+      inp.addEventListener('keydown',e=>{ if(e.key==='Enter') quizStart(); });
+    }
     $('#qclose').onclick=quizClose;
-    $('#qad').onclick=()=>{ QUIZ.a=randomPlayer(); quizSetup(); };
-    $('#qbd').onclick=()=>{ QUIZ.b=randomPlayer(); quizSetup(); };
+    $('#qad').onclick=()=>{ quizReadSlots(); QUIZ.a=randomPlayer(); QUIZ.aText=null; quizSetup(); };
+    $('#qbd').onclick=()=>{ quizReadSlots(); QUIZ.b=randomPlayer(); QUIZ.bText=null; quizSetup(); };
     $('#qgo').onclick=quizStart;
     $('#qx').onclick=quizClose;
   }
 
   function quizStart(){
-    const a=$('#qa').value.trim()?findByName($('#qa').value):randomPlayer();
-    const b=$('#qb').value.trim()?findByName($('#qb').value):randomPlayer();
+    quizReadSlots();
+    // an empty box means "surprise me"; a full one that matches nobody is a
+    // mistake worth saying out loud rather than quietly rolling a die over
+    const a=QUIZ.a>=0?QUIZ.a:(QUIZ.aText?-1:randomPlayer());
+    const b=QUIZ.b>=0?QUIZ.b:(QUIZ.bText?-1:randomPlayer());
     const say=t=>{ $('#qmsg').hidden=false; $('#qmsg').textContent=t; };
     if(a<0) return say('No player matches the first name.');
     if(b<0) return say('No player matches the second name.');
     if(a===b) return say('Pick two different players.');
-    QUIZ.a=a; QUIZ.b=b;
-    const r=NET.route(a,b);
-    if(r.degrees<0) return say(`${NET.names[a]} and ${NET.names[b]} are not connected at all.`);
-    QUIZ.best=r; QUIZ.chain=[a]; QUIZ.done=false; QUIZ.revealed=false;
-    QUIZ.clue=null; QUIZ.clueLevel=0; QUIZ.clueSpent=false;
+    if(NET.route(a,b).degrees<0)
+      return say(`${NET.names[a]} and ${NET.names[b]} are not connected at all.`);
+    QUIZ.a=a; QUIZ.b=b; QUIZ.aText=null; QUIZ.bText=null;
+    QUIZ.leg=GAME.leg(a,b);
     // hang the round off player A, so the chain grows outward from him
     if(CENTRE!==a) recentreQuiet(a);
     quizRound();
   }
 
-  // A step is legal only if it shared a team-season with the last one added.
-  function quizAdd(i){
-    const last=QUIZ.chain[QUIZ.chain.length-1];
-    if(i===last) return 'That is the player you are already on.';
-    if(QUIZ.chain.indexOf(i)>=0) return 'That player is already in your chain.';
-    const sh=NET.sharedTeamSeasons(last,i);
-    if(!sh.length) return `${NET.names[last]} and ${NET.names[i]} were never teammates.`;
-    QUIZ.chain.push(i); QUIZ.clue=null; QUIZ.clueLevel=0; QUIZ.clueSpent=false;
-    if(i===QUIZ.b){ QUIZ.done=true; }
-    else if(NET.sharedTeamSeasons(i,QUIZ.b).length){
-      /* Naming someone who played with the target finishes it, as it does in
-         the round. The last link is the one you have just proved, and typing
-         a name you were handed at the start tests nothing. */
-      QUIZ.chain.push(QUIZ.b); QUIZ.done=true;
-    }
-    return null;
-  }
-
+  /* The round's card, drawn into the free play panel. The chain, the four-rung
+     clue ladder, the handed-out link and the score all come from the leg, so
+     there is one set of rules rather than two that drift apart. There is no par
+     here -- you chose the two ends, so nobody knows what the hole is worth --
+     and the score is what the round's would be: links plus the strokes spent on
+     help, capped at the give-up figure. */
   function quizRound(err){
-    const steps=QUIZ.chain.length-1;
-    const link=(u,v)=>{
-      const sh=NET.sharedTeamSeasons(u,v);
-      if(!sh.length) return '';
-      const f=sh[0], more=sh.length>1?` +${sh.length-1}`:'';
-      return `<li class="qstep via"><span class="chip">${f.team}</span> ${NET.seasonLabel(f.season)}${more}</li>`;
-    };
-    const rows=QUIZ.chain.map((n,k)=>
-      `<li class="qstep ${k===0?'fix':''}"><span class="dot"></span>${NET.names[n]}</li>`
-      +(k<QUIZ.chain.length-1?link(n,QUIZ.chain[k+1]):'')).join('');
-    // The box to type in sits between the chain and the target, so what you
-    // are being asked to bridge is the gap you can see.
-    const gap=QUIZ.done?'':
-      `<li class="qstep gap"><input id="qnext" placeholder="Next teammate…" autocomplete="off">
-         <div id="quizRes" hidden></div>
-         ${QUIZ.clue?`<div class="qclue">${QUIZ.clue}</div>`:''}</li>`;
-    const target=QUIZ.done?'':
-      `<li class="qstep fix"><span class="dot"></span>${NET.names[QUIZ.b]}</li>`;
+    const L=QUIZ.leg, links=L.links();
+    const spent=[];
+    if(L.clues-L.given) spent.push(plural(L.clues-L.given,'clue'));
+    if(L.given) spent.push(plural(L.given,'link')+' given');
+
+    let verdict='', best='';
+    if(L.done){
+      const shortest=L.bestPath();
+      const matched=!L.revealed && links===L.best;
+      const help=spent.join(' and ');
+      verdict=L.revealed
+        ? `<div class="qdone"><b>${GAME.giveUp}</b> for giving up on this one.
+             The shortest route is ${plural(L.best,'link')}.</div>`
+        : `<div class="qdone"><b>Linked in ${plural(links,'link')}</b>${
+             L.clues?` plus ${help} — <b>${L.score()}</b> in all`:''}. ${
+             matched?'Nobody links them in fewer.'
+                    :`The shortest way there is ${L.best}.`}</div>`;
+      /* Your attempt kept beside the answer. Giving up used to overwrite the
+         chain with the shortest route, which threw away what you had actually
+         worked out -- the round stopped doing that and so does this. */
+      if(!matched && shortest.length){
+        const yourLabel=L.revealed
+          ? (links?`How far you got — ${plural(links,'link')}`:'You did not get started')
+          : `Your route — ${plural(links,'link')}`;
+        best=`<div class="routes">
+                <div><div class="rhead">${yourLabel}</div>${GAME.chainHtml(L,false)}</div>
+                <div><div class="rhead">${L.revealed?'The answer'
+                      :`The shortest — ${L.best}`}</div>${GAME.routeHtml(shortest,'best')}</div>
+              </div>`;
+      }
+    }
     $('#quiz').innerHTML=
       `<button class="xclose" id="qclose" title="Back to the chart">&times;</button>
        <h2>Test your knowledge</h2>
-       <div class="lead">Get from <b>${NET.names[QUIZ.a]}</b> to
-         <b>${NET.names[QUIZ.b]}</b>. Name whoever links them, one at a time.</div>
-       <ul class="qchain">${rows}${gap}${target}</ul>
+       <div class="lead">Get from <b>${NET.names[L.a]}</b> to
+         <b>${NET.names[L.b]}</b>. Name whoever links them, one at a time.</div>
+       ${best?'':GAME.chainHtml(L,true,QIDS)}
        ${err?`<div class="qerr">${err}</div>`:''}
-       ${QUIZ.done?quizVerdict():''}
-       <div style="color:var(--grey);font-size:11px;margin-top:9px">
-         ${steps} step${steps===1?'':'s'} so far</div>
-       ${QUIZ.done?'':
-         `${QUIZ.clueSpent
-             ? `<button class="btn ghost" id="qnextlink">Get next link</button>`
-             : `<button class="btn ghost" id="qclue">${QUIZ.clueLevel?'Another clue':'Clue'}</button>`}
-          <button class="btn ghost" id="qgive">Show the shortest route</button>`}
-       <button class="btn ghost" id="qagain">${QUIZ.done?'Another pair':'Give up and restart'}</button>`;
-    if(!QUIZ.done){
-      const inp=$('#qnext');
-      inp.oninput=quizSuggest; inp.focus();
-      $('#quizRes').onclick=e=>{
-        const d=e.target.closest('[data-i]'); if(!d) return;
-        const bad=quizAdd(+d.dataset.i);
-        quizRound(bad);
-      };
-      const qc=$('#qclue'); if(qc) qc.onclick=quizClue;
-      const qn=$('#qnextlink'); if(qn) qn.onclick=quizNextLink;
-      $('#qgive').onclick=quizReveal;
+       ${verdict}${best}
+       <div class="gmeta">${plural(links,'link')}${
+         spent.length?' · '+spent.join(' · '):''}</div>
+       ${L.done?'':
+         `${L.clueSpent
+             ? `<button class="btn ghost" id="qnextlink">Get next link (+1)</button>`
+             : `<button class="btn ghost" id="qclue">${
+                 L.clueLevel?'Another clue':'Clue'} (+1)</button>`}
+          <button class="btn ghost" id="qgive">Give up on this one</button>`}
+       <button class="btn ghost" id="qagain">${
+         L.done?'Another pair':'Pick a different pair'}</button>`;
+    if(!L.done){
+      GAME.wireInput(L,e=>quizRound(e),QIDS);
+      const qc=$('#qclue'); if(qc) qc.onclick=()=>{ L.nextClue(); quizRound(); };
+      const qn=$('#qnextlink'); if(qn) qn.onclick=()=>{ L.giveLink(); quizRound(); };
+      $('#qgive').onclick=()=>{ L.reveal(); quizRound(); };
     }
     $('#qclose').onclick=quizClose;
-    const show=$('#qshow'); if(show) show.onclick=quizReveal;
-    $('#qagain').onclick=()=>{ QUIZ.a=-1; QUIZ.b=-1; quizSetup(); };
-    quizDraw();
-  }
-
-  /* The next player on a shortest route from wherever you have got to --
-   * recomputed each time, so it stays useful after you have wandered off the
-   * route the chart happened to draw.
-   *
-   * The same four-rung ladder the round and the daily use, rather than the two
-   * rungs this had of its own: club, season, position, initials, each rung
-   * built from what is actually known about THIS player so a rung with nothing
-   * behind it is dropped instead of reading "as a ?". */
-  function quizNext(){
-    const last=QUIZ.chain[QUIZ.chain.length-1];
-    const r=NET.route(last,QUIZ.b);
-    const next=r.path[r.path.length-2];        // path runs b -> ... -> last
-    return {last, next};
-  }
-
-  function quizClue(){
-    const {last,next}=quizNext();
-    if(next==null){ QUIZ.clue='No route left from here.'; return quizRound(); }
-    const sh=NET.sharedTeamSeasons(last,next);
-    if(!sh.length){ QUIZ.clue='No clue available.'; return quizRound(); }
-    const f=sh[0];
-    const nm=(NET.tables.teamMeta[f.team]||{}).name||f.team;
-    const info=NET.info(next);
-    const initials=NET.names[next].split(/\s+/).map(w=>w[0]).filter(Boolean).join('.');
-    const rungs=[
-      `played for <b>${nm}</b> with ${NET.names[last]}`,
-      `in <b>${NET.seasonLabel(f.season)}</b>`,
-      info.position?`as a <b>${info.position}</b>`:null,
-      initials?`initials <b>${initials}</b>`:null,
-    ].filter(Boolean);
-    if(QUIZ.clueLevel>=rungs.length){ QUIZ.clueSpent=true; return quizRound(); }
-    QUIZ.clueLevel=(QUIZ.clueLevel||0)+1;
-    QUIZ.clueSpent=QUIZ.clueLevel>=rungs.length;
-    QUIZ.clue='Someone who '+rungs.slice(0,QUIZ.clueLevel).join(', ')+'.';
-    quizRound();
-  }
-
-  /* Once the ladder is spent, the button hands over the name itself. Free play
-     is not scored, so there is no stroke to charge -- but running out of clues
-     with no way forward is the same dead end here as it is in the round. */
-  function quizNextLink(){
-    const {last,next}=quizNext();
-    if(next==null){ QUIZ.clue='No route left from here.'; return quizRound(); }
-    // the shortest way on can run back through someone already named, and the
-    // no-repeats rule stands
-    quizRound(quizAdd(next));
-  }
-
-  function quizSuggest(){
-    const q=NET.fold($('#qnext').value.trim());
-    const box=$('#quizRes');
-    if(q.length<2){ box.hidden=true; return; }
-    const out=[];
-    for(let i=0;i<NET.P && out.length<25;i++) if(lower[i].indexOf(q)>=0) out.push(i);
-    box.hidden=false;
-    box.innerHTML=out.length?out.map(i=>
-      `<div data-i="${i}">${NET.names[i]} <span style="color:var(--grey)">${NET.firstSeason[i]}–${NET.lastSeason[i]}</span></div>`
-    ).join(''):'<div style="color:var(--grey)">No players match</div>';
-  }
-
-  function quizVerdict(){
-    const yours=QUIZ.chain.length-1, best=QUIZ.best.degrees;
-    if(QUIZ.revealed) return `<div class="qdone">The shortest route is
-      <b>${best} steps</b>. It is drawn on the chart.</div>`;
-    if(yours===best) return `<div class="qdone"><b>${yours} steps.</b> That is the
-      shortest there is — nobody links them faster.</div>`;
-    return `<div class="qdone"><b>${yours} steps.</b> Linked, but it can be done
-      in ${best}. <span id="qshow" style="color:var(--amber);cursor:pointer;
-      text-decoration:underline">Show me</span></div>`;
-  }
-
-  function quizReveal(){
-    QUIZ.chain=QUIZ.best.path.slice().reverse();   // route returns b -> a
-    QUIZ.done=true; QUIZ.revealed=true;
-    quizRound();
-  }
-
-  // draw the chain the user has built, so the graph follows along
-  function quizDraw(){
-    VIEW.selected=-1;          // nothing is "picked" here, so no gold ring
-    VIEW.path=QUIZ.chain.length>1?QUIZ.chain.slice():[];
+    $('#qagain').onclick=()=>{
+      QUIZ.a=-1; QUIZ.b=-1; QUIZ.aText=null; QUIZ.bText=null; QUIZ.leg=null;
+      VIEW.path=[]; VIEW.selected=-1;
+      quizSetup();
+    };
+    // only once there is a result to read; see renderLeg
+    if(L.done) $('#quiz').scrollTop=0;
+    L.draw();                   // and the chart follows the chain
   }
 
   document.getElementById('quizBtn').onclick=()=>QUIZ.on?quizClose():quizOpen();

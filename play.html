@@ -335,7 +335,13 @@ footer a:hover{color:var(--ink)}
       same club in the same season — every link is checked against the real record —
       and the game is finding the shortest path between them.</p>
 
-    <div class="cards" style="grid-template-columns:repeat(2,1fr)">
+    <!-- No inline grid-template-columns. Three columns is what .cards already
+         does, so it said nothing new on a desktop -- but an inline declaration
+         outranks every stylesheet rule there is, including the one that stacks
+         these on a phone. On a 375px screen it held the three games in 142,
+         166 and 168px columns that then overflowed the page, which is why they
+         could not be read. Exactly the trap noted against #page-graphics. -->
+    <div class="cards">
       <a class="card" href="/link-up-play" style="text-decoration:none;display:block">
         <div class="num">01 <span>Premier League Football</span></div>
         <h3>Link-Up Play</h3>

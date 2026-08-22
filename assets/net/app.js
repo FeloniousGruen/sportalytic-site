@@ -445,6 +445,28 @@ const NET = (() => {
     return out.map(k => ({ team: tables.teams[tsTeam[k]], season: tsSeason[k] }));
   }
 
+  /* What the club was CALLED in a given season.
+   * South Melbourne became Sydney in 1982, Footscray became the Western
+   * Bulldogs in 1997, North Melbourne spent nine years as the Kangaroos. They
+   * are one continuous club and share one code, which is right -- but a clue
+   * reading "played for Sydney in 1935" is simply false, and a clue is the one
+   * place the page makes a factual claim you cannot check against the chart.
+   *
+   * `aka` is a list of [from, to, name] spans built from the seasons
+   * themselves rather than typed in from memory. A dataset without it -- both
+   * the others -- falls through to the single name exactly as before.
+   */
+  function clubName(code, season) {
+    const m = tables.teamMeta && tables.teamMeta[code];
+    if (!m) return code;
+    if (m.aka && season != null) {
+      for (const [lo, hi, name] of m.aka) {
+        if (season >= lo && season <= hi) return name;
+      }
+    }
+    return m.name || code;
+  }
+
   function teamLabel(code) {
     const m = tables.teamMeta && tables.teamMeta[code];
     if (!m) return code;
@@ -604,7 +626,8 @@ const NET = (() => {
     neighbours, reached, seasonLabel, setEra, era, playsInEra,
     fold, foldedNames,
     get base() { return BASE; },
-    sharedTeamSeasons, teamLabel, ringLayout, shareThrough, shareLayout, rotateSo,
+    sharedTeamSeasons, teamLabel, clubName, ringLayout, shareThrough, shareLayout,
+    rotateSo,
     throughParent,
     get P() { return P; }, get names() { return names; },
     get tables() { return tables; },
