@@ -93,3 +93,16 @@ if a.manifest:
             dropped += 1
     json.dump(man, open(a.manifest, 'w'), indent=1)
     print(f'{a.manifest}: {hit} node ids rewritten, {dropped} entries dropped')
+
+    print("\nNOW REBUILD faces.bin.gz -- run build_football_data.py again.\n"
+          "  It writes the per-node has-a-portrait flags by READING the face\n"
+          "  filenames, so a build that ran before this remap has flags against\n"
+          "  the OLD numbering. The files and the flags then disagree and the\n"
+          "  portraits simply stop appearing -- 1,030 of 1,212 of them, the last\n"
+          "  time this order was got wrong, with nothing in any output to say so.")
+    if dropped:
+        print(f"\nWARNING: {dropped} portraits were dropped as 'no longer in the "
+              f"data'.\n  Check the names first -- a player whose SPELLING changed "
+              f"upstream\n  (Dixie Dean -> Bill 'Dixie' Dean) gets a new uid and looks "
+              f"exactly\n  like a departure, but is still there and still wants his "
+              f"picture.")

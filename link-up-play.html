@@ -116,7 +116,14 @@ header{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(11,17,23,.
 nav{display:flex;gap:18px;margin-right:auto}
 nav a{text-decoration:none;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
   color:var(--grey);padding:4px 0;border-bottom:2px solid transparent}
-nav a[href="/play"]{color:var(--amber)}
+nav a[href="/play"]{color:var(--amber);padding:7px 12px;border-radius:6px;
+  box-shadow:inset 0 0 0 1px rgba(251,194,71,.5);
+  transition:background .18s,box-shadow .18s,color .18s}
+nav a[href="/play"]:hover{color:#ffd268;background:rgba(251,194,71,.12);
+  box-shadow:inset 0 0 0 1px var(--amber);
+  /* the shared nav hover draws an amber underline; a pill does not want
+     one sitting under it */
+  border-bottom-color:transparent}
 nav a:hover{color:var(--ink);border-bottom-color:var(--amber)}
 .cta{background:var(--amber);color:#0B1117;text-decoration:none;font-weight:bold;font-size:12px;
   letter-spacing:.09em;text-transform:uppercase;padding:9px 15px;border-radius:8px;white-space:nowrap}
@@ -615,7 +622,7 @@ canvas{position:absolute;top:0;left:0;width:100%;height:100%;display:block;touch
      is fixed for future fetches but a stored immutable entry is never
      revalidated, so the only way past it is a URL the cache has not seen.
      Bump ASSET_V whenever anything under assets/net/ changes. -->
-<script>window.ASSET_V='20260824a';
+<script>window.ASSET_V='20260824b';
 /* Everything the shared engine needs to know about which sport this is. Read
    by game.js as it loads, so it has to come first.
 
@@ -659,9 +666,9 @@ window.SPORT={
   },
 };
 </script>
-<script src="assets/net/app.js?v=20260824a"></script>
-<script src="assets/net/view.js?v=20260824a"></script>
-<script src="assets/net/game.js?v=20260824a"></script>
+<script src="assets/net/app.js?v=20260824b"></script>
+<script src="assets/net/view.js?v=20260824b"></script>
+<script src="assets/net/game.js?v=20260824b"></script>
 <script>
 const DATA='assets/foot';
 const $=s=>document.querySelector(s);
@@ -1249,7 +1256,17 @@ document.addEventListener('click',e=>{ if(e.target.id==='credLink') showCredits(
     syncExpand();
     if(teardown){
       // anything hanging off the old graph is about a graph that no longer exists
-      closePanel(); quizClose(); GAME.stop(); gameEl.hidden=true; gameEl.className='';
+      closePanel(); quizClose();
+      /* ...but the Play card is only hanging off it while something is being
+         PLAYED. A running puzzle has to go -- its answer was worked out over
+         seasons that may no longer be in the graph -- and it drops back to the
+         menu rather than closing outright, so changing the era does not also
+         throw you out of Play. The menu itself is just a list of modes: it
+         survives, which matters because the page opens on it, so narrowing to
+         the Premier League used to make it vanish before you had chosen
+         anything. */
+      if(!gameEl.hidden && GAME.state){ GAME.stop(); gameMenu(); }
+      else if(gameEl.hidden){ gameEl.className=''; }
       VIEW.interactive=true; VIEW.labels=!onPhone(); VIEW.lit=null;
       setRing(false);
     }
