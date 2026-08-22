@@ -99,7 +99,7 @@
    "name": "Arsenal",
    "from": 1904,
    "to": 2026,
-   "players": 686,
+   "players": 946,
    "seasons": [
     1904,
     1905,
@@ -217,7 +217,7 @@
    "name": "Aston Villa",
    "from": 1888,
    "to": 2026,
-   "players": 890,
+   "players": 1078,
    "seasons": [
     1888,
     1889,
@@ -369,7 +369,7 @@
    "name": "Birmingham City",
    "from": 1894,
    "to": 2010,
-   "players": 655,
+   "players": 665,
    "seasons": [
     1894,
     1895,
@@ -431,7 +431,7 @@
    "name": "Blackburn Rovers",
    "from": 1888,
    "to": 2011,
-   "players": 732,
+   "players": 735,
    "seasons": [
     1888,
     1889,
@@ -873,7 +873,7 @@
    "name": "Chelsea",
    "from": 1907,
    "to": 2026,
-   "players": 768,
+   "players": 893,
    "seasons": [
     1907,
     1908,
@@ -973,7 +973,7 @@
    "name": "Coventry City",
    "from": 1967,
    "to": 2026,
-   "players": 305,
+   "players": 362,
    "seasons": [
     1967,
     1968,
@@ -1016,7 +1016,7 @@
    "name": "Crystal Palace",
    "from": 1969,
    "to": 2026,
-   "players": 327,
+   "players": 330,
    "seasons": [
     1969,
     1971,
@@ -1059,7 +1059,7 @@
    "name": "Derby County",
    "from": 1888,
    "to": 2007,
-   "players": 640,
+   "players": 745,
    "seasons": [
     1888,
     1889,
@@ -1132,7 +1132,7 @@
    "name": "Everton",
    "from": 1888,
    "to": 2026,
-   "players": 933,
+   "players": 1202,
    "seasons": [
     1888,
     1889,
@@ -1387,7 +1387,7 @@
    "name": "Ipswich Town",
    "from": 1961,
    "to": 2026,
-   "players": 263,
+   "players": 264,
    "seasons": [
     1961,
     1962,
@@ -1419,7 +1419,7 @@
    "name": "Leeds United",
    "from": 1924,
    "to": 2026,
-   "players": 533,
+   "players": 536,
    "seasons": [
     1924,
     1925,
@@ -1479,7 +1479,7 @@
    "name": "Leicester City",
    "from": 1908,
    "to": 2024,
-   "players": 524,
+   "players": 599,
    "seasons": [
     1908,
     1925,
@@ -1552,7 +1552,7 @@
    "name": "Liverpool",
    "from": 1894,
    "to": 2026,
-   "players": 728,
+   "players": 981,
    "seasons": [
     1894,
     1896,
@@ -1696,7 +1696,7 @@
    "name": "Manchester City",
    "from": 1899,
    "to": 2026,
-   "players": 972,
+   "players": 976,
    "seasons": [
     1899,
     1900,
@@ -1800,7 +1800,7 @@
    "name": "Middlesbrough",
    "from": 1902,
    "to": 2016,
-   "players": 567,
+   "players": 665,
    "seasons": [
     1902,
     1903,
@@ -1879,7 +1879,7 @@
    "name": "Manchester United",
    "from": 1892,
    "to": 2026,
-   "players": 719,
+   "players": 929,
    "seasons": [
     1892,
     1893,
@@ -1989,7 +1989,7 @@
    "name": "Newcastle United",
    "from": 1898,
    "to": 2026,
-   "players": 826,
+   "players": 1006,
    "seasons": [
     1898,
     1899,
@@ -2092,7 +2092,7 @@
    "name": "Nottingham Forest",
    "from": 1892,
    "to": 2026,
-   "players": 618,
+   "players": 623,
    "seasons": [
     1892,
     1893,
@@ -2205,7 +2205,7 @@
    "name": "Norwich City",
    "from": 1972,
    "to": 2021,
-   "players": 328,
+   "players": 327,
    "seasons": [
     1972,
     1973,
@@ -2236,7 +2236,7 @@
    "name": "Oldham Athletic",
    "from": 1910,
    "to": 1993,
-   "players": 156,
+   "players": 157,
    "seasons": [
     1910,
     1911,
@@ -2256,7 +2256,7 @@
    "name": "Oxford United",
    "from": 1985,
    "to": 1986,
-   "players": 31,
+   "players": 34,
    "seasons": [
     1985,
     1986
@@ -2360,7 +2360,7 @@
    "name": "Queens Park Rangers",
    "from": 1968,
    "to": 2014,
-   "players": 271,
+   "players": 276,
    "seasons": [
     1968,
     1973,
@@ -2402,7 +2402,7 @@
    "name": "Sheffield United",
    "from": 1893,
    "to": 2023,
-   "players": 710,
+   "players": 719,
    "seasons": [
     1893,
     1894,
@@ -2473,7 +2473,7 @@
    "name": "Sheffield Wednesday",
    "from": 1892,
    "to": 1999,
-   "players": 654,
+   "players": 662,
    "seasons": [
     1892,
     1893,
@@ -2546,7 +2546,7 @@
    "name": "Southampton",
    "from": 1966,
    "to": 2024,
-   "players": 409,
+   "players": 451,
    "seasons": [
     1966,
     1967,
@@ -2668,7 +2668,7 @@
    "name": "Sunderland",
    "from": 1890,
    "to": 2026,
-   "players": 1044,
+   "players": 1063,
    "seasons": [
     1890,
     1891,
@@ -2764,7 +2764,7 @@
    "name": "Swansea City",
    "from": 1981,
    "to": 2017,
-   "players": 97,
+   "players": 103,
    "seasons": [
     1981,
     1982,
@@ -2790,7 +2790,7 @@
    "name": "Tottenham Hotspur",
    "from": 1909,
    "to": 2026,
-   "players": 736,
+   "players": 787,
    "seasons": [
     1909,
     1910,
@@ -2912,7 +2912,7 @@
    "name": "West Bromwich Albion",
    "from": 1888,
    "to": 2020,
-   "players": 774,
+   "players": 778,
    "seasons": [
     1888,
     1889,
@@ -2994,7 +2994,7 @@
    "name": "West Ham United",
    "from": 1923,
    "to": 2025,
-   "players": 569,
+   "players": 656,
    "seasons": [
     1923,
     1924,
@@ -3086,7 +3086,7 @@
    "name": "Wimbledon",
    "from": 1987,
    "to": 1999,
-   "players": 91,
+   "players": 100,
    "seasons": [
     1987,
     1988,
@@ -3194,8 +3194,8 @@
    "from": 1888,
    "to": 2100,
    "note": "Every English top-flight season since 1888/89.",
-   "centre": 10497,
-   "centreName": "Peter Shilton"
+   "centre": 12855,
+   "centreName": "Neville Southall"
   },
   {
    "id": "pl",
@@ -3203,8 +3203,8 @@
    "from": 1992,
    "to": 2100,
    "note": "From 1992/93. Links formed in the old First Division do not count.",
-   "centre": 12513,
-   "centreName": "James Milner"
+   "centre": 14446,
+   "centreName": "Paul Scholes"
   },
   {
    "id": "modern",
@@ -3212,8 +3212,8 @@
    "from": 2000,
    "to": 2100,
    "note": "From 2000/01.",
-   "centre": 12513,
-   "centreName": "James Milner"
+   "centre": 13319,
+   "centreName": "Sylvain Distin"
   },
   {
    "id": "div1",
@@ -3221,8 +3221,8 @@
    "from": 1946,
    "to": 1991,
    "note": "Post-war, 1946/47 to 1991/92.",
-   "centre": 10497,
-   "centreName": "Peter Shilton"
+   "centre": 131,
+   "centreName": "Alan Kennedy"
   },
   {
    "id": "prewar",
@@ -3230,19 +3230,19 @@
    "from": 1888,
    "to": 1938,
    "note": "The Football League from its first season to 1938/39. The First World War shutdown is inside this range, which is why it needs saying which war.",
-   "centre": 16920,
-   "centreName": "Steve Bloomer"
+   "centre": 4340,
+   "centreName": "Eric Brook"
   }
  ],
- "players": 18876,
+ "players": 19729,
  "teamSeasons": 2580,
- "memberships": 66463,
+ "memberships": 69210,
  "notable": {
-  "Erling Haaland": 15226,
-  "Jack Grealish": 14299,
-  "Stanley Matthews": 16872,
-  "Bobby Charlton": 1985,
-  "Alan Shearer": 15688,
-  "Billy Meredith": 1823
+  "Erling Haaland": 16008,
+  "Jack Grealish": 15081,
+  "Stanley Matthews": 17677,
+  "Bobby Charlton": 2193,
+  "Alan Shearer": 16470,
+  "Billy Meredith": 1995
  }
 }
